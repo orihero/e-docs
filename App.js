@@ -1,12 +1,16 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import {View, Text} from 'react-native';
+import {UIManager, Platform} from 'react-native';
+import AppNavigator from './src/routes/AppRouter';
+
+if (Platform.OS === 'android') {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
 
 let App = () => {
-  return (
-    <View>
-      <Text>some text</Text>
-    </View>
-  );
+    return <AppNavigator />;
 };
 
 export default App;
