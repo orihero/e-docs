@@ -42,6 +42,16 @@ let strings = new LocalizedStrings({
         received: 'Полученные',
         rejected: 'Отказанные',
         searchPlaceholder: 'Введите название или номер..',
+        soapProducts: 'Мыло-моющие средства',
+        products: 'Товары',
+        overall: 'Итого',
+        sendApplication: 'ОТПРАВИТЬ ЗАЯВКУ',
+        enterLogin: 'Введите ваш логин',
+        enterPassword: 'Введите ваш пароль',
+        welcome: 'ДОБРО ПОЖАЛОВАТЬ!',
+        loginInfo:
+            'Для авторизации в сервисе электронного документооборота, пожалуйста введите ваши данные',
+        startWorking: 'НАЧАТЬ РАБОТУ',
     },
     uz: {},
 });

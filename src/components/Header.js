@@ -4,8 +4,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../constants/colors';
 import NotificationCard from '../components/cards/NotificationCard';
 import Text from '../components/Text';
+import images from '../assets/images';
 
-const Header = ({secondary}) => {
+const Header = ({initial, secondary}) => {
     let [notification, setNotification] = useState(secondary);
 
     return (
@@ -17,34 +18,61 @@ const Header = ({secondary}) => {
                 colors.linearBlue2,
                 colors.linearBlue3,
             ]}
-            style={styles.container}>
+            style={[
+                styles.container,
+                initial && {
+                    height: 100,
+                    justifyContent: 'center',
+                },
+            ]}>
             <View style={styles.roundOne} />
             <View style={styles.roundTwo} />
-            <View
-                style={[
-                    styles.main,
-                    notification && {
-                        paddingBottom: 15,
-                    },
-                ]}>
-                <View style={styles.titleWrapper}>
-                    <Text style={styles.title}>ООО «Smart Business Lab»</Text>
-                    <Text style={styles.subTitle}>ИНН 1375419735</Text>
-                </View>
-                <View style={styles.imageWrapper}>
-                    <Image
-                        style={styles.image}
-                        source={{
-                            uri:
-                                'https://66.media.tumblr.com/67267833f555724d485b3a4483799bd2/tumblr_nu3qqc8BZ71un5fc4o1_640.jpg',
-                        }}
-                    />
-                </View>
-            </View>
-            {notification && (
-                <View style={styles.secondary}>
-                    <NotificationCard setNotification={setNotification} />
-                </View>
+            {initial && (
+                <>
+                    <View style={styles.appImage}>
+                        <Image
+                            source={images.appImage}
+                            style={{
+                                height: 70,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </View>
+                </>
+            )}
+            {!initial && (
+                <>
+                    <View
+                        style={[
+                            styles.main,
+                            notification && {
+                                paddingBottom: 15,
+                            },
+                        ]}>
+                        <View style={styles.titleWrapper}>
+                            <Text style={styles.title}>
+                                ООО «Smart Business Lab»
+                            </Text>
+                            <Text style={styles.subTitle}>ИНН 1375419735</Text>
+                        </View>
+                        <View style={styles.imageWrapper}>
+                            <Image
+                                style={styles.image}
+                                source={{
+                                    uri:
+                                        'https://66.media.tumblr.com/67267833f555724d485b3a4483799bd2/tumblr_nu3qqc8BZ71un5fc4o1_640.jpg',
+                                }}
+                            />
+                        </View>
+                    </View>
+                    {notification && (
+                        <View style={styles.secondary}>
+                            <NotificationCard
+                                setNotification={setNotification}
+                            />
+                        </View>
+                    )}
+                </>
             )}
         </LinearGradient>
     );
@@ -54,6 +82,10 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 15,
         paddingHorizontal: 20,
+    },
+    appImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     roundOne: {
         position: 'absolute',

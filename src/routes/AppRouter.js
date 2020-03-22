@@ -5,7 +5,7 @@ import Text from '../components/Text';
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import {Main, Add, Profile} from '../screens';
+import {Main, Add, Profile, Login, Product, Checkout} from '../screens';
 import Header from '../components/Header';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,6 +17,18 @@ const MainStack = createStackNavigator({
         screen: Main,
         navigationOptions: {
             header: () => <Header secondary={true} />,
+        },
+    },
+    Product: {
+        screen: Product,
+        navigationOptions: {
+            header: () => <Header />,
+        },
+    },
+    Checkout: {
+        screen: Checkout,
+        navigationOptions: {
+            header: () => <Header />,
         },
     },
 });
@@ -79,7 +91,7 @@ const TabNavigator = createMaterialTopTabNavigator(
         },
     },
     {
-        initialRouteName: 'ProfileStack',
+        // initialRouteName: 'ProfileStack',
         tabBarOptions: {
             activeTintColor: colors.flowerBlue,
             inactiveTintColor: colors.grayBorder,
@@ -112,10 +124,19 @@ const TabNavigator = createMaterialTopTabNavigator(
     },
 );
 
+const LoginStack = createStackNavigator({
+    Login: {
+        screen: Login,
+        navigationOptions: {
+            header: () => <Header initial={true} />,
+        },
+    },
+});
+
 const SwitchNavigator = createSwitchNavigator(
     {
         // Loader,
-        // AuthNavigator,
+        LoginStack,
         // DrawerNavigator,
         TabNavigator,
     },

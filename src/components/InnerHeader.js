@@ -3,18 +3,21 @@ import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import colors from '../constants/colors';
-import RNPickerSelect, {togglePicker} from 'react-native-picker-select';
+import RNPickerSelect from 'react-native-picker-select';
 import strings from '../locales/strings';
 import Text from '../components/Text';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SearchBar from './SearchBar';
 
 const InnerHeader = ({currentPage, setShowType, showTypes}) => {
-    console.warn(togglePicker);
     return (
         <View style={styles.container}>
             <View style={styles.top}>
-                <View style={styles.titleWrapper}>
+                <View
+                    style={[
+                        styles.titleWrapper,
+                        !showTypes && {paddingVertical: 10},
+                    ]}>
                     <Feather name="arrow-left" size={20} />
                     <Text style={styles.title}>{currentPage}</Text>
                 </View>
@@ -111,9 +114,9 @@ const pickerSelectStyles = StyleSheet.create({
         textAlign: 'right',
         marginRight: 10,
         fontFamily: 'Rubik-Medium',
-        paddingRight: 30,
-        right: -20,
-        width: 150,
+        paddingRight: 10,
+        // right: -20,
+        maxWidth: 250,
     },
     headlessAndroidContainer: {
         flexDirection: 'row',

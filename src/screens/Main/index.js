@@ -4,10 +4,12 @@ import colors from '../../constants/colors';
 import strings from '../../locales/strings';
 import images from '../../assets/images';
 import Text from '../../components/Text';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {withNavigation} from 'react-navigation';
 
 const {width: deviceWidth, height} = Dimensions.get('window');
 
-const Main = () => {
+const Main = ({navigation}) => {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
@@ -49,19 +51,27 @@ const Main = () => {
             </View>
             <View style={styles.gridWrapper}>
                 <View style={styles.grid}>
-                    <View
-                        style={[
-                            styles.imageWrapper,
-                            {
-                                backgroundColor: colors.palewinterWizard,
-                            },
-                        ]}>
-                        <Image style={styles.image} source={images.tagIcon} />
-                    </View>
-                    <Text style={styles.name}>{strings.subscription}</Text>
-                    <Text style={styles.info}>
-                        {strings.left} 16 {strings.days}
-                    </Text>
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            navigation.navigate('Product');
+                        }}>
+                        <View
+                            style={[
+                                styles.imageWrapper,
+                                {
+                                    backgroundColor: colors.palewinterWizard,
+                                },
+                            ]}>
+                            <Image
+                                style={styles.image}
+                                source={images.tagIcon}
+                            />
+                        </View>
+                        <Text style={styles.name}>{strings.subscription}</Text>
+                        <Text style={styles.info}>
+                            {strings.left} 16 {strings.days}
+                        </Text>
+                    </TouchableWithoutFeedback>
                 </View>
                 <View style={styles.grid}>
                     <View
@@ -134,4 +144,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Main;
+export default withNavigation(Main);
