@@ -1,5 +1,5 @@
-import Main from './Main';
-import Add from './Add';
-import Profile from './Profile';
+import Main from "./main";
+import Add from "./main";
+import Profile from "./main";
 
-export {Main, Add, Profile};
+export { Main, Add, Profile };
