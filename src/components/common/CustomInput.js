@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import colors from "../../constants/colors";
 
@@ -18,7 +18,7 @@ const CustomInput = ({ inputType, placeholder, textColor }) => {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: colors.white,
-		padding: 7,
+		padding: Platform.select({ android: 7, ios: 20 }),
 		borderRadius: 5,
 		marginBottom: 10
 	}

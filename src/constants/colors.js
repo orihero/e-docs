@@ -28,5 +28,6 @@ export default {
 	darkViolet: "#554E8F",
 	flowerBlue: "#5F87E7",
 	dimGreen: "#20C5BB",
-	jeansBlue: "#6AA9EB"
+	jeansBlue: "#6AA9EB",
+	lightBlueBackground: "#F9FCFF"
 };

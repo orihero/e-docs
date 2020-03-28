@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import RNPickerSelect, { togglePicker } from "react-native-picker-select";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import colors from "../../constants/colors";
-import RNPickerSelect, { togglePicker } from "react-native-picker-select";
 import strings from "../../locales/strings";
-import Text from "../components/Text";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import Text from "../common/Text";
 import SearchBar from "./SearchBar";
 
 const InnerHeader = ({ currentPage, setShowType, showTypes }) => {

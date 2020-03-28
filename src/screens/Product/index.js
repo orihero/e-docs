@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "./node_modules/react";
+import React, { useState, useEffect } from "react";
 import {
 	View,
 	StyleSheet,
 	FlatList,
 	TouchableWithoutFeedback
 } from "react-native";
-import InnerHeader from "../../components/InnerHeader";
+import InnerHeader from "../../components/navigation/InnerHeader";
 import ProductCard from "../../components/cards/ProductCard";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
-import Entypo from "./node_modules/react-native-vector-icons/Entypo";
-import { withNavigation } from "./node_modules/react-navigation";
+import Entypo from "react-native-vector-icons/Entypo";
+import { withNavigation } from "react-navigation";
 
 let productList = [
 	{

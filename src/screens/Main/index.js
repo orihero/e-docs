@@ -1,5 +1,12 @@
 import React from "react";
-import { View, StyleSheet, Image, Dimensions, ScrollView } from "react-native";
+import {
+	View,
+	StyleSheet,
+	Image,
+	Dimensions,
+	ScrollView,
+	TouchableWithoutFeedback
+} from "react-native";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import images from "../../assets/images";
@@ -58,23 +65,27 @@ const Main = ({ navigation }) => {
 							navigation.navigate("Product");
 						}}
 					>
-						<View
-							style={[
-								styles.imageWrapper,
-								{
-									backgroundColor: colors.palewinterWizard
-								}
-							]}
-						>
-							<Image
-								style={styles.image}
-								source={images.tagIcon}
-							/>
-						</View>
-						<Text style={styles.name}>{strings.subscription}</Text>
-						<Text style={styles.info}>
-							{strings.left} 16 {strings.days}
-						</Text>
+						<>
+							<View
+								style={[
+									styles.imageWrapper,
+									{
+										backgroundColor: colors.palewinterWizard
+									}
+								]}
+							>
+								<Image
+									style={styles.image}
+									source={images.tagIcon}
+								/>
+							</View>
+							<Text style={styles.name}>
+								{strings.subscription}
+							</Text>
+							<Text style={styles.info}>
+								{strings.left} 16 {strings.days}
+							</Text>
+						</>
 					</TouchableWithoutFeedback>
 				</View>
 				<View style={styles.grid}>
@@ -100,7 +111,7 @@ const Main = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: colors.blueishBackground,
+		backgroundColor: colors.lightBlueBackground,
 		paddingTop: 10
 	},
 	title: {

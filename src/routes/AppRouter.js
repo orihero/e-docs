@@ -11,6 +11,7 @@ import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import colors from "../constants/colors";
 import strings from "../locales/strings";
+import CustomFLoatingTabbar from "../components/navigation/CustomFloatingTabbar";
 
 const MainStack = createStackNavigator({
 	Main: {
@@ -121,7 +122,7 @@ const TabNavigator = createMaterialTopTabNavigator(
 			showIcon: true
 		},
 		tabBarPosition: "bottom",
-		tabBarComponent: CustomFloatingTabbar
+		tabBarComponent: CustomFLoatingTabbar
 	}
 );
 

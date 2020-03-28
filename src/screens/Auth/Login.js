@@ -1,11 +1,11 @@
-import React from "./node_modules/react";
+import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import Text from "../../components/common/Text";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import CustomInput from "../../components/common/CustomInput";
 import RectangleButton from "../../components/common/RectangleButton";
-import { withNavigation } from "./node_modules/react-navigation";
+import { withNavigation } from "react-navigation";
 
 const Login = ({ navigation }) => {
 	return (
@@ -28,6 +28,7 @@ const Login = ({ navigation }) => {
 				onPress={() => {
 					navigation.navigate("Main");
 				}}
+				style={{ marginTop: 20 }}
 			/>
 		</ScrollView>
 	);
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 50,
 		paddingHorizontal: 20,
-		backgroundColor: colors.paleWhite,
+		backgroundColor: colors.lightBlueBackground,
 		flex: 1
 	},
 	title: {

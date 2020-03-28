@@ -1,4 +1,4 @@
-import React from "./node_modules/react";
+import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import InnerHeader from "../../components/navigation/InnerHeader";
 import colors from "../../constants/colors";
