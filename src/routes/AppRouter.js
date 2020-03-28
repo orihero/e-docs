@@ -6,7 +6,7 @@ import Text from "../components/common/Text";
 import { createStackNavigator } from "react-navigation-stack";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 import { Main, Add, Profile, Login, Product, Checkout } from "../screens";
-import Header from "../components/Header";
+import Header from "../components/navigation/Header";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import colors from "../constants/colors";
