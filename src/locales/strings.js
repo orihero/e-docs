@@ -23,27 +23,37 @@ let strings = new LocalizedStrings({
 		signed: "Подписанные",
 		received: "Полученные",
 		rejected: "Отказанные",
-		searchPlaceholder: "Введите название или номер.."
+		searchPlaceholder: "Введите название или номер..",
+		soapProducts: "Мыло-моющие средства",
+		products: "Товары",
+		overall: "Итого",
+		sendApplication: "ОТПРАВИТЬ ЗАЯВКУ",
+		enterLogin: "Введите ваш логин",
+		enterPassword: "Введите ваш пароль",
+		welcome: "ДОБРО ПОЖАЛОВАТЬ!",
+		loginInfo:
+			"Для авторизации в сервисе электронного документооборота, пожалуйста введите ваши данные",
+		startWorking: "НАЧАТЬ РАБОТУ"
+	},
+	uz: {},
+	en: {
+		add: "Add",
+		main: "Main",
+		profile: "Profile",
+		incomingDocument: "INCOMING DOCUMENT",
+		invoice: "INVOICE",
+		mainMenu: "MAIN MENU",
+		incoming: "Incoming",
+		outgoing: "",
+		subscription: "Subscription",
+		promoCodes: "Promo-Codes",
+		document: "document",
+		documents: "documents",
+		left: "Left",
+		days: "days",
+		activation: "",
+		all: "All"
 	}
-	// en: {
-	// 	add: "Add",
-	// 	main: "Main",
-	// 	profile: "Profile",
-	// 	incomingDocument: "INCOMING DOCUMENT",
-	// 	invoice: "INVOICE",
-	// 	mainMenu: "MAIN MENU",
-	// 	incoming: "Incoming",
-	// 	outgoing: "",
-	// 	subscription: "Subscription",
-	// 	promoCodes: "Promo-Codes",
-	// 	document: "document",
-	// 	documents: "documents",
-	// 	left: "Left",
-	// 	days: "days",
-	// 	activation: "",
-	// 	all: "All"
-	// },
-	// uz: {}
 });
 
 export default strings;

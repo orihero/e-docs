@@ -3,9 +3,11 @@ export default {
 	linearBlue2: "#547cde",
 	linearBlue3: "#90a9e8",
 	white: "#ffffff",
+	paleWhite: "rgba(255,255,255,0.80)",
 	black: "#000000",
 	violetGrayText: "#8B87B3",
 	blackText: "#686868",
+	paleBlueText: "#82A0B7",
 	grayText: "#A1A1A1",
 	lightGrayText: "#C6C6C8",
 	grayBorder: "#BEBEBE",
@@ -25,5 +27,6 @@ export default {
 	violet: "#9D6CDA",
 	darkViolet: "#554E8F",
 	flowerBlue: "#5F87E7",
-	blueishBackground: "#F9FCFF"
+	dimGreen: "#20C5BB",
+	jeansBlue: "#6AA9EB"
 };

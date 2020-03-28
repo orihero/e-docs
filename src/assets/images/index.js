@@ -4,6 +4,7 @@ const images = {
     downloadIcon: require('./downloadIcon.png'),
     uploadIcon: require('./uploadIcon.png'),
     tagIcon: require('./tagIcon.png'),
+    appImage: require('./drawable-xxxhdpi/Image.png'),
 };
 
 export default images;

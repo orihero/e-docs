@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width: deviceWidth, height } = Dimensions.get("window");
 
-const Main = () => {
+const Main = ({ navigation }) => {
 	return (
 		<ScrollView
 			showsVerticalScrollIndicator={false}
@@ -53,20 +53,29 @@ const Main = () => {
 			</View>
 			<View style={styles.gridWrapper}>
 				<View style={styles.grid}>
-					<View
-						style={[
-							styles.imageWrapper,
-							{
-								backgroundColor: colors.palewinterWizard
-							}
-						]}
+					<TouchableWithoutFeedback
+						onPress={() => {
+							navigation.navigate("Product");
+						}}
 					>
-						<Image style={styles.image} source={images.tagIcon} />
-					</View>
-					<Text style={styles.name}>{strings.subscription}</Text>
-					<Text style={styles.info}>
-						{strings.left} 16 {strings.days}
-					</Text>
+						<View
+							style={[
+								styles.imageWrapper,
+								{
+									backgroundColor: colors.palewinterWizard
+								}
+							]}
+						>
+							<Image
+								style={styles.image}
+								source={images.tagIcon}
+							/>
+						</View>
+						<Text style={styles.name}>{strings.subscription}</Text>
+						<Text style={styles.info}>
+							{strings.left} 16 {strings.days}
+						</Text>
+					</TouchableWithoutFeedback>
 				</View>
 				<View style={styles.grid}>
 					<View
