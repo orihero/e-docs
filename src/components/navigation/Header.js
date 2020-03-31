@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
 	main: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		paddingTop: 10
+		paddingTop: 10,
+		alignItems: "center"
 	},
 	titleWrapper: {
 		maxWidth: 250
