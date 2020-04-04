@@ -9,7 +9,7 @@ let message = `{}`;
  * @param append_pkcs7 Message to sign
  * @returns Object : {pkcs7,result}
  */
-export let sign = append_pkcs7 => {
+let sign = append_pkcs7 => {
 	let obj = {
 		packageName: "uz.yt.eimzo",
 		className: "uz.yt.eimzo.activity.MainActivity",
@@ -19,3 +19,5 @@ export let sign = append_pkcs7 => {
 	};
 	return IntentLauncher.startActivity(obj);
 };
+
+export default { sign };

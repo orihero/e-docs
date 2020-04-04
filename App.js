@@ -5,6 +5,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppNavigator from "./src/routes/AppRouter";
 import { configureStore } from "./src/redux/configureStore";
 import { Provider } from "react-redux";
+import LoadingModal from "./src/components/containers/LoadingModal";
+import HeadUpMessage from "./src/components/common/HeadUpMessage";
+import { configureAxios } from "./src/api/configs";
 
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -14,12 +17,13 @@ if (Platform.OS === "android") {
 
 let App = () => {
 	let store = configureStore();
-	let { modalVisible, message } = store.getState().appState;
+	configureAxios();
 	return (
 		<SafeAreaProvider>
 			<Provider store={store}>
 				<AppNavigator />
-				<LoadingModal {...{ modalVisible, message }} />
+				<LoadingModal />
+				<HeadUpMessage />
 			</Provider>
 		</SafeAreaProvider>
 	);

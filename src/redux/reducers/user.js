@@ -1,3 +1,5 @@
+import { USER_LOADED } from "../types";
+
 const initialState = {
 	settings: {},
 	data: {}
@@ -5,7 +7,7 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
-		case typeName:
+		case USER_LOADED:
 			return { ...state, ...payload };
 
 		default:

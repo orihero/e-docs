@@ -28,12 +28,13 @@ let strings = new LocalizedStrings({
 		products: "Товары",
 		overall: "Итого",
 		sendApplication: "ОТПРАВИТЬ ЗАЯВКУ",
-		enterLogin: "Введите ваш логин",
+		enterLogin: "Введите ваш ИНН",
 		enterPassword: "Введите ваш пароль",
 		welcome: "ДОБРО ПОЖАЛОВАТЬ!",
 		loginInfo:
 			"Для авторизации в сервисе электронного документооборота, пожалуйста введите ваши данные",
-		startWorking: "НАЧАТЬ РАБОТУ"
+		startWorking: "НАЧАТЬ РАБОТУ",
+		loading: "Загрузка"
 	},
 	uz: {},
 	en: {
