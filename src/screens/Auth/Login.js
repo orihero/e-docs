@@ -1,11 +1,11 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
+import { withNavigation } from "react-navigation";
+import CustomInput from "../../components/common/CustomInput";
+import RectangleButton from "../../components/common/RectangleButton";
 import Text from "../../components/common/Text";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
-import CustomInput from "../../components/common/CustomInput";
-import RectangleButton from "../../components/common/RectangleButton";
-import { withNavigation } from "react-navigation";
 
 const Login = ({ navigation }) => {
 	return (
