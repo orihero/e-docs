@@ -8,6 +8,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Header = ({ secondary }) => {
 	let [notification, setNotification] = useState(secondary);
+
+	let [title, setTitle] = useState("");
+	let [inn, setInn] = useState("");
+	let [avatar, setAvatar] = useState("");
 	return (
 		<LinearGradient
 			start={{ x: 0, y: 0 }}
@@ -31,17 +35,14 @@ const Header = ({ secondary }) => {
 					]}
 				>
 					<View style={styles.titleWrapper}>
-						<Text style={styles.title}>
-							ООО «Smart Business Lab»
-						</Text>
-						<Text style={styles.subTitle}>ИНН 1375419735</Text>
+						<Text style={styles.title}>{title}</Text>
+						<Text style={styles.subTitle}>{inn}</Text>
 					</View>
 					<View style={styles.imageWrapper}>
 						<Image
 							style={styles.image}
 							source={{
-								uri:
-									"https://66.media.tumblr.com/67267833f555724d485b3a4483799bd2/tumblr_nu3qqc8BZ71un5fc4o1_640.jpg"
+								uri: avatar
 							}}
 						/>
 					</View>

@@ -138,7 +138,7 @@ const LoginStack = createStackNavigator({
 const SwitchNavigator = createSwitchNavigator(
 	{
 		// Loader,
-		LoginStack,
+		// LoginStack,
 		// DrawerNavigator,
 		TabNavigator
 	},

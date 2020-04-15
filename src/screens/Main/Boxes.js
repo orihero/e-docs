@@ -105,6 +105,34 @@ const Main = ({ navigation }) => {
 					</Text>
 				</View>
 			</View>
+			<View
+				style={[
+					styles.gridWrapper,
+					{
+						justifyContent: "center"
+					}
+				]}
+			>
+				<View style={styles.grid}>
+					<View
+						style={[
+							styles.imageWrapper,
+							{
+								backgroundColor: colors.paleGreen
+							}
+						]}
+					>
+						<Image
+							style={styles.image}
+							source={images.shoppingCart}
+						/>
+					</View>
+					<Text style={styles.name}>{strings.products}</Text>
+					<Text style={styles.info}>
+						{strings.activation} {strings.here}
+					</Text>
+				</View>
+			</View>
 		</ScrollView>
 	);
 };
