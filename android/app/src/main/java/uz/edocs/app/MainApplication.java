@@ -1,4 +1,4 @@
-package com.edocs;
+package uz.edocs.app;
 
 import android.app.Application;
 import android.content.Context;

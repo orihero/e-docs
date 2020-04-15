@@ -1,8 +1,8 @@
-import Main from "./main";
-import Add from "./add";
-import Profile from "./profile";
-import Login from "./auth/Login";
-import Product from "./product";
-import Checkout from "./checkout";
+import Main from "./Main";
+import Add from "./Add";
+import Profile from "./Profile";
+import Login from "./Auth/Login";
+import Product from "./Product";
+import Checkout from "./Checkout";
 
 export { Main, Add, Profile, Login, Product, Checkout };

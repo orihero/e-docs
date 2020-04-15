@@ -65,7 +65,7 @@ const Main = ({ navigation }) => {
 							navigation.navigate("Product");
 						}}
 					>
-						<>
+						<View>
 							<View
 								style={[
 									styles.imageWrapper,
@@ -85,7 +85,7 @@ const Main = ({ navigation }) => {
 							<Text style={styles.info}>
 								{strings.left} 16 {strings.days}
 							</Text>
-						</>
+						</View>
 					</TouchableWithoutFeedback>
 				</View>
 				<View style={styles.grid}>

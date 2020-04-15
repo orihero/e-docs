@@ -1,4 +1,4 @@
-package com.edocs;
+package uz.edocs.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
