@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export let url = "http://api.edocs.uz/v1.0.1";
+export let url = "http://testapi.edocs.uz -";
 
 export let configureAxios = () => {
 	axios.interceptors.response.use(

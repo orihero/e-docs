@@ -27,7 +27,12 @@ const Login = ({
 	let login = async () => {
 		showModal(strings.loading);
 		try {
-			let { pkcs7 } = await signProvider.sign();
+			//get authId
+			let authId = await requests.auth.getAuthId(serialNumber);
+			//wrap it within object
+			let req = JSON.stringify({ authId });
+			//get sign
+			let { pkcs7 } = await signProvider.sign(req);
 			let res = await requests.auth.login({ serialNumber, pkcs7 });
 			console.log(res.data);
 			// navigation.navigate();
@@ -99,4 +104,7 @@ const mapDispatchToProps = {
 	hideMessage
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Login);
