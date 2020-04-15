@@ -29,15 +29,17 @@ const Login = ({
 		try {
 			//get authId
 			let authId = await requests.auth.getAuthId(serialNumber);
-			//wrap it within object
+			// wrap it within object
 			let req = JSON.stringify({ authId });
 			//get sign
 			let { pkcs7 } = await signProvider.sign(req);
 			let res = await requests.auth.login({ serialNumber, pkcs7 });
 			console.log(res.data);
-			// navigation.navigate();
+			navigation.navigate();
 			hideModal();
 		} catch (error) {
+			console.warn(error.response);
+
 			hideModal();
 			showMessage({ message: error.message, type: colors.killerRed });
 		}
