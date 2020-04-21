@@ -28,7 +28,7 @@ let strings = new LocalizedStrings({
 		products: "Товары",
 		overall: "Итого",
 		sendApplication: "ОТПРАВИТЬ ЗАЯВКУ",
-		enterLogin: "Введите ваш ИНН",
+		enterLogin: "Введите ваш логин",
 		enterPassword: "Введите ваш пароль",
 		welcome: "ДОБРО ПОЖАЛОВАТЬ!",
 		loginInfo:

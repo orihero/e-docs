@@ -13,7 +13,8 @@ import {
 	showModal,
 	hideModal,
 	showMessage,
-	hideMessage
+	hideMessage,
+	userLoggedIn
 } from "../../redux/actions";
 
 const Login = ({
@@ -21,25 +22,22 @@ const Login = ({
 	showModal,
 	hideModal,
 	showMessage,
-	hideMessage
+	hideMessage,
+	userLoggedIn
 }) => {
-	const [serialNumber, setSerialNumber] = useState("");
-	let login = async () => {
+	const [login, setLogin] = useState("");
+	const [password, setPassword] = useState("");
+	let requestLogin = async () => {
 		showModal(strings.loading);
 		try {
-			//get authId
-			let authId = await requests.auth.getAuthId(serialNumber);
-			// wrap it within object
-			let req = JSON.stringify({ authId });
-			//get sign
-			let { pkcs7 } = await signProvider.sign(req);
-			let res = await requests.auth.login({ serialNumber, pkcs7 });
-			console.log(res.data);
-			navigation.navigate();
+			let res = await requests.auth.login({
+				login,
+				password
+			});
+			userLoggedIn(res.data);
+			navigation.navigate("Main");
 			hideModal();
 		} catch (error) {
-			console.warn(error.response);
-
 			hideModal();
 			showMessage({ message: error.message, type: colors.killerRed });
 		}
@@ -52,17 +50,27 @@ const Login = ({
 				inputType="text"
 				textColor={colors.darkGrayBorder}
 				placeholder={strings.enterLogin}
-				value={serialNumber}
-				onChange={setSerialNumber}
+				value={login}
+				onChange={setLogin}
 				style={{ marginHorizontal: 20 }}
 				placeholderTextColor={colors.grayText}
-				maxLength={9}
+				keyboardType="numeric"
+			/>
+			<CustomInput
+				inputType="text"
+				textColor={colors.darkGrayBorder}
+				placeholder={strings.enterPassword}
+				value={password}
+				onChange={setPassword}
+				style={{ marginHorizontal: 20 }}
+				placeholderTextColor={colors.grayText}
+				secureTextEntry
 			/>
 			<View>
 				<RectangleButton
 					backColor={colors.jeansBlue}
 					text={strings.startWorking}
-					onPress={login}
+					onPress={requestLogin}
 					style={{
 						marginTop: 20,
 						paddingVertical: 15,
@@ -103,7 +111,8 @@ const mapDispatchToProps = {
 	showModal,
 	hideModal,
 	showMessage,
-	hideMessage
+	hideMessage,
+	userLoggedIn
 };
 
 export default connect(

@@ -3,8 +3,8 @@ import { url } from "./configs";
 
 let requests = {
 	auth: {
-		login: credentials => axios.post(`${url}/register`, credentials),
-		getAuthId: credentials => axios.get(`${url}/authId/${credentials}`)
+		login: credentials => axios.post(`${url}/loginpassword`, credentials),
+		refreshToken: () => axios.get(`${url}/refresh`)
 	}
 };
 

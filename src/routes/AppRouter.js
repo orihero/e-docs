@@ -5,7 +5,15 @@ import Text from "../components/common/Text";
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import { createStackNavigator } from "react-navigation-stack";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
-import { Main, Add, Profile, Login, Product, Checkout } from "../screens";
+import {
+	Main,
+	Add,
+	Profile,
+	Login,
+	Product,
+	Checkout,
+	Loader
+} from "../screens";
 import Header from "../components/navigation/Header";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -92,7 +100,7 @@ const TabNavigator = createMaterialTopTabNavigator(
 		}
 	},
 	{
-		initialRouteName: "ProfileStack",
+		// initialRouteName: "ProfileStack",
 		tabBarOptions: {
 			activeTintColor: colors.flowerBlue,
 			inactiveTintColor: colors.grayBorder,
@@ -121,8 +129,8 @@ const TabNavigator = createMaterialTopTabNavigator(
 			},
 			showIcon: true
 		},
-		tabBarPosition: "bottom",
-		tabBarComponent: CustomFLoatingTabbar
+		tabBarPosition: "bottom"
+		// tabBarComponent: CustomFLoatingTabbar
 	}
 );
 
@@ -137,9 +145,8 @@ const LoginStack = createStackNavigator({
 
 const SwitchNavigator = createSwitchNavigator(
 	{
-		// Loader,
-		// LoginStack,
-		// DrawerNavigator,
+		Loader,
+		LoginStack,
 		TabNavigator
 	},
 	{}
