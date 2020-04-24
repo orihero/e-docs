@@ -1,4 +1,4 @@
-export default {
+let colors = {
 	linearBlue1: "#1c53d4",
 	linearBlue2: "#547cde",
 	linearBlue3: "#90a9e8",
@@ -31,3 +31,5 @@ export default {
 	jeansBlue: "#6AA9EB",
 	lightBlueBackground: "#F9FCFF"
 };
+
+export default colors;

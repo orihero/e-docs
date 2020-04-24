@@ -54,7 +54,6 @@ const Login = ({
 				onChange={setLogin}
 				style={{ marginHorizontal: 20 }}
 				placeholderTextColor={colors.grayText}
-				keyboardType="numeric"
 			/>
 			<CustomInput
 				inputType="text"

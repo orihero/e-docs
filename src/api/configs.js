@@ -1,5 +1,4 @@
 import axios from "axios";
-import NavigationService from "../routes/NavigationService";
 import requests from "./requests";
 
 export let url = "https://test.edocs.uz/v1.0.1";
@@ -12,13 +11,11 @@ export let configureAxios = store => {
 		}
 		return res;
 	});
-
 	let interceptor = axios.interceptors.response.use(
 		res => {
 			return Promise.resolve(res);
 		},
 		error => {
-			console.warn(error.response);
 			if (!error || !error.response || error.response.status !== 401) {
 				return Promise.reject(error);
 			}
@@ -35,7 +32,6 @@ export let configureAxios = store => {
 					return axios(error.response.config);
 				})
 				.catch(response => {
-					console.warn(response.response);
 					return Promise.reject(response);
 				})
 				.finally(() => configureAxios(storeInstance));

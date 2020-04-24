@@ -1,6 +1,5 @@
 import React from "react";
 import { NavigationActions } from "react-navigation";
-import { DrawerActions } from "react-navigation-drawer";
 
 let _navigator;
 
@@ -21,9 +20,9 @@ function goBack() {
 	_navigator.dispatch(NavigationActions.back());
 }
 
-function toggleDrawer() {
-	_navigator.dispatch(DrawerActions.openDrawer());
-}
+// function toggleDrawer() {
+// 	_navigator.dispatch(DrawerActions.openDrawer());
+// }
 
 // add other navigation functions that you need and export them
 
@@ -43,6 +42,6 @@ export default {
 	navigate,
 	setTopLevelNavigator,
 	goBack,
-	toggleDrawer,
+	// toggleDrawer,
 	getActiveRouteName
 };

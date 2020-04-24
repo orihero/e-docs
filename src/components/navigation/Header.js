@@ -39,12 +39,14 @@ const Header = ({ secondary }) => {
 						<Text style={styles.subTitle}>{inn}</Text>
 					</View>
 					<View style={styles.imageWrapper}>
-						<Image
-							style={styles.image}
-							source={{
-								uri: avatar
-							}}
-						/>
+						{avatar !== "" && (
+							<Image
+								style={styles.image}
+								source={{
+									uri: avatar
+								}}
+							/>
+						)}
 					</View>
 				</View>
 				{notification && (

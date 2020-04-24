@@ -6,7 +6,6 @@ import colors from "../../constants/colors";
 const HeadUpMessage = ({ headUpType, headUpMessage }) => {
 	const [translateY, setAnimation] = useState(new Animated.Value(-200));
 	useEffect(() => {
-		console.warn(headUpMessage);
 		if (headUpMessage) {
 			Animated.timing(translateY, { toValue: 0 }).start();
 			setTimeout(

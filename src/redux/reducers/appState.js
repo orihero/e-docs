@@ -12,7 +12,6 @@ export default (state = initialState, { type, payload }) => {
 		case SHOW_MODAL:
 			return { message: payload, modalVisible: true };
 		case SHOW_HEAD_UP:
-			console.warn("SHOWING");
 			return { headUpMessage: payload.message, headUpType: payload.type };
 		case HIDE_HEAD_UP:
 			return { headUpMessage: null, headUpType: "" };
