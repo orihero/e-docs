@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import {
+	View,
+	StyleSheet,
+	ScrollView,
+	KeyboardAvoidingView
+} from "react-native";
 import { withNavigation } from "react-navigation";
 import CustomInput from "../../components/common/CustomInput";
 import RectangleButton from "../../components/common/RectangleButton";
@@ -16,6 +21,7 @@ import {
 	hideMessage,
 	userLoggedIn
 } from "../../redux/actions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = ({
 	navigation,
@@ -34,7 +40,10 @@ const Login = ({
 				login,
 				password
 			});
-			userLoggedIn(res.data);
+			if (!!res) {
+				newRes = res.json();
+				userLoggedIn(newRes);
+			}
 			navigation.navigate("Main");
 			hideModal();
 		} catch (error) {
@@ -43,7 +52,7 @@ const Login = ({
 		}
 	};
 	return (
-		<ScrollView style={styles.container}>
+		<KeyboardAvoidingView behavior={"position"} style={styles.container}>
 			<Text style={styles.title}>{strings.welcome}</Text>
 			<Text style={styles.desc}>{strings.loginInfo}</Text>
 			<CustomInput
@@ -72,12 +81,12 @@ const Login = ({
 					onPress={requestLogin}
 					style={{
 						marginTop: 20,
-						paddingVertical: 15,
+						paddingVertical: 25,
 						marginHorizontal: 20
 					}}
 				/>
 			</View>
-		</ScrollView>
+		</KeyboardAvoidingView>
 	);
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	View,
 	StyleSheet,
@@ -12,10 +12,42 @@ import strings from "../../locales/strings";
 import images from "../../assets/images";
 import Text from "../../components/common/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
+import requests from "../../api/requests";
+import {
+	hideModal,
+	showModal,
+	hideMessage,
+	showMessage,
+	documentsCountLoaded,
+	documentsLoaded,
+	dispatch
+} from "../../redux/actions";
+import { connect } from "react-redux";
 
 const { width: deviceWidth, height } = Dimensions.get("window");
 
-const Main = ({ navigation }) => {
+const Main = ({ navigation, user, doc, count }) => {
+	let getStats = async () => {
+		showModal(strings.loading);
+		try {
+			let res = await requests.main.getStats(user.token);
+			newRes = res.json();
+			console.warn(newRes);
+			// dispatch(documentsCountLoaded(newRes));
+			documentsCountLoaded(newRes);
+			console.warn(doc);
+			hideModal();
+		} catch (error) {
+			hideModal();
+			showMessage({ message: error.message, type: colors.killerRed });
+			// console.warn(error.response);
+		}
+	};
+
+	useEffect(() => {
+		getStats();
+	}, []);
+
 	return (
 		<ScrollView
 			showsVerticalScrollIndicator={false}
@@ -38,7 +70,9 @@ const Main = ({ navigation }) => {
 						/>
 					</View>
 					<Text style={styles.name}>{strings.incoming}</Text>
-					<Text style={styles.info}>44 {strings.document}</Text>
+					<Text style={styles.info}>
+						{count.in.sended} {strings.document}
+					</Text>
 				</View>
 				<View style={styles.grid}>
 					<View
@@ -193,4 +227,24 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Main;
+const mapStateToProps = state => {
+	return {
+		user: state.user,
+		doc: state.documents,
+		count: state.documents.count
+	};
+};
+
+const mapDispatchToProps = {
+	hideModal,
+	showModal,
+	hideMessage,
+	showMessage,
+	documentsCountLoaded,
+	documentsLoaded
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Main);

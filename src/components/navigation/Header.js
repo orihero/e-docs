@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import colors from "../../constants/colors";
 import NotificationCard from "../cards/NotificationCard";
 import Text from "../common/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { connect } from "react-redux";
+import { hideNotification } from "../../redux/actions";
 
-const Header = ({ secondary }) => {
-	let [notification, setNotification] = useState(secondary);
-
+const Header = ({ appState }) => {
+	let [notification, setNotification] = useState("");
 	let [title, setTitle] = useState("");
 	let [inn, setInn] = useState("");
 	let [avatar, setAvatar] = useState("");
@@ -29,7 +30,7 @@ const Header = ({ secondary }) => {
 				<View
 					style={[
 						styles.main,
-						notification && {
+						appState.notification && {
 							paddingBottom: 15
 						}
 					]}
@@ -49,10 +50,12 @@ const Header = ({ secondary }) => {
 						)}
 					</View>
 				</View>
-				{notification && (
+				{appState.notification ? (
 					<View style={styles.secondary}>
-						<NotificationCard setNotification={setNotification} />
+						<NotificationCard hideNotification={hideNotification} />
 					</View>
+				) : (
+					<></>
 				)}
 			</SafeAreaView>
 		</LinearGradient>
@@ -115,4 +118,16 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Header;
+let mapStateToProps = state => {
+	return {
+		appState: state.appState
+	};
+};
+let mapDispatchToProps = {
+	hideNotification
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Header);

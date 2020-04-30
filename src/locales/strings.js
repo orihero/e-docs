@@ -45,7 +45,7 @@ let strings = new LocalizedStrings({
 		invoice: "INVOICE",
 		mainMenu: "MAIN MENU",
 		incoming: "Incoming",
-		outgoing: "",
+		outgoing: "Ountgoing",
 		subscription: "Subscription",
 		promoCodes: "Promo-Codes",
 		document: "document",

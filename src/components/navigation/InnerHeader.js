@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import RNPickerSelect, { togglePicker } from "react-native-picker-select";
+import RNPickerSelect from "react-native-picker-select";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
@@ -10,7 +10,6 @@ import Text from "../common/Text";
 import SearchBar from "./SearchBar";
 
 const InnerHeader = ({ currentPage, setShowType, showTypes }) => {
-	console.warn(togglePicker);
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
