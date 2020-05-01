@@ -73,10 +73,13 @@ let productList = [
 	}
 ];
 
-const Checkout = () => {
+const Checkout = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
-			<InnerHeader currentPage={strings.products} />
+			<InnerHeader
+				navigation={navigation}
+				currentPage={strings.products}
+			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
 					contentContainerStyle={{
@@ -135,4 +138,4 @@ const styles = StyleSheet.create({
 	buttonWrapper: { flex: 1, paddingHorizontal: 40, paddingTop: 20 }
 });
 
-export default Checkout;
+export default withNavigation(Checkout);

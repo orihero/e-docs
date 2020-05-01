@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
@@ -8,16 +8,24 @@ import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import Text from "../common/Text";
 import SearchBar from "./SearchBar";
+import { withNavigation } from "react-navigation";
 
-const InnerHeader = ({ currentPage, setShowType, showTypes }) => {
+const InnerHeader = ({ currentPage, setShowType, showTypes, navigation }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
 				<View style={styles.titleWrapper}>
-					<Feather name="arrow-left" size={20} />
-					<Text style={styles.title}>{currentPage}</Text>
+					<TouchableOpacity
+						onPress={() => {
+							navigation.goBack();
+						}}
+					>
+						<View style={styles.titleWrapper}>
+							<Feather name="arrow-left" size={20} />
+							<Text style={styles.title}>{currentPage}</Text>
+						</View>
+					</TouchableOpacity>
 				</View>
-
 				<View>
 					{!!showTypes && (
 						<RNPickerSelect
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	titleWrapper: {
+		paddingVertical: 7,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center"
@@ -124,4 +133,4 @@ const pickerSelectStyles = StyleSheet.create({
 	}
 });
 
-export default InnerHeader;
+export default withNavigation(InnerHeader);

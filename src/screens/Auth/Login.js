@@ -34,19 +34,24 @@ const Login = ({
 	const [login, setLogin] = useState("");
 	const [password, setPassword] = useState("");
 	let requestLogin = async () => {
-		showModal(strings.loading);
+		showModal(strings.authorization);
 		try {
 			let res = await requests.auth.login({
 				login,
 				password
 			});
-			if (!!res) {
-				newRes = res.json();
-				userLoggedIn(newRes);
-			}
+			let newRes = res.json();
+			userLoggedIn(newRes);
 			navigation.navigate("Main");
 			hideModal();
 		} catch (error) {
+			let { response } = error;
+			if (!response) {
+				showMessage({ message: "inet", type: colors.killerRed });
+			}
+			if (!!response) {
+				console.warn(response);
+			}
 			hideModal();
 			showMessage({ message: error.message, type: colors.killerRed });
 		}

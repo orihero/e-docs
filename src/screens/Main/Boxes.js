@@ -5,7 +5,8 @@ import {
 	Image,
 	Dimensions,
 	ScrollView,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	TouchableOpacity
 } from "react-native";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
@@ -19,21 +20,27 @@ import {
 	hideMessage,
 	showMessage,
 	documentsCountLoaded,
-	documentsLoaded,
-	dispatch
+	documentsLoaded
 } from "../../redux/actions";
 import { connect } from "react-redux";
 
 const { width: deviceWidth, height } = Dimensions.get("window");
 
-const Main = ({ navigation, user, doc, count }) => {
+const Main = ({
+	navigation,
+	user,
+	doc,
+	count,
+	documentsCountLoaded,
+	hideModal,
+	showModal
+}) => {
 	let getStats = async () => {
 		showModal(strings.loading);
 		try {
-			let res = await requests.main.getStats(user.token);
+			let res = await requests.doc.getStats(user.token);
 			newRes = res.json();
 			console.warn(newRes);
-			// dispatch(documentsCountLoaded(newRes));
 			documentsCountLoaded(newRes);
 			console.warn(doc);
 			hideModal();
@@ -55,42 +62,63 @@ const Main = ({ navigation, user, doc, count }) => {
 		>
 			<Text style={styles.title}>{strings.mainMenu}</Text>
 			<View style={styles.gridWrapper}>
-				<View style={styles.grid}>
-					<View
-						style={[
-							styles.imageWrapper,
-							{
-								backgroundColor: colors.paleGreen
-							}
-						]}
-					>
-						<Image
-							style={styles.image}
-							source={images.downloadIcon}
-						/>
+				<TouchableOpacity
+					onPress={() => {
+						navigation.navigate("List", {
+							title: strings.incoming
+						});
+					}}
+				>
+					<View style={styles.grid}>
+						<View
+							style={[
+								styles.imageWrapper,
+								{
+									backgroundColor: colors.paleGreen
+								}
+							]}
+						>
+							<Image
+								style={styles.image}
+								source={images.downloadIcon}
+							/>
+						</View>
+						<Text style={styles.name}>{strings.incoming}</Text>
+						<Text style={styles.info}>
+							{count.in.sended} {strings.document}
+						</Text>
 					</View>
-					<Text style={styles.name}>{strings.incoming}</Text>
-					<Text style={styles.info}>
-						{count.in.sended} {strings.document}
-					</Text>
-				</View>
-				<View style={styles.grid}>
-					<View
-						style={[
-							styles.imageWrapper,
-							{
-								backgroundColor: colors.mediumPurple
-							}
-						]}
-					>
-						<Image
-							style={styles.image}
-							source={images.uploadIcon}
-						/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						navigation.navigate("List", {
+							title: strings.outgoing
+						});
+					}}
+				>
+					<View style={styles.grid}>
+						<View
+							style={[
+								styles.imageWrapper,
+								{
+									backgroundColor: colors.mediumPurple
+								}
+							]}
+						>
+							<Image
+								style={styles.image}
+								source={images.uploadIcon}
+							/>
+						</View>
+						<Text style={styles.name}>{strings.outgoing}</Text>
+						<Text style={styles.info}>
+							{count.out.sended +
+								count.out.deleted +
+								count.out.drafts}{" "}
+							{strings.documents}
+						</Text>
 					</View>
-					<Text style={styles.name}>{strings.outgoing}</Text>
-					<Text style={styles.info}>15 {strings.documents}</Text>
-				</View>
+				</TouchableOpacity>
 			</View>
 			<View style={styles.gridWrapper}>
 				<View style={styles.grid}>
@@ -147,25 +175,31 @@ const Main = ({ navigation, user, doc, count }) => {
 					}
 				]}
 			>
-				<View style={styles.grid}>
-					<View
-						style={[
-							styles.imageWrapper,
-							{
-								backgroundColor: colors.paleGreen
-							}
-						]}
-					>
-						<Image
-							style={styles.image}
-							source={images.shoppingCart}
-						/>
+				<TouchableOpacity
+					onPress={() => {
+						navigation.navigate("Product");
+					}}
+				>
+					<View style={styles.grid}>
+						<View
+							style={[
+								styles.imageWrapper,
+								{
+									backgroundColor: colors.paleGreen
+								}
+							]}
+						>
+							<Image
+								style={styles.image}
+								source={images.shoppingCart}
+							/>
+						</View>
+						<Text style={styles.name}>{strings.products}</Text>
+						<Text style={styles.info}>
+							{strings.activation} {strings.here}
+						</Text>
 					</View>
-					<Text style={styles.name}>{strings.products}</Text>
-					<Text style={styles.info}>
-						{strings.activation} {strings.here}
-					</Text>
-				</View>
+				</TouchableOpacity>
 			</View>
 		</ScrollView>
 	);
@@ -244,7 +278,9 @@ const mapDispatchToProps = {
 	documentsLoaded
 };
 
-export default connect(
+let ConnectedMain = connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(Main);
+
+export default ConnectedMain;

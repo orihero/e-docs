@@ -12,11 +12,29 @@ let requests = {
 			instance.fetch("post", `${url}/loginpassword`, credentials),
 		refreshToken: () => axios.get(`${url}/refresh`)
 	},
-	main: {
+	doc: {
 		getStats: token =>
 			instance.fetch("get", `${url}/documents/all/get/stats`, {
 				Authorization: `Bearer ${token}`
-			})
+			}),
+		getDocuments: (token, page, limit, io) =>
+			instance.fetch(
+				"get",
+				`${url}/documents?page=${page}&limit=${limit}&io=${io}`,
+				{
+					Authorization: `Bearer ${token}`
+				}
+			)
+	},
+	product: {
+		getProducts: (token, page, limit) =>
+			instance.fetch(
+				"get",
+				`${url}/items/market?page=${page}&limit=${limit}`,
+				{
+					Authorization: `Bearer ${token}`
+				}
+			)
 	}
 };
 

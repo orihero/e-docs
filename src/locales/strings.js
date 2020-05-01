@@ -34,27 +34,14 @@ let strings = new LocalizedStrings({
 		loginInfo:
 			"Для авторизации в сервисе электронного документооборота, пожалуйста введите ваши данные",
 		startWorking: "НАЧАТЬ РАБОТУ",
-		loading: "Загрузка"
+		loading: "Загрузка",
+		gettingDocuments: "Загрузка документов",
+		gettingProducts: "Загрузка продуктов",
+		authorization: "Авторизация",
+		article: "арт"
 	},
 	uz: {},
-	en: {
-		add: "Add",
-		main: "Main",
-		profile: "Profile",
-		incomingDocument: "INCOMING DOCUMENT",
-		invoice: "INVOICE",
-		mainMenu: "MAIN MENU",
-		incoming: "Incoming",
-		outgoing: "Ountgoing",
-		subscription: "Subscription",
-		promoCodes: "Promo-Codes",
-		document: "document",
-		documents: "documents",
-		left: "Left",
-		days: "days",
-		activation: "",
-		all: "All"
-	}
+	en: {}
 });
 
 export default strings;

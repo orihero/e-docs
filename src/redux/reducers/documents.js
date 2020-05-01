@@ -24,8 +24,7 @@ export default (state = initialState, { type, payload }) => {
 	switch (type) {
 		case DOCUMENTS_COUNT_LOADED:
 			// let { in: inputBox, out: outputBox } = payload;
-			console.warn("payload");
-			return { ...state, ...payload };
+			return { ...state, count: payload };
 		case DOCUMENTS_LOADED: {
 			let { data, boxType, status } = payload;
 			return { ...state, data, boxType, status };

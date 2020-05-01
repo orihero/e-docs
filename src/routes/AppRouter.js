@@ -12,7 +12,8 @@ import {
 	Login,
 	Product,
 	Checkout,
-	Loader
+	Loader,
+	List
 } from "../screens";
 import Header from "../components/navigation/Header";
 import Feather from "react-native-vector-icons/Feather";
@@ -26,6 +27,12 @@ const MainStack = createStackNavigator({
 		screen: Main,
 		navigationOptions: {
 			header: () => <Header secondary={true} />
+		}
+	},
+	List: {
+		screen: List,
+		navigationOptions: {
+			header: () => <Header />
 		}
 	},
 	Product: {

@@ -3,7 +3,8 @@ import {
 	View,
 	StyleSheet,
 	FlatList,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	TouchableOpacity
 } from "react-native";
 import InnerHeader from "../../components/navigation/InnerHeader";
 import ProductCard from "../../components/cards/ProductCard";
@@ -11,6 +12,14 @@ import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import Entypo from "react-native-vector-icons/Entypo";
 import { withNavigation } from "react-navigation";
+import {
+	hideModal,
+	showModal,
+	hideMessage,
+	showMessage
+} from "../../redux/actions";
+import { connect } from "react-redux";
+import requests from "../../api/requests";
 
 let productList = [
 	{
@@ -78,9 +87,35 @@ let productList = [
 	}
 ];
 
-const Product = ({ navigation }) => {
+const Product = ({
+	navigation,
+	hideModal,
+	showModal,
+	hideMessage,
+	showMessage,
+	token
+}) => {
 	let [showType, setShowType] = useState("all");
 	let [infoList, setInfoList] = useState(productList);
+
+	let [products, setProducts] = useState([]);
+	let getProducts = async () => {
+		showModal(strings.gettingProducts);
+		try {
+			let res = await requests.product.getProducts(token, 1, 20);
+			let newRes = res.json();
+			console.warn(newRes.docs);
+			setProducts(newRes.docs);
+			hideModal();
+		} catch (error) {
+			hideModal();
+			console.warn(error.message);
+		}
+	};
+	useEffect(() => {
+		getProducts();
+	}, []);
+
 	useEffect(() => {
 		if (showType !== "all") {
 			setInfoList(
@@ -95,6 +130,7 @@ const Product = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<InnerHeader
+				navigation={navigation}
 				currentPage={strings.products}
 				showTypes={[
 					{
@@ -110,7 +146,17 @@ const Product = ({ navigation }) => {
 						paddingTop: 10
 					}}
 					showsVerticalScrollIndicator={false}
-					data={infoList}
+					data={
+						products || {
+							id: "1",
+							name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
+							price: 118200,
+							subName: "арт 36434",
+							firmName: "Fides Projects",
+							type: "soap",
+							quantity: "12"
+						}
+					}
 					renderItem={({ item }) => (
 						<ProductCard item={item} key={item.id} />
 					)}
@@ -153,4 +199,21 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default withNavigation(Product);
+let mapStateToProps = ({ user }) => {
+	return {
+		token: user.token
+	};
+};
+let mapDispatchToProps = {
+	showMessage,
+	showModal,
+	hideMessage,
+	hideModal
+};
+
+let ConnectedProduct = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Product);
+
+export default withNavigation(ConnectedProduct);
