@@ -6,6 +6,7 @@ import strings from "../../locales/strings";
 import ProductCard from "../../components/cards/ProductCard";
 import RectangleButton from "../../components/common/RectangleButton";
 import Text from "../../components/common/Text";
+import { withNavigation } from "react-navigation";
 
 let productList = [
 	{

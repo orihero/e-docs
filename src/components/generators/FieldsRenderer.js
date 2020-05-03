@@ -1,16 +1,34 @@
-import React, { Fragment, useReducer, useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
-import { FieldType, FieldSize, FieldProps } from "../../views";
-import DefaultCheckbox from "../common/DefaultCheckbox";
-import RectangularSelect from "../common/RectangularSelect";
-import RectangularInput from "../common/RectangularInput";
-import { colors, Icons } from "../../constants";
-import { strings } from "../../locales/strings";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import DocumentPicker from "react-native-document-picker";
-import { reducer, SET } from "../../utils/state";
-import RectangularDatePicker from "../common/RectangularDatePicker";
+import React, { Fragment, useEffect, useReducer, useState } from "react";
+import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import Autocomplete from "react-native-autocomplete-input";
+import DocumentPicker from "react-native-document-picker";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Icons from "react-native-vector-icons/SimpleLineIcons";
+import { reducer, SET } from "../../utils/state";
+// import { FieldSize, FieldType } from "../../views";
+import DefaultCheckbox from "../common/DefaultCheckbox";
+import RectangularDatePicker from "../common/RectangularDatePicker";
+import RectangularInput from "../common/RectangularInput";
+import RectangularSelect from "../common/RectangularSelect";
+import colors from "../../constants/colors";
+
+export let FieldSize = {
+	FULL: "full",
+	HALF: "half",
+	QUARTER: "quarter",
+	QUERTER_THREE: "quarterThree"
+};
+
+export let FieldType = {
+	INPUT: 1,
+	SELECT: 2,
+	COMPLEX: 3,
+	LINE: 4,
+	CHECKBOX: 5,
+	FILE: 6,
+	DATE_PICKER: 7,
+	AUTOCOMPLETE: 8
+};
 
 const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 	const [state, dispatch] = useReducer(reducer, initialValue || {});
@@ -193,38 +211,57 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					};
 					return (
 						<View>
-							<Text style={styles.inputTitle}>{e.title}</Text>
-							<Autocomplete
-								placeholder={e.placeholder}
-								listContainerStyle={{
-									borderWidth: 0,
-									backgroundColor: colors.ultraLightGray
-								}}
-								listStyle={{
-									borderWidth: 0,
-									backgroundColor: colors.ultraLightGray
-								}}
-								containerStyle={{
-									borderWidth: 0,
-									padding: 8,
-									backgroundColor: colors.ultraLightGray,
-									borderRadius: 6
-								}}
+							{!!e.title && (
+								<Text style={styles.inputTitle}>{e.title}</Text>
+							)}
+							<View
 								style={{
-									backgroundColor: colors.ultraLightGray
+									borderRadius: 6,
+									backgroundColor: colors.white,
+									elevation: 4,
+									justifyContent: "center",
+									alignItems: "center"
 								}}
-								inputContainerStyle={{ borderWidth: 0 }}
-								data={items[e.name]}
-								value={
-									state[e.name]
-										? state[e.name].tin +
-										  " - " +
-										  state[e.name].name
-										: null
-								}
-								renderItem={autocompleteItem}
-								onChangeText={filterData}
-							/>
+							>
+								<Autocomplete
+									placeholder={e.placeholder}
+									listContainerStyle={{
+										borderWidth: 0,
+										backgroundColor: colors.white
+									}}
+									listStyle={{
+										borderWidth: 0,
+										backgroundColor: colors.white
+									}}
+									containerStyle={{
+										borderWidth: 0,
+										padding: 8,
+										backgroundColor: colors.white,
+										borderRadius: 6
+									}}
+									style={{
+										backgroundColor: colors.white
+									}}
+									inputContainerStyle={{
+										borderWidth: 0
+									}}
+									data={[
+										{
+											tine: "Me",
+											name: "you"
+										}
+									]}
+									value={
+										state[e.name]
+											? state[e.name].tin +
+											  " - " +
+											  state[e.name].name
+											: null
+									}
+									renderItem={autocompleteItem}
+									onChangeText={filterData}
+								/>
+							</View>
 						</View>
 					);
 				}
@@ -252,8 +289,12 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					}
 					if (e.size === FieldSize.FULL) {
 						return (
-							<View>
-								<Text style={styles.inputTitle}>{e.title}</Text>
+							<View style={{ marginVertical: 5 }}>
+								{!!e.title && (
+									<Text style={styles.inputTitle}>
+										{e.title}
+									</Text>
+								)}
 								<RectangularSelect
 									disabled={e.disabled}
 									value={state[e.name]}
@@ -293,7 +334,11 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					if (e.size === FieldSize.FULL) {
 						return (
 							<View>
-								<Text style={styles.inputTitle}>{e.title}</Text>
+								{!!e.title && (
+									<Text style={styles.inputTitle}>
+										{e.title}
+									</Text>
+								)}
 								<RectangularDatePicker
 									disabled={e.disabled}
 									value={state[e.name]}
@@ -305,7 +350,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					}
 					return (
 						<View style={styles[e.size]}>
-							{e.title && (
+							{!!e.title && (
 								<Text
 									numberOfLines={1}
 									style={styles.inputTitle}
@@ -325,7 +370,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					if (e.size === FieldSize.FULL) {
 						return (
 							<View>
-								{e.title && (
+								{!!e.title && (
 									<Text style={styles.inputTitle}>
 										{e.title}
 									</Text>
@@ -347,7 +392,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 					}
 					return (
 						<View style={styles[e.size]}>
-							{e.title && (
+							{!!e.title && (
 								<Text
 									numberOfLines={1}
 									style={styles.inputTitle}
@@ -371,9 +416,9 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 				case FieldType.COMPLEX:
 					return (
 						<Fragment>
-							<Text style={styles.inputTitle}>
-								{strings.address}
-							</Text>
+							{!!e.title && (
+								<Text style={styles.inputTitle}>{e.title}</Text>
+							)}
 							{e.rows &&
 								e.rows.map(el => {
 									return (
@@ -387,7 +432,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 				case FieldType.LINE:
 					return (
 						<Fragment>
-							{e.title && (
+							{!!e.title && (
 								<Text
 									numberOfLines={1}
 									style={styles.inputTitle}
@@ -416,22 +461,24 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 									>
 										{state[e.name]
 											? state[e.name].name
-											: strings.selectFile}
+											: e.placeholder}
 									</Text>
-									<Icons name={"paperclip"} size={20} />
+									<Icons name={"paper-clip"} size={20} />
 								</View>
 							</TouchableWithoutFeedback>
 							<TouchableWithoutFeedback
 								onPress={() => updateState(e.name, null)}
 							>
 								<View style={styles.button}>
-									<Text style={styles.inputTitle}>
-										{strings.reset}
-									</Text>
+									{!!e.title && (
+										<Text style={styles.inputTitle}>
+											{e.title}
+										</Text>
+									)}
 									<AntDesign
 										name={"close"}
 										size={20}
-										color={colors.red}
+										color={colors.darkPink}
 									/>
 								</View>
 							</TouchableWithoutFeedback>
@@ -443,7 +490,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 		});
 	};
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			{renderFields(fields)}
 			{Footer && (
 				<Footer
@@ -470,7 +517,8 @@ export const styles = StyleSheet.create({
 		marginVertical: 10
 	},
 	row: {
-		flexDirection: "row"
+		flexDirection: "row",
+		marginVertical: 5
 	},
 	half: {
 		flex: 1,
@@ -492,7 +540,7 @@ export const styles = StyleSheet.create({
 		borderStyle: "dashed",
 		borderWidth: 1,
 		borderRadius: 6,
-		borderColor: colors.lightGray,
+		borderColor: colors.grayText,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		paddingHorizontal: 15,

@@ -38,7 +38,16 @@ let strings = new LocalizedStrings({
 		gettingDocuments: "Загрузка документов",
 		gettingProducts: "Загрузка продуктов",
 		authorization: "Авторизация",
-		article: "арт"
+		article: "арт",
+		selectFile: "Выберите файл",
+		reset: "Сбросит",
+		invoiceType: "Тип документа",
+		recieverInn: "ИНН получателя",
+		documentNumber: "№ документа",
+		selectDate: "Дата документа",
+		enterAmount: "Введите сумму",
+		uzs: "Валюта",
+		enterComments: "Введите примечание к документу"
 	},
 	uz: {},
 	en: {}

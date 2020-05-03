@@ -3,7 +3,8 @@ import { AsyncStorage } from "react-native";
 
 const initialState = {
 	settings: {},
-	data: {}
+	//* Backend has user field
+	user: {}
 };
 
 export default (state = initialState, { type, payload }) => {
