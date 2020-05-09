@@ -50,7 +50,9 @@ let strings = new LocalizedStrings({
 		enterComments: "Введите примечание к документу",
 		refreshToken: "Обновления токенa",
 		validating: "Проверка токена",
-		loadingPdf: "загрузка PDF"
+		loadingPdf: "загрузка PDF",
+		inn: "ИНН",
+		loadingProfile: "Загрузка профиля"
 	},
 	uz: {},
 	en: {}

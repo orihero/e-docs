@@ -7,12 +7,15 @@ import Text from "../common/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { connect } from "react-redux";
 import { hideNotification } from "../../redux/actions";
+import requests from "../../api/requests";
+import strings from "../../locales/strings";
 
-const Header = ({ appState }) => {
+const Header = ({ appState, user }) => {
 	let [notification, setNotification] = useState("");
 	let [title, setTitle] = useState("");
 	let [inn, setInn] = useState("");
 	let [avatar, setAvatar] = useState("");
+
 	return (
 		<LinearGradient
 			start={{ x: 0, y: 0 }}
@@ -36,15 +39,22 @@ const Header = ({ appState }) => {
 					]}
 				>
 					<View style={styles.titleWrapper}>
-						<Text style={styles.title}>{title}</Text>
-						<Text style={styles.subTitle}>{inn}</Text>
+						<Text style={styles.title}>{user.name}</Text>
+						{user.tin && (
+							<Text style={styles.subTitle}>
+								{strings.inn} {user.tin}
+							</Text>
+						)}
 					</View>
 					<View style={styles.imageWrapper}>
-						{avatar !== "" && (
+						{!!user.tin && (
 							<Image
 								style={styles.image}
 								source={{
-									uri: avatar
+									uri:
+										user.avatar && user.avatar
+											? user.avatar
+											: "https://cdn0.iconfinder.com/data/icons/user-pictures/100/unknown2-512.png"
 								}}
 							/>
 						)}
@@ -120,7 +130,8 @@ const styles = StyleSheet.create({
 
 let mapStateToProps = state => {
 	return {
-		appState: state.appState
+		appState: state.appState,
+		user: state.user
 	};
 };
 let mapDispatchToProps = {

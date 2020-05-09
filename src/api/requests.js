@@ -16,6 +16,12 @@ let requests = {
 			})
 		// refreshToken: () => axios.get(`${url}/refresh`)
 	},
+	account: {
+		getProfile: token =>
+			instance.fetch("get", `${url}/profile`, {
+				Authorization: `Bearer ${token}`
+			})
+	},
 	doc: {
 		getStats: token =>
 			instance.fetch("get", `${url}/documents/all/get/stats`, {

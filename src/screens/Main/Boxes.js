@@ -20,7 +20,8 @@ import {
 	hideMessage,
 	showMessage,
 	documentsCountLoaded,
-	documentsLoaded
+	documentsLoaded,
+	userLoaded
 } from "../../redux/actions";
 import { connect } from "react-redux";
 
@@ -33,7 +34,8 @@ const Main = ({
 	count,
 	documentsCountLoaded,
 	hideModal,
-	showModal
+	showModal,
+	userLoaded
 }) => {
 	let getStats = async () => {
 		showModal(strings.loading);
@@ -42,7 +44,6 @@ const Main = ({
 			let newRes = res.json();
 			console.warn(newRes);
 			documentsCountLoaded(newRes);
-			console.warn("doc");
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -51,8 +52,25 @@ const Main = ({
 		}
 	};
 
+	const getProfile = async () => {
+		showModal(strings.loadingProfile);
+		try {
+			let res = await requests.account.getProfile(user.token);
+			let newRes = res.json();
+			userLoaded(newRes);
+			hideModal();
+		} catch (error) {
+			hideModal();
+			showMessage({
+				message: error.message,
+				type: colors.killerRed
+			});
+		}
+	};
+
 	useEffect(() => {
 		getStats();
+		getProfile();
 	}, []);
 
 	return (
@@ -275,7 +293,8 @@ const mapDispatchToProps = {
 	hideMessage,
 	showMessage,
 	documentsCountLoaded,
-	documentsLoaded
+	documentsLoaded,
+	userLoaded
 };
 
 let ConnectedMain = connect(
