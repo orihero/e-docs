@@ -39,15 +39,15 @@ const Main = ({
 		showModal(strings.loading);
 		try {
 			let res = await requests.doc.getStats(user.token);
-			newRes = res.json();
+			let newRes = res.json();
 			console.warn(newRes);
 			documentsCountLoaded(newRes);
-			console.warn(doc);
+			console.warn("doc");
 			hideModal();
 		} catch (error) {
 			hideModal();
 			showMessage({ message: error.message, type: colors.killerRed });
-			// console.warn(error.response);
+			console.warn(error.response);
 		}
 	};
 

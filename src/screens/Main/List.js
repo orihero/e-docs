@@ -156,6 +156,7 @@ const List = ({
 						<MessageCard
 							item={item}
 							key={item.id && item.id.toString()}
+							navigation={navigation}
 						/>
 					)}
 					keyExtractor={item => item.id && item.id.toString()}

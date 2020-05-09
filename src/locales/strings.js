@@ -47,7 +47,10 @@ let strings = new LocalizedStrings({
 		selectDate: "Дата документа",
 		enterAmount: "Введите сумму",
 		uzs: "Валюта",
-		enterComments: "Введите примечание к документу"
+		enterComments: "Введите примечание к документу",
+		refreshToken: "Обновления токенa",
+		validating: "Проверка токена",
+		loadingPdf: "загрузка PDF"
 	},
 	uz: {},
 	en: {}

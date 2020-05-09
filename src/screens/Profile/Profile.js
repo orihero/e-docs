@@ -6,54 +6,54 @@ import InnerHeader from "../../components/navigation/InnerHeader";
 import strings from "../../locales/strings";
 
 const messageList = [
-	{
-		id: 1,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "signed"
-	},
-	{
-		id: 2,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "rejected"
-	},
-	{
-		id: 3,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "received"
-	},
-	{
-		id: 4,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "signed"
-	},
-	{
-		id: 5,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "rejected"
-	},
-	{
-		id: 6,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "received"
-	}
+	// {
+	// 	id: 1,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "signed"
+	// },
+	// {
+	// 	id: 2,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "rejected"
+	// },
+	// {
+	// 	id: 3,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "received"
+	// },
+	// {
+	// 	id: 4,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "signed"
+	// },
+	// {
+	// 	id: 5,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "rejected"
+	// },
+	// {
+	// 	id: 6,
+	// 	name: 'OOO "FIDES"',
+	// 	date: "16.02.2020",
+	// 	amount: "1 450 000 сум",
+	// 	mid: "123-20/20",
+	// 	status: "received"
+	// }
 ];
 
 const Profile = ({}) => {

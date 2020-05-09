@@ -13,7 +13,8 @@ import {
 	Product,
 	Checkout,
 	Loader,
-	List
+	List,
+	PdfView
 } from "../screens";
 import Header from "../components/navigation/Header";
 import Feather from "react-native-vector-icons/Feather";
@@ -22,32 +23,43 @@ import colors from "../constants/colors";
 import strings from "../locales/strings";
 import CustomFLoatingTabbar from "../components/navigation/CustomFloatingTabbar";
 
-const MainStack = createStackNavigator({
-	Main: {
-		screen: Main,
-		navigationOptions: {
-			header: () => <Header secondary={true} />
+const MainStack = createStackNavigator(
+	{
+		Main: {
+			screen: Main,
+			navigationOptions: {
+				header: () => <Header secondary={true} />
+			}
+		},
+		List: {
+			screen: List,
+			navigationOptions: {
+				header: () => <Header />
+			}
+		},
+		PdfView: {
+			screen: PdfView,
+			navigationOptions: {
+				header: () => <Header />
+			}
+		},
+		Product: {
+			screen: Product,
+			navigationOptions: {
+				header: () => <Header />
+			}
+		},
+		Checkout: {
+			screen: Checkout,
+			navigationOptions: {
+				header: () => <Header />
+			}
 		}
 	},
-	List: {
-		screen: List,
-		navigationOptions: {
-			header: () => <Header />
-		}
-	},
-	Product: {
-		screen: Product,
-		navigationOptions: {
-			header: () => <Header />
-		}
-	},
-	Checkout: {
-		screen: Checkout,
-		navigationOptions: {
-			header: () => <Header />
-		}
+	{
+		initialRouteName: "PdfView"
 	}
-});
+);
 
 const ProfileStack = createStackNavigator({
 	Profile: {
@@ -107,7 +119,7 @@ const TabNavigator = createMaterialTopTabNavigator(
 		}
 	},
 	{
-		// initialRouteName: "ProfileStack",
+		initialRouteName: "MainStack",
 		tabBarOptions: {
 			activeTintColor: colors.flowerBlue,
 			inactiveTintColor: colors.grayBorder,

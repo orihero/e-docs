@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import loadingAnimation from "../../assets/lottie/loading.json";
+import fileLoading from "../../assets/lottie/fileLoading.json";
 import colors from "../../constants/colors";
 
 const LoadingModal = ({ message, modalVisible }) => {
@@ -11,7 +12,9 @@ const LoadingModal = ({ message, modalVisible }) => {
 	}
 	return (
 		<View style={styles.container}>
-			<LottieView source={loadingAnimation} autoPlay loop />
+			{/* old one */}
+			{/* <LottieView source={loadingAnimation} autoPlay loop /> */}
+			<LottieView source={fileLoading} autoPlay loop />
 			<Text style={styles.text}>{message}</Text>
 		</View>
 	);
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
 	text: {
 		color: colors.black,
 		fontSize: 18,
-		marginTop: 200
+		marginTop: 300
 	}
 });
 

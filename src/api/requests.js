@@ -10,7 +10,11 @@ let requests = {
 	auth: {
 		login: credentials =>
 			instance.fetch("post", `${url}/loginpassword`, credentials),
-		refreshToken: () => axios.get(`${url}/refresh`)
+		validateToken: token =>
+			instance.fetch("get", `${url}/token`, {
+				Authorization: `Bearer ${token}`
+			})
+		// refreshToken: () => axios.get(`${url}/refresh`)
 	},
 	doc: {
 		getStats: token =>
@@ -21,6 +25,16 @@ let requests = {
 			instance.fetch(
 				"get",
 				`${url}/documents?page=${page}&limit=${limit}&io=${io}`,
+				{
+					Authorization: `Bearer ${token}`
+				}
+			)
+	},
+	pdf: {
+		loadFile: (token, docId) =>
+			instance.fetch(
+				"get",
+				`${url}/documents/actWorkPerformed/${docId}/true/file`,
 				{
 					Authorization: `Bearer ${token}`
 				}

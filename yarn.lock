@@ -5844,10 +5844,10 @@ react-native-localization@^2.1.6:
   dependencies:
     react-localization "^1.0.14"
 
-react-native-pdf@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-pdf/-/react-native-pdf-6.1.1.tgz#840c9c44a2e08eec8bad5e37b9f5d7406fde026c"
-  integrity sha512-Xy01jEhAaETUJJQb11CHpEXG3T129B6DT1gX6XDlUaF3xO39xAp/hgKaNKQNp2qVmZ7+WRY4F84qSRPh0NjE1w==
+react-native-pdf@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-pdf/-/react-native-pdf-6.1.2.tgz#b1ef263a47ff5e3a24d0428960edf56b57dddcad"
+  integrity sha512-edpaBD+Wf9Pt1NFTc9SCk+LSFfoebjJcO7JCI4XFzq2ODYY9ao9bg4uHCZXGBqaoAAugiEBYmpPbXdXGq6G4HA==
   dependencies:
     crypto-js "^3.2.0"
     prop-types "^15.5.10"
