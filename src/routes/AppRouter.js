@@ -57,7 +57,7 @@ const MainStack = createStackNavigator(
 		}
 	},
 	{
-		initialRouteName: "PdfView"
+		// initialRouteName: "PdfView"
 	}
 );
 
@@ -165,7 +165,7 @@ const LoginStack = createStackNavigator({
 const SwitchNavigator = createSwitchNavigator(
 	{
 		// Loader,
-		// LoginStack,
+		LoginStack,
 		TabNavigator
 	},
 	{}
