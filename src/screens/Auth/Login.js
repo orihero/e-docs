@@ -22,6 +22,8 @@ import {
 	userLoggedIn
 } from "../../redux/actions";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Axios from "axios";
+import { url } from "../../api/configs";
 
 const Login = ({
 	navigation,
@@ -36,7 +38,7 @@ const Login = ({
 	let requestLogin = async () => {
 		showModal(strings.authorization);
 		try {
-			let res = await requests.auth.login({
+			let res = await Axios.post(`${url}/loginpassword`, {
 				login,
 				password
 			});

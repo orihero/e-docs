@@ -52,7 +52,8 @@ let strings = new LocalizedStrings({
 		validating: "Проверка токена",
 		loadingPdf: "загрузка PDF",
 		inn: "ИНН",
-		loadingProfile: "Загрузка профиля"
+		loadingProfile: "Загрузка профиля",
+		downloadedSuccessfully: "Успешно загружено"
 	},
 	uz: {},
 	en: {}

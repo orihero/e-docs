@@ -34,7 +34,11 @@ let requests = {
 				{
 					Authorization: `Bearer ${token}`
 				}
-			)
+			),
+		getContent: (type, id, token) =>
+			instance.fetch("GET", `${url}/documents/${type}/${id}`, {
+				Authorization: `Bearer ${token}`
+			})
 	},
 	pdf: {
 		loadFile: (token, docId) =>

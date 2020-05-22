@@ -61,9 +61,7 @@ const MessageCard = ({ item, navigation }) => {
 
 	const onPress = () => {
 		navigation.navigate("PdfView", {
-			docId: item._id,
-			docDate: item.docDate,
-			docType: item.type
+			document: item
 		});
 	};
 

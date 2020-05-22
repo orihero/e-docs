@@ -1,32 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+	Dimensions,
 	StyleSheet,
 	Text,
-	View,
-	Dimensions,
-	ActivityIndicator,
-	TouchableOpacity
+	TouchableOpacity,
+	View
 } from "react-native";
-import {
-	showModal,
-	showMessage,
-	hideModal
-} from "../../redux/actions/appState";
-import { connect } from "react-redux";
-import { url } from "../../api/configs";
 import Pdf from "react-native-pdf";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Feather from "react-native-vector-icons/Feather";
+import { connect } from "react-redux";
+import RNFetchBlob from "rn-fetch-blob";
+import requests from "../../api/requests";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
-import requests from "../../api/requests";
-import Feather from "react-native-vector-icons/Feather";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import {
+	hideModal,
+	showMessage,
+	showModal
+} from "../../redux/actions/appState";
 
 const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
-	let docId = navigation.getParam("docId");
 	let [baseFile, setBaseFile] = useState({});
-	console.warn(docId);
+	const [documentContent, setDocumentContent] = useState({});
+	let document = navigation.getParam("document") || {};
+	let { _id: docId } = document;
 	useEffect(() => {
 		loadFile();
+		requests.doc
+			.getContent(document.type, document._id, user.token)
+			.then(res => setDocumentContent(res.json().data))
+			.catch(e => showMessage(e.message));
 	}, []);
 
 	const loadFile = async () => {
@@ -35,7 +39,6 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 			let res = await requests.pdf.loadFile(user.token, docId);
 			let newRes = res.json();
 			setBaseFile(newRes.base64);
-			console.warn(newRes.base64);
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -50,11 +53,66 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 		navigation.goBack();
 	};
 
-	const onCopyPress = () => {};
-	const onEditPress = () => {};
-	const onSubscribePress = () => {};
+	const onCopyPress = async () => {
+		showModal(strings.loadingPdf);
+		try {
+			let fileName = `${RNFB.fs.dirs.DownloadDir}/${docId}.pdf`;
+			let res = await RNFetchBlob.fs.writeFile(
+				fileName,
+				baseFile,
+				"base64"
+			);
+			showMessage({
+				type: colors.green,
+				message: `${strings.downloadedSuccessfully}: ${fileName}`
+			});
+		} catch (error) {
+			showMessage({ type: colors.killerRed, message: error.message });
+		}
+	};
+	const onEditPress = () => {
+		alert("Not implemented");
+	};
+	const onSubscribePress = async () => {
+		showModal(strings.loading);
+		// Вот логика подписания на сайте
+		let pkcs7 = ""; // Результат подпcи
+		// if(documentContent.)//TODO HERE
+		if (this.docIO == "out" && this.docStatus == "drafts") {
+			// если исходящий черновик
+			pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
+		} else if (
+			this.docIO == "in" &&
+			this.docStatus == "sended" &&
+			this.docType == "empowerment"
+		) {
+			// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
+			let agent = this.editedDocument.targetTins.find(
+				obj => obj.side === "agent"
+			);
+			console.log("tin agent", this.userTin, agent);
+			let sign = await this.getSignedFile({
+				type: "empowerment",
+				id: this.editedDocument._id,
+				side: this.userTin == agent.tin ? "agent" : "seller"
+			});
+			if (!sign) return;
+			pkcs7 = await this.appendSign(sign);
+		} else if (this.docIO == "in" && this.docStatus == "sended") {
+			// если любой входящий документ, добавляем подпись
+			pkcs7 = await this.appendSign(this.editedDocument.sign);
+		}
+		if (pkcs7) {
+			// если  все окей, отправляем на сервер
+			await this.signDocument({
+				type: this.docType,
+				id: this.docId,
+				pkcs7
+			});
+			this.getStats(this.docType);
+		}
+	};
 	const onDeletePress = () => {};
-	const onPrintPress = () => {};
 
 	return (
 		<View style={styles.container}>
@@ -111,7 +169,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onEditPress}>
+						<TouchableOpacity onPress={onSubscribePress}>
 							<View
 								style={{
 									backgroundColor: colors.white,
@@ -119,7 +177,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 								}}
 							>
 								<AntDesign
-									name="notification"
+									name="checkcircleo"
 									color={colors.black}
 									size={18}
 									color={colors.green}
@@ -128,7 +186,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onEditPress}>
+						<TouchableOpacity onPress={onDeletePress}>
 							<View
 								style={{
 									backgroundColor: colors.white,
@@ -144,7 +202,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 							</View>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.iconWrapper}>
+					{/* <View style={styles.iconWrapper}>
 						<TouchableOpacity onPress={onEditPress}>
 							<View
 								style={{
@@ -160,7 +218,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 								/>
 							</View>
 						</TouchableOpacity>
-					</View>
+					</View> */}
 				</View>
 			</View>
 			<Pdf

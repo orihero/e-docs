@@ -1,25 +1,36 @@
-import IntentLauncher from "react-native-intent-launcher";
+import { NativeModules } from "react-native";
 
-let api_key =
-	"B56DE9AB141B37099BD8000224D313B146845760B6E2C4FC4BDDFE67CD9A7E152ADCCB10751A58D9B025FB676EF7D16C5387F82639FB6D0AEDBA9698C028C310";
 let serial_number = "number";
-let message = `{}`;
-/**
- *
- * @param append_pkcs7 Message to sign
- * @returns Object : {pkcs7,result}
- */
+let message = ``;
 
-
-let sign = append_pkcs7 => {
+export let sign = append_pkcs7 => {
 	let obj = {
 		packageName: "uz.yt.eimzo",
 		className: "uz.yt.eimzo.activity.MainActivity",
 		serial_number,
-		api_key,
 		message: append_pkcs7 ? append_pkcs7 : message
 	};
-	return IntentLauncher.startActivity(obj);
+	return NativeModules.EImzo.createSign(obj);
+};
+
+export let attach = tst => {
+	let obj = {
+		packageName: "uz.yt.eimzo",
+		className: "uz.yt.eimzo.activity.MainActivity",
+		serial_number,
+		tst
+	};
+	return NativeModules.EImzo.attachTimestamp(obj);
+};
+
+export let append = append_pkcs7 => {
+	let obj = {
+		packageName: "uz.yt.eimzo",
+		className: "uz.yt.eimzo.activity.MainActivity",
+		serial_number,
+		append_pkcs7
+	};
+	return NativeModules.EImzo.appendSign(obj);
 };
 
 export default { sign };

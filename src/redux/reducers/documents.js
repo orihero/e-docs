@@ -20,6 +20,19 @@ let initialState = {
 	}
 };
 
+export const docStatus = {
+	DRAFTS: "drafts",
+	SENDED: "sended",
+	SIGNED: "signed",
+	REJECTED: "rejected",
+	DELETED: "deleted"
+};
+
+export const boxTypes = {
+	IN: "in",
+	OUT: "out"
+};
+
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
 		case DOCUMENTS_COUNT_LOADED:
