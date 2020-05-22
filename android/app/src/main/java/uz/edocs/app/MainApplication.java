@@ -1,6 +1,6 @@
 package uz.edocs.app;
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -16,9 +16,11 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import uz.sicnt.horcrux.Horcrux;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication implements ReactApplication {
 
+  public static Horcrux horcrux;
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
         @Override
@@ -32,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          packages.add(new EImzoPackage());
           return packages;
         }
 
@@ -45,12 +48,13 @@ public class MainApplication extends Application implements ReactApplication {
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;
   }
-
+  public final String APP_KEY = "B56DE9AB141B37099BD8000224D313B146845760B6E2C4FC4BDDFE67CD9A7E152ADCCB10751A58D9B025FB676EF7D16C5387F82639FB6D0AEDBA9698C028C310";
   @Override
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+    this.horcrux = new Horcrux(this, APP_KEY);
   }
 
   /**
