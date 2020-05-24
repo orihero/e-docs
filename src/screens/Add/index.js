@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import Text from "../../components/common/Text";
 import FieldsRenderer, {
 	FieldType,
@@ -95,9 +95,12 @@ const Add = () => {
 		}
 	];
 	return (
-		<View style={styles.container}>
+		<ScrollView
+			showsVerticalScrollIndicator={false}
+			style={styles.container}
+		>
 			<FieldsRenderer fields={fields} />
-		</View>
+		</ScrollView>
 	);
 };
 

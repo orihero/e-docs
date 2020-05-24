@@ -4,11 +4,11 @@ import LinearGradient from "react-native-linear-gradient";
 import colors from "../../constants/colors";
 import NotificationCard from "../cards/NotificationCard";
 import Text from "../common/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { connect } from "react-redux";
 import { hideNotification } from "../../redux/actions";
 import requests from "../../api/requests";
 import strings from "../../locales/strings";
+import { SafeAreaView } from "react-navigation";
 
 const Header = ({ appState, user }) => {
 	let [notification, setNotification] = useState("");
@@ -27,7 +27,7 @@ const Header = ({ appState, user }) => {
 			]}
 			style={styles.container}
 		>
-			<SafeAreaView>
+			<SafeAreaView forceInset={{ top: "always", bottom: "never" }}>
 				<View style={styles.roundOne} />
 				<View style={styles.roundTwo} />
 				<View

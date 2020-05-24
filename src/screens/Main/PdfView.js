@@ -20,11 +20,18 @@ import {
 	showModal
 } from "../../redux/actions/appState";
 
-const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
+const PdfView = ({
+	user,
+	showModal,
+	navigation,
+	showMessage,
+	hideModal,
+	documents
+}) => {
 	let [baseFile, setBaseFile] = useState({});
 	const [documentContent, setDocumentContent] = useState({});
 	let document = navigation.getParam("document") || {};
-	let { _id: docId } = document;
+	let { _id: docId, type } = document;
 	useEffect(() => {
 		loadFile();
 		requests.doc
@@ -61,9 +68,10 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 	const onCopyPress = async () => {
 		showModal(strings.loadingPdf);
 		try {
-			let fileName = `${RNFetchBlob.fs.dirs.DownloadDir}/${docId}.pdf`;
+			let filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/`;
+			let fileName = `${type}.${docId}.pdf`;
 			let res = await RNFetchBlob.fs.writeFile(
-				fileName,
+				filePath + fileName,
 				baseFile,
 				"base64"
 			);
@@ -82,44 +90,42 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 	};
 	const onSubscribePress = async () => {
 		// showModal(strings.loading);
-		// Вот логика подписания на сайте
-		let pkcs7 = ""; // Результат подпcи
-		console.log(documentContent);
+		console.log(documents);
 
-		if (documentContent)
-			if (this.docIO == "out" && this.docStatus == "drafts") {
-				// если исходящий черновик
-				pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
-			} else if (
-				this.docIO == "in" &&
-				this.docStatus == "sended" &&
-				this.docType == "empowerment"
-			) {
-				// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
-				let agent = this.editedDocument.targetTins.find(
-					obj => obj.side === "agent"
-				);
-				console.log("tin agent", this.userTin, agent);
-				let sign = await this.getSignedFile({
-					type: "empowerment",
-					id: this.editedDocument._id,
-					side: this.userTin == agent.tin ? "agent" : "seller"
-				});
-				if (!sign) return;
-				pkcs7 = await this.appendSign(sign);
-			} else if (this.docIO == "in" && this.docStatus == "sended") {
-				// если любой входящий документ, добавляем подпись
-				pkcs7 = await this.appendSign(this.editedDocument.sign);
-			}
-		if (pkcs7) {
-			// если  все окей, отправляем на сервер
-			await this.signDocument({
-				type: this.docType,
-				id: this.docId,
-				pkcs7
-			});
-			this.getStats(this.docType);
-		}
+		// let pkcs7 = ""; // Результат подпcи
+		// if (this.docIO == "out" && this.docStatus == "drafts") {
+		// 	// если исходящий черновик
+		// 	pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
+		// } else if (
+		// 	this.docIO == "in" &&
+		// 	this.docStatus == "sended" &&
+		// 	this.docType == "empowerment"
+		// ) {
+		// 	// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
+		// 	let agent = this.editedDocument.targetTins.find(
+		// 		obj => obj.side === "agent"
+		// 	);
+		// 	console.log("tin agent", this.userTin, agent);
+		// 	let sign = await this.getSignedFile({
+		// 		type: "empowerment",
+		// 		id: this.editedDocument._id,
+		// 		side: this.userTin == agent.tin ? "agent" : "seller"
+		// 	});
+		// 	if (!sign) return;
+		// 	pkcs7 = await this.appendSign(sign);
+		// } else if (this.docIO == "in" && this.docStatus == "sended") {
+		// 	// если любой входящий документ, добавляем подпись
+		// 	pkcs7 = await this.appendSign(this.editedDocument.sign);
+		// }
+		// if (pkcs7) {
+		// 	// если  все окей, отправляем на сервер
+		// 	await this.signDocument({
+		// 		type: this.docType,
+		// 		id: this.docId,
+		// 		pkcs7
+		// 	});
+		// 	this.getStats(this.docType);
+		// }
 	};
 	const onDeletePress = () => {};
 
@@ -211,7 +217,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 							</View>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.iconWrapper}>
+					{/* <View style={styles.iconWrapper}>
 						<TouchableOpacity onPress={onEditPress}>
 							<View
 								style={{
@@ -227,7 +233,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 								/>
 							</View>
 						</TouchableOpacity>
-					</View>
+					</View> */}
 				</View>
 			</View>
 			<Pdf
@@ -285,11 +291,7 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = state => {
-	return {
-		user: state.user
-	};
-};
+const mapStateToProps = ({ user, documents }) => ({ user, documents });
 
 const mapDispatchTopProps = {
 	showModal,

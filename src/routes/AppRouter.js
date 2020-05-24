@@ -40,7 +40,7 @@ const MainStack = createStackNavigator(
 		PdfView: {
 			screen: PdfView,
 			navigationOptions: {
-				header: () => <Header />
+				headerShown: false
 			}
 		},
 		Product: {
@@ -70,6 +70,15 @@ const ProfileStack = createStackNavigator({
 	}
 });
 
+let NewDocumentStack = createStackNavigator({
+	Add: {
+		screen: Add,
+		navigationOptions: {
+			header: () => <Header />
+		}
+	}
+});
+
 const TabNavigator = createMaterialTopTabNavigator(
 	{
 		MainStack: {
@@ -88,7 +97,7 @@ const TabNavigator = createMaterialTopTabNavigator(
 			}
 		},
 		Add: {
-			screen: Add,
+			screen: NewDocumentStack,
 			navigationOptions: {
 				tabBarIcon: () => (
 					<Ionicons
@@ -148,7 +157,8 @@ const TabNavigator = createMaterialTopTabNavigator(
 			},
 			showIcon: true
 		},
-		tabBarPosition: "bottom"
+		tabBarPosition: "bottom",
+		swipeEnabled: false
 		// tabBarComponent: CustomFLoatingTabbar
 	}
 );

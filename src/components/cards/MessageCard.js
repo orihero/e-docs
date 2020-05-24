@@ -78,7 +78,7 @@ const MessageCard = ({ item, navigation }) => {
 					<View style={styles.textWrapper}>
 						<Text style={styles.name}>{item.ownerName}</Text>
 						<Text style={styles.date}>
-							{Moment(item.docDate).format("d.mm.yyyy")}
+							{Moment(item.docDate).format("DD.MM.YYYY")}
 						</Text>
 					</View>
 					<View style={styles.textWrapper}>
@@ -87,7 +87,7 @@ const MessageCard = ({ item, navigation }) => {
 						</Text>
 						<Text style={styles.text}>
 							{item.contractNumber}/
-							{Moment(item.contractDate).format("d.mm.yyyy")}}
+							{Moment(item.contractDate).format("DD.MM.YYYY")}
 						</Text>
 					</View>
 				</View>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 		color: colors.grayText
 		// fontWeight: 'bold',
 	},
-	text: { color: colors.darkGrayBorder }
+	text: { color: colors.darkGrayBorder, flexShrink: 1, flexWrap: "wrap" }
 });
 
 export default MessageCard;
