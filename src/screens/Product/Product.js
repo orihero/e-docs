@@ -103,9 +103,7 @@ const Product = ({
 		showModal(strings.gettingProducts);
 		try {
 			let res = await requests.product.getProducts(token, 1, 20);
-			let newRes = res.json();
-			console.warn(newRes.docs);
-			setProducts(newRes.docs);
+			setProducts(res.json().docs);
 			hideModal();
 		} catch (error) {
 			hideModal();

@@ -42,7 +42,6 @@ const MessageCard = ({ item, navigation }) => {
 	// };
 
 	let [backgroundColor, setBackgroundColor] = useState("transparent");
-	console.warn(item);
 	useEffect(() => {
 		switch (item.status) {
 			case "sended":

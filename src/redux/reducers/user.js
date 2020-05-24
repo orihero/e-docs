@@ -1,5 +1,5 @@
 import { USER_LOADED, USER_LOGGED_IN } from "../types";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const initialState = {
 	settings: {},

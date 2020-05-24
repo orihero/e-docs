@@ -3,7 +3,8 @@ import {
 	View,
 	StyleSheet,
 	ScrollView,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
+	Platform
 } from "react-native";
 import { withNavigation } from "react-navigation";
 import CustomInput from "../../components/common/CustomInput";
@@ -38,28 +39,28 @@ const Login = ({
 	let requestLogin = async () => {
 		showModal(strings.authorization);
 		try {
-			let res = await Axios.post(`${url}/loginpassword`, {
+			let res = await requests.auth.login({
 				login,
 				password
 			});
-			let newRes = res.json();
-			userLoggedIn(newRes);
+			userLoggedIn(res.json());
 			navigation.navigate("Main");
 			hideModal();
 		} catch (error) {
+			console.log(error.request);
 			let { response } = error;
-			if (!response) {
-				showMessage({ message: "inet", type: colors.killerRed });
-			}
 			if (!!response) {
-				console.warn(response);
+				console.log(response);
 			}
 			hideModal();
 			showMessage({ message: error.message, type: colors.killerRed });
 		}
 	};
 	return (
-		<KeyboardAvoidingView behavior={"position"} style={styles.container}>
+		<KeyboardAvoidingView
+			behavior={Platform.select({ android: "position", ios: null })}
+			style={styles.container}
+		>
 			<Text style={styles.title}>{strings.welcome}</Text>
 			<Text style={styles.desc}>{strings.loginInfo}</Text>
 			<CustomInput

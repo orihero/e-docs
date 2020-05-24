@@ -41,9 +41,7 @@ const Main = ({
 		showModal(strings.loading);
 		try {
 			let res = await requests.doc.getStats(user.token);
-			let newRes = res.json();
-			console.warn(newRes);
-			documentsCountLoaded(newRes);
+			documentsCountLoaded(res.json());
 			hideModal();
 		} catch (error) {
 			hideModal();

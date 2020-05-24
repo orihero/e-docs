@@ -87,7 +87,6 @@ const List = ({
 				title == strings.incoming ? "in" : "out"
 			);
 			let newRes = res.json();
-			console.warn(newRes.docs);
 			setDocuments(newRes.docs);
 			hideModal();
 		} catch (error) {

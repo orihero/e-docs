@@ -6,32 +6,7 @@ import SmallButton from "../common/SmallButton";
 import Text from "../common/Text";
 import strings from "../../locales/strings";
 
-// const example = {
-// 	_id: "5e57e4cea103051b30c0f803",
-// 	active: true,
-// 	code: "1",
-// 	createdAt: "2020-02-27T15:48:30.985Z",
-// 	description: "Очень чистая вода",
-// 	groupId: 189,
-// 	measureId: "1",
-// 	name: "Вода 1.5л чистая",
-// 	pack: 1,
-// 	prices: [{ count: 1, price: 3500 }],
-// 	seller: {
-// 		_id: "5db7e15b79e7e011e4b3093e",
-// 		delivery: true,
-// 		name: '"FIDES PROJECTS" XK',
-// 		pickup: false,
-// 		seller: true,
-// 		tin: "302204416"
-// 	},
-// 	sellerTin: "302204416",
-// 	updatedAt: "2020-02-27T15:48:30.985Z",
-// 	withoutVat: false
-// };
-
 const ProductCard = ({ item, passive }) => {
-	console.warn(item);
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>

@@ -14,7 +14,13 @@ import LoadingModal from "../../components/containers/LoadingModal";
 import strings from "../../locales/strings";
 import requests from "../../api/requests";
 
-const Loader = ({ navigation, showMessage, showModal, hideModal }) => {
+const Loader = ({
+	navigation,
+	showMessage,
+	showModal,
+	hideModal,
+	userLoggedIn
+}) => {
 	let bootstrap = async () => {
 		//TODO check if the user has logged in
 		showModal(strings.refreshToken);
@@ -26,7 +32,7 @@ const Loader = ({ navigation, showMessage, showModal, hideModal }) => {
 				let res = await requests.auth.validateToken(
 					newCredentials.token
 				);
-				console.warn(res);
+				userLoggedIn(res.json());
 			}
 		} catch (error) {
 			if (!!error) {
@@ -39,9 +45,12 @@ const Loader = ({ navigation, showMessage, showModal, hideModal }) => {
 				message: error,
 				type: colors.killerRed
 			});
+			hideModal();
+			navigation.navigate("Login");
+			return;
 		}
 		hideModal();
-		navigation.navigate("Login");
+		navigation.navigate("Main");
 	};
 	useEffect(() => {
 		bootstrap();

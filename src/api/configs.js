@@ -6,7 +6,6 @@ export let url = "https://test.edocs.uz/v1.0.1";
 export let configureAxios = store => {
 	axios.interceptors.request.use(res => {
 		let token = store.getState().user.token;
-		console.warn(store.getState());
 		if (token) {
 			res.headers.Authorization = `Bearer ${token}`;
 		}

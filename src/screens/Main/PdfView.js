@@ -29,7 +29,9 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 		loadFile();
 		requests.doc
 			.getContent(document.type, document._id, user.token)
-			.then(res => setDocumentContent(res.json().data))
+			.then(res => {
+				setDocumentContent(res.json());
+			})
 			.catch(e => showMessage(e.message));
 	}, []);
 
@@ -53,10 +55,13 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 		navigation.goBack();
 	};
 
+	/**
+	 ** Save the file to device's storage
+	 */
 	const onCopyPress = async () => {
 		showModal(strings.loadingPdf);
 		try {
-			let fileName = `${RNFB.fs.dirs.DownloadDir}/${docId}.pdf`;
+			let fileName = `${RNFetchBlob.fs.dirs.DownloadDir}/${docId}.pdf`;
 			let res = await RNFetchBlob.fs.writeFile(
 				fileName,
 				baseFile,
@@ -68,40 +73,44 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 			});
 		} catch (error) {
 			showMessage({ type: colors.killerRed, message: error.message });
+		} finally {
+			hideModal();
 		}
 	};
 	const onEditPress = () => {
 		alert("Not implemented");
 	};
 	const onSubscribePress = async () => {
-		showModal(strings.loading);
+		// showModal(strings.loading);
 		// Вот логика подписания на сайте
 		let pkcs7 = ""; // Результат подпcи
-		// if(documentContent.)//TODO HERE
-		if (this.docIO == "out" && this.docStatus == "drafts") {
-			// если исходящий черновик
-			pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
-		} else if (
-			this.docIO == "in" &&
-			this.docStatus == "sended" &&
-			this.docType == "empowerment"
-		) {
-			// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
-			let agent = this.editedDocument.targetTins.find(
-				obj => obj.side === "agent"
-			);
-			console.log("tin agent", this.userTin, agent);
-			let sign = await this.getSignedFile({
-				type: "empowerment",
-				id: this.editedDocument._id,
-				side: this.userTin == agent.tin ? "agent" : "seller"
-			});
-			if (!sign) return;
-			pkcs7 = await this.appendSign(sign);
-		} else if (this.docIO == "in" && this.docStatus == "sended") {
-			// если любой входящий документ, добавляем подпись
-			pkcs7 = await this.appendSign(this.editedDocument.sign);
-		}
+		console.log(documentContent);
+
+		if (documentContent)
+			if (this.docIO == "out" && this.docStatus == "drafts") {
+				// если исходящий черновик
+				pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
+			} else if (
+				this.docIO == "in" &&
+				this.docStatus == "sended" &&
+				this.docType == "empowerment"
+			) {
+				// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
+				let agent = this.editedDocument.targetTins.find(
+					obj => obj.side === "agent"
+				);
+				console.log("tin agent", this.userTin, agent);
+				let sign = await this.getSignedFile({
+					type: "empowerment",
+					id: this.editedDocument._id,
+					side: this.userTin == agent.tin ? "agent" : "seller"
+				});
+				if (!sign) return;
+				pkcs7 = await this.appendSign(sign);
+			} else if (this.docIO == "in" && this.docStatus == "sended") {
+				// если любой входящий документ, добавляем подпись
+				pkcs7 = await this.appendSign(this.editedDocument.sign);
+			}
 		if (pkcs7) {
 			// если  все окей, отправляем на сервер
 			await this.signDocument({
@@ -202,7 +211,7 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 							</View>
 						</TouchableOpacity>
 					</View>
-					{/* <View style={styles.iconWrapper}>
+					<View style={styles.iconWrapper}>
 						<TouchableOpacity onPress={onEditPress}>
 							<View
 								style={{
@@ -218,20 +227,11 @@ const PdfView = ({ user, showModal, navigation, showMessage, hideModal }) => {
 								/>
 							</View>
 						</TouchableOpacity>
-					</View> */}
+					</View>
 				</View>
 			</View>
 			<Pdf
 				source={{ uri: `data:application/pdf;base64,${baseFile}` }}
-				onLoadComplete={(numberOfPages, filePath) => {
-					console.warn(`number of pages: ${numberOfPages}`);
-				}}
-				onPageChanged={(page, numberOfPages) => {
-					console.warn(`current page: ${page}`);
-				}}
-				onPressLink={uri => {
-					console.warn(`Link presse: ${uri}`);
-				}}
 				onError={error => {
 					showMessage({
 						message: error.response,
