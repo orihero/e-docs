@@ -35,7 +35,7 @@ const InnerHeader = ({ currentPage, setShowType, showTypes, navigation }) => {
 							}}
 							placeholder={{
 								label: strings.all,
-								value: "all"
+								value: ""
 							}}
 							placeholderTextColor={colors.darkViolet}
 							items={showTypes}

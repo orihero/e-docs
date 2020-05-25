@@ -30,7 +30,6 @@ const List = ({
 
 	let setShowType = async e => {
 		documentsLoaded({ data, boxType, status: e, ...rest });
-		await getDocuments();
 	};
 
 	let [documents, setDocuments] = useState([]);
@@ -59,7 +58,7 @@ const List = ({
 
 	useEffect(() => {
 		getDocuments();
-	}, []);
+	}, [boxType, status]);
 
 	// useEffect(() => {
 	// 	if (showType !== "all") {
@@ -89,16 +88,14 @@ const List = ({
 	];
 
 	if (boxType === boxTypes.OUT) {
-		showTypes.push([
-			{
-				label: strings.drafts,
-				value: docStatus.DRAFTS
-			},
-			{
-				label: strings.deleted,
-				value: docStatus.DELETED
-			}
-		]);
+		showTypes.push({
+			label: strings.drafts,
+			value: docStatus.DRAFTS
+		});
+		showTypes.push({
+			label: strings.deleted,
+			value: docStatus.DELETED
+		});
 	}
 
 	return (

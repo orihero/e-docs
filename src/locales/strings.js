@@ -54,7 +54,7 @@ let strings = new LocalizedStrings({
 		inn: "ИНН",
 		loadingProfile: "Загрузка профиля",
 		downloadedSuccessfully: "Успешно загружено",
-		drafts: "drafts",
+		drafts: "Черновики",
 		deleted: "Корзина"
 	},
 	uz: {},
