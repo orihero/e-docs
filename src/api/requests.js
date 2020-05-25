@@ -27,10 +27,10 @@ let requests = {
 			instance.fetch("get", `${url}/documents/all/get/stats`, {
 				Authorization: `Bearer ${token}`
 			}),
-		getDocuments: (token, page, limit, io) =>
+		getDocuments: (token, page, limit, io = "", status = "") =>
 			instance.fetch(
 				"get",
-				`${url}/documents?page=${page}&limit=${limit}&io=${io}`,
+				`${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}`,
 				{
 					Authorization: `Bearer ${token}`
 				}

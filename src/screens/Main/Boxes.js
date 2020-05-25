@@ -1,29 +1,29 @@
 import React, { useEffect } from "react";
 import {
-	View,
-	StyleSheet,
-	Image,
 	Dimensions,
+	Image,
 	ScrollView,
+	StyleSheet,
+	TouchableOpacity,
 	TouchableWithoutFeedback,
-	TouchableOpacity
+	View
 } from "react-native";
-import colors from "../../constants/colors";
-import strings from "../../locales/strings";
+import { connect } from "react-redux";
+import requests from "../../api/requests";
 import images from "../../assets/images";
 import Text from "../../components/common/Text";
-import { SafeAreaView } from "react-native-safe-area-context";
-import requests from "../../api/requests";
+import colors from "../../constants/colors";
+import strings from "../../locales/strings";
 import {
-	hideModal,
-	showModal,
-	hideMessage,
-	showMessage,
 	documentsCountLoaded,
 	documentsLoaded,
+	hideMessage,
+	hideModal,
+	showMessage,
+	showModal,
 	userLoaded
 } from "../../redux/actions";
-import { connect } from "react-redux";
+import { boxTypes } from "../../redux/reducers/documents";
 
 const { width: deviceWidth, height } = Dimensions.get("window");
 
@@ -35,7 +35,8 @@ const Main = ({
 	documentsCountLoaded,
 	hideModal,
 	showModal,
-	userLoaded
+	userLoaded,
+	documentsLoaded
 }) => {
 	let getStats = async () => {
 		showModal(strings.loading);
@@ -80,6 +81,10 @@ const Main = ({
 			<View style={styles.gridWrapper}>
 				<TouchableOpacity
 					onPress={() => {
+						documentsLoaded({
+							data: [],
+							boxType: boxTypes.IN
+						});
 						navigation.navigate("List", {
 							title: strings.incoming
 						});
@@ -107,6 +112,7 @@ const Main = ({
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
+						documentsLoaded({ data: [], boxType: boxTypes.OUT });
 						navigation.navigate("List", {
 							title: strings.outgoing
 						});

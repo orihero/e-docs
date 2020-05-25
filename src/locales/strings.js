@@ -53,7 +53,9 @@ let strings = new LocalizedStrings({
 		loadingPdf: "загрузка PDF",
 		inn: "ИНН",
 		loadingProfile: "Загрузка профиля",
-		downloadedSuccessfully: "Успешно загружено"
+		downloadedSuccessfully: "Успешно загружено",
+		drafts: "drafts",
+		deleted: "Корзина"
 	},
 	uz: {},
 	en: {}

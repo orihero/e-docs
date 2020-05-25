@@ -10,59 +10,10 @@ import {
 	hideModal,
 	showModal,
 	hideMessage,
-	showMessage
+	showMessage,
+	documentsLoaded
 } from "../../redux/actions";
-
-const messageList = [
-	{
-		id: 1,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "signed"
-	},
-	{
-		id: 2,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "rejected"
-	},
-	{
-		id: 3,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "received"
-	},
-	{
-		id: 4,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "signed"
-	},
-	{
-		id: 5,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "rejected"
-	},
-	{
-		id: 6,
-		name: 'OOO "FIDES"',
-		date: "16.02.2020",
-		amount: "1 450 000 сум",
-		mid: "123-20/20",
-		status: "received"
-	}
-];
+import { boxTypes, docStatus } from "../../redux/reducers/documents";
 
 const List = ({
 	navigation,
@@ -70,11 +21,17 @@ const List = ({
 	showMessage,
 	showModal,
 	hideMessage,
-	hideModal
+	hideModal,
+	documents: { data, boxType, status, ...rest },
+	documentsLoaded
 }) => {
-	let [showType, setShowType] = useState("all");
 	let [infoList, setInfoList] = useState(documents);
 	let title = navigation.getParam("title");
+
+	let setShowType = async e => {
+		documentsLoaded({ data, boxType, status: e, ...rest });
+		await getDocuments();
+	};
 
 	let [documents, setDocuments] = useState([]);
 	let getDocuments = async () => {
@@ -84,7 +41,8 @@ const List = ({
 				token,
 				1,
 				20,
-				title == strings.incoming ? "in" : "out"
+				boxType,
+				status
 			);
 			let newRes = res.json();
 			setDocuments(newRes.docs);
@@ -92,6 +50,7 @@ const List = ({
 		} catch (error) {
 			hideModal();
 			console.warn(error.message);
+			showMessage({ type: colors.killerRed, message: error.message });
 		}
 	};
 	useEffect(() => {
@@ -102,37 +61,52 @@ const List = ({
 		getDocuments();
 	}, []);
 
-	useEffect(() => {
-		if (showType !== "all") {
-			setInfoList(
-				documents.filter(item => {
-					return showType === item.status;
-				})
-			);
-		} else {
-			setInfoList(documents);
+	// useEffect(() => {
+	// 	if (showType !== "all") {
+	// 		setInfoList(
+	// 			documents.filter(item => {
+	// 				return showType === item.status;
+	// 			})
+	// 		);
+	// 	} else {
+	// 		setInfoList(documents);
+	// 	}
+	// }, [showType]);
+
+	let showTypes = [
+		{
+			label: strings.received,
+			value: docStatus.SENDED
+		},
+		{
+			label: strings.signed,
+			value: docStatus.SIGNED
+		},
+		{
+			label: strings.rejected,
+			value: docStatus.REJECTED
 		}
-	}, [showType]);
+	];
+
+	if (boxType === boxTypes.OUT) {
+		showTypes.push([
+			{
+				label: strings.drafts,
+				value: docStatus.DRAFTS
+			},
+			{
+				label: strings.deleted,
+				value: docStatus.DELETED
+			}
+		]);
+	}
 
 	return (
 		<View style={styles.container}>
 			<InnerHeader
 				navigation={navigation}
 				currentPage={title}
-				showTypes={[
-					{
-						label: strings.signed,
-						value: "sended"
-					},
-					{
-						label: strings.received,
-						value: "drafts"
-					},
-					{
-						label: strings.rejected,
-						value: "deleted"
-					}
-				]}
+				showTypes={showTypes}
 				setShowType={setShowType}
 			/>
 			<View style={styles.cardWrapper}>
@@ -141,16 +115,7 @@ const List = ({
 						paddingTop: 10
 					}}
 					showsVerticalScrollIndicator={false}
-					data={
-						infoList || {
-							id: 1,
-							name: 'OOO "FIDES"',
-							date: "16.02.2020",
-							amount: "1 450 000 сум",
-							mid: "123-20/20",
-							status: "signed"
-						}
-					}
+					data={infoList}
 					renderItem={({ item }) => (
 						<MessageCard
 							item={item}
@@ -175,16 +140,16 @@ const styles = StyleSheet.create({
 	}
 });
 
-let mapStateToProps = ({ user, appState, documents }) => {
-	return {
-		token: user.token
-	};
-};
+let mapStateToProps = ({ user, appState, documents }) => ({
+	token: user.token,
+	documents
+});
 let mapDispatchToProps = {
 	showMessage,
 	showModal,
 	hideMessage,
-	hideModal
+	hideModal,
+	documentsLoaded
 };
 
 export default connect(
