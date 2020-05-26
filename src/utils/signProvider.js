@@ -33,4 +33,4 @@ export let append = append_pkcs7 => {
 	return NativeModules.EImzo.appendSign(obj);
 };
 
-export default { sign };
+export default { sign, attach, append };

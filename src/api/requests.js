@@ -38,7 +38,34 @@ let requests = {
 		getContent: (type, id, token) =>
 			instance.fetch("GET", `${url}/documents/${type}/${id}`, {
 				Authorization: `Bearer ${token}`
-			})
+			}),
+		rejectDocument: (token, type, id, credentials) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}/${id}/reject`,
+				{
+					Authorization: `Bearer ${token}`
+				},
+				credentials
+			),
+		signDocument: (token, type, id, credentials) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}/${id}/sign`,
+				{
+					Authorization: `Bearer ${token}`
+				},
+				credentials
+			),
+		getSignedFile: (token, type, id, side) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}/${id}/${side}/signedfile`,
+				{
+					Authorization: `Bearer ${token}`
+				},
+				credentials
+			)
 	},
 	pdf: {
 		loadFile: (token, docId) =>

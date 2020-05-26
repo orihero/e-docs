@@ -19,6 +19,8 @@ import {
 	showMessage,
 	showModal
 } from "../../redux/actions/appState";
+import { boxTypes, docStatus } from "../../redux/reducers/documents";
+import { sign, append } from "../../utils/signProvider";
 
 const PdfView = ({
 	user,
@@ -26,16 +28,17 @@ const PdfView = ({
 	navigation,
 	showMessage,
 	hideModal,
-	documents
+	documents: { boxType, status, ...documents }
 }) => {
 	let [baseFile, setBaseFile] = useState({});
 	const [documentContent, setDocumentContent] = useState({});
 	let document = navigation.getParam("document") || {};
 	let { _id: docId, type } = document;
+	let { token } = user;
 	useEffect(() => {
 		loadFile();
 		requests.doc
-			.getContent(document.type, document._id, user.token)
+			.getContent(document.type, docId, token)
 			.then(res => {
 				setDocumentContent(res.json());
 			})
@@ -45,7 +48,7 @@ const PdfView = ({
 	const loadFile = async () => {
 		showModal(strings.loadingPdf);
 		try {
-			let res = await requests.pdf.loadFile(user.token, docId);
+			let res = await requests.pdf.loadFile(token, docId);
 			let newRes = res.json();
 			setBaseFile(newRes.base64);
 			hideModal();
@@ -90,44 +93,78 @@ const PdfView = ({
 	};
 	const onSubscribePress = async () => {
 		// showModal(strings.loading);
-		console.log(documents);
-
-		// let pkcs7 = ""; // Результат подпcи
-		// if (this.docIO == "out" && this.docStatus == "drafts") {
-		// 	// если исходящий черновик
-		// 	pkcs7 = await this.signData(JSON.stringify(data)); // подписываем струку json
-		// } else if (
-		// 	this.docIO == "in" &&
-		// 	this.docStatus == "sended" &&
-		// 	this.docType == "empowerment"
-		// ) {
-		// 	// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
-		// 	let agent = this.editedDocument.targetTins.find(
-		// 		obj => obj.side === "agent"
-		// 	);
-		// 	console.log("tin agent", this.userTin, agent);
-		// 	let sign = await this.getSignedFile({
-		// 		type: "empowerment",
-		// 		id: this.editedDocument._id,
-		// 		side: this.userTin == agent.tin ? "agent" : "seller"
-		// 	});
-		// 	if (!sign) return;
-		// 	pkcs7 = await this.appendSign(sign);
-		// } else if (this.docIO == "in" && this.docStatus == "sended") {
-		// 	// если любой входящий документ, добавляем подпись
-		// 	pkcs7 = await this.appendSign(this.editedDocument.sign);
-		// }
-		// if (pkcs7) {
-		// 	// если  все окей, отправляем на сервер
-		// 	await this.signDocument({
-		// 		type: this.docType,
-		// 		id: this.docId,
-		// 		pkcs7
-		// 	});
-		// 	this.getStats(this.docType);
-		// }
+		console.log(
+			"SIGNING BEGINS",
+			boxType == boxTypes.IN && status == docStatus.SENT
+		);
+		try {
+			let signResult = ""; // Результат подпcи
+			if (boxType === boxTypes.OUT && status === docStatus.DRAFTS) {
+				// если исходящий черновик
+				signResult = await sign(JSON.stringify(documentdata)); // подписываем струку json
+			} else if (
+				boxType == boxTypes.IN &&
+				status == docStatus.SENT &&
+				documentContent.type == "empowerment"
+			) {
+				// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
+				let agent = documentContent.targetTins.find(
+					obj => obj.side === "agent"
+				);
+				console.log("tin agent", user.tin, agent);
+				let sign = await requests.doc.getSignedFile(
+					"empowerment",
+					docId,
+					user.tin == agent.tin ? "agent" : "seller"
+				);
+				if (!sign) return;
+				signResult = await append(sign);
+			} else if (
+				boxType == boxTypes.IN &&
+				documentContent.status == docStatus.SENT
+			) {
+				// если любой входящий документ, добавляем подпись
+				signResult = await append(documentContent.sign);
+			}
+			if (signResult) {
+				// если  все окей, отправляем на сервер
+				await requests.doc.signDocument(token, type, docId, {
+					pkcs7: signResult.pkcs7
+				});
+				//TODO implement getStats
+				// this.getStats(documentContent.type);
+			}
+		} catch (error) {
+			console.log(error.message, error);
+		}
 	};
-	const onDeletePress = () => {};
+	const onDeletePress = async () => {
+		//Вот логика отклонения документа
+		let signedData = {
+			// структура, которая подписывается
+			Notes: this.notes // комментарий
+		};
+		let nameData = "Data";
+		if (documentContent.type == "factura") {
+			nameData = "Factura";
+		} else if (documentContent.type == "empowerment") {
+			nameData = "Empowerment";
+		} else if (documentContent.type == "waybill") {
+			nameData = "Waybill";
+		} else if (documentContent.type == "actGoodsAcceptance") {
+			nameData = "Waybill";
+		} else if (documentContent.type == "actWorkPerformed") {
+			nameData = "Act";
+		}
+		signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
+		const signResult = await sign(JSON.stringify(signedData)); // подписываем
+		if (signResult) {
+			// если все окей, отправляем на сервер
+			await requests.doc.rejectDocument(token, type, docId, {
+				pkcs7: signResult.pkcs7
+			});
+		}
+	};
 
 	return (
 		<View style={styles.container}>

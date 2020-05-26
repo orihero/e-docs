@@ -22,7 +22,7 @@ let initialState = {
 
 export const docStatus = {
 	DRAFTS: "drafts",
-	SENDED: "sended",
+	SENT: "sended",
 	SIGNED: "signed",
 	REJECTED: "rejected",
 	DELETED: "deleted"
