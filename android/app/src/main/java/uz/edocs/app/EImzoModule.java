@@ -78,7 +78,6 @@ public class EImzoModule extends ReactContextBaseJavaModule implements ActivityE
             }
             hexString.append(hex);
         }
-
         return hexString.toString();
     }
 
@@ -101,7 +100,6 @@ public class EImzoModule extends ReactContextBaseJavaModule implements ActivityE
             try {
                 params.putString(Constants.EXTRA_RESULT_SIGNATURE, encodeHex(data.getByteArrayExtra(Constants.EXTRA_RESULT_SIGNATURE)));
             } catch (Exception e) {
-//                this.promise.reject(e);
             }
         }
         this.promise.resolve(params);

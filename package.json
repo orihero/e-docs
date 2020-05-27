@@ -24,7 +24,6 @@
         "react-native-autocomplete-input": "^4.1.0",
         "react-native-document-picker": "^3.3.3",
         "react-native-gesture-handler": "^1.6.0",
-        "react-native-intent-launcher": "git+https://github.com/orihero/react-native-intent-launcher.git",
         "react-native-linear-gradient": "^2.5.6",
         "react-native-localization": "^2.1.6",
         "react-native-pdf": "^6.1.2",

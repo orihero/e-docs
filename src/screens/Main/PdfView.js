@@ -4,7 +4,9 @@ import {
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View
+	View,
+	Modal,
+	TextInput
 } from "react-native";
 import Pdf from "react-native-pdf";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -31,6 +33,7 @@ const PdfView = ({
 	documents: { boxType, status, ...documents }
 }) => {
 	let [baseFile, setBaseFile] = useState({});
+	const [comment, setComment] = useState("");
 	const [documentContent, setDocumentContent] = useState({});
 	let document = navigation.getParam("document") || {};
 	let { _id: docId, type } = document;
@@ -124,7 +127,13 @@ const PdfView = ({
 				documentContent.status == docStatus.SENT
 			) {
 				// если любой входящий документ, добавляем подпись
-				signResult = await append(documentContent.sign);
+				console.log("CALLING APPEND WITH:", documentContent.sign);
+
+				try {
+					signResult = await append(documentContent.sign);
+				} catch (error) {
+					console.log({ error });
+				}
 			}
 			if (signResult) {
 				// если  все окей, отправляем на сервер
@@ -142,7 +151,7 @@ const PdfView = ({
 		//Вот логика отклонения документа
 		let signedData = {
 			// структура, которая подписывается
-			Notes: this.notes // комментарий
+			Notes: comment // комментарий
 		};
 		let nameData = "Data";
 		if (documentContent.type == "factura") {
@@ -158,103 +167,106 @@ const PdfView = ({
 		}
 		signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
 		const signResult = await sign(JSON.stringify(signedData)); // подписываем
-		if (signResult) {
-			// если все окей, отправляем на сервер
-			await requests.doc.rejectDocument(token, type, docId, {
-				pkcs7: signResult.pkcs7
-			});
-		}
+		console.log({ signResult });
+
+		// if (signResult) {
+		// 	// если все окей, отправляем на сервер
+		// 	await requests.doc.rejectDocument(token, type, docId, {
+		// 		pkcs7: signResult.pkcs7
+		// 	});
+		// }
 	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.topPanel}>
-				<View style={styles.iconWrapper}>
-					<TouchableOpacity onPress={onBackPress}>
-						<View
-							style={{
-								backgroundColor: colors.white,
-								padding: 8
-							}}
-						>
-							<Feather
-								name="arrow-left"
-								color={colors.black}
-								size={18}
-							/>
-						</View>
-					</TouchableOpacity>
-				</View>
+				<View style={styles.panelContent}>
+					<View style={styles.iconWrapper}>
+						<TouchableOpacity onPress={onBackPress}>
+							<View
+								style={{
+									backgroundColor: colors.white,
+									padding: 8
+								}}
+							>
+								<Feather
+									name="arrow-left"
+									color={colors.black}
+									size={18}
+								/>
+							</View>
+						</TouchableOpacity>
+					</View>
 
-				<View style={styles.right}>
-					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onCopyPress}>
-							<View
-								style={{
-									backgroundColor: colors.white,
-									padding: 8
-								}}
-							>
-								<AntDesign
-									name="copy1"
-									color={colors.linearBlue1}
-									size={18}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onEditPress}>
-							<View
-								style={{
-									backgroundColor: colors.white,
-									padding: 8
-								}}
-							>
-								<AntDesign
-									name="edit"
-									color={colors.black}
-									size={18}
-									color={colors.gold}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onSubscribePress}>
-							<View
-								style={{
-									backgroundColor: colors.white,
-									padding: 8
-								}}
-							>
-								<AntDesign
-									name="checkcircleo"
-									color={colors.black}
-									size={18}
-									color={colors.green}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onDeletePress}>
-							<View
-								style={{
-									backgroundColor: colors.white,
-									padding: 8
-								}}
-							>
-								<AntDesign
-									name="delete"
-									color={colors.black}
-									size={18}
-									color={colors.killerRed}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View>
-					{/* <View style={styles.iconWrapper}>
+					<View style={styles.right}>
+						<View style={styles.iconWrapper}>
+							<TouchableOpacity onPress={onCopyPress}>
+								<View
+									style={{
+										backgroundColor: colors.white,
+										padding: 8
+									}}
+								>
+									<AntDesign
+										name="copy1"
+										color={colors.linearBlue1}
+										size={18}
+									/>
+								</View>
+							</TouchableOpacity>
+						</View>
+						<View style={styles.iconWrapper}>
+							<TouchableOpacity onPress={onEditPress}>
+								<View
+									style={{
+										backgroundColor: colors.white,
+										padding: 8
+									}}
+								>
+									<AntDesign
+										name="edit"
+										color={colors.black}
+										size={18}
+										color={colors.gold}
+									/>
+								</View>
+							</TouchableOpacity>
+						</View>
+						<View style={styles.iconWrapper}>
+							<TouchableOpacity onPress={onSubscribePress}>
+								<View
+									style={{
+										backgroundColor: colors.white,
+										padding: 8
+									}}
+								>
+									<AntDesign
+										name="checkcircleo"
+										color={colors.black}
+										size={18}
+										color={colors.green}
+									/>
+								</View>
+							</TouchableOpacity>
+						</View>
+						<View style={styles.iconWrapper}>
+							<TouchableOpacity onPress={onDeletePress}>
+								<View
+									style={{
+										backgroundColor: colors.white,
+										padding: 8
+									}}
+								>
+									<AntDesign
+										name="delete"
+										color={colors.black}
+										size={18}
+										color={colors.killerRed}
+									/>
+								</View>
+							</TouchableOpacity>
+						</View>
+						{/* <View style={styles.iconWrapper}>
 						<TouchableOpacity onPress={onEditPress}>
 							<View
 								style={{
@@ -271,7 +283,15 @@ const PdfView = ({
 							</View>
 						</TouchableOpacity>
 					</View> */}
+					</View>
 				</View>
+				<TextInput
+					value={comment}
+					onChangeText={setComment}
+					placeholder={strings.comment}
+					underlineColorAndroid={colors.blueish}
+					style={styles.comment}
+				/>
 			</View>
 			<Pdf
 				source={{ uri: `data:application/pdf;base64,${baseFile}` }}
@@ -308,14 +328,16 @@ const styles = StyleSheet.create({
 		height: Dimensions.get("window").height
 	},
 	topPanel: {
-		flexDirection: "row",
-		width: "100%",
-		justifyContent: "space-between",
-		alignItems: "center",
 		paddingVertical: 5,
 		paddingLeft: 10,
 		backgroundColor: colors.white,
-		elevation: 10
+		elevation: 10,
+		width: "100%"
+	},
+	panelContent: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center"
 	},
 	right: {
 		flexDirection: "row"
@@ -325,6 +347,9 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		marginRight: 10,
 		elevation: 4
+	},
+	comment: {
+		marginTop: 15
 	}
 });
 
