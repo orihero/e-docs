@@ -26,6 +26,7 @@ const Loader = ({
 		showModal(strings.refreshToken);
 		try {
 			let credentials = await AsyncStorage.getItem("@credentials");
+			console.log({ credentials });
 			if (credentials) {
 				let newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
@@ -33,6 +34,16 @@ const Loader = ({
 					newCredentials.token
 				);
 				userLoggedIn(res.json());
+
+				if (!res.json()) {
+					hideModal();
+					navigation.navigate("Login");
+					return;
+				}
+			} else {
+				hideModal();
+				navigation.navigate("Login");
+				return;
 			}
 		} catch (error) {
 			if (!!error) {
