@@ -224,7 +224,7 @@ const PdfView = ({
 					console.log(rejectResponse.errors.msg);
 				}
 				showMessage({
-					type: colors.killerRed,
+					type: colors.green,
 					message: strings.rejectedSuccessfully
 				});
 			}
