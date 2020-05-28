@@ -22,7 +22,7 @@ import {
 	showModal
 } from "../../redux/actions/appState";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
-import { sign, append } from "../../utils/signProvider";
+import { sign, append, attach } from "../../utils/signProvider";
 
 const PdfView = ({
 	user,
@@ -95,7 +95,7 @@ const PdfView = ({
 		alert("Not implemented");
 	};
 	const onSubscribePress = async () => {
-		// showModal(strings.loading);
+		showModal(strings.loading);
 		console.log(
 			"SIGNING BEGINS",
 			boxType == boxTypes.IN && status == docStatus.SENT
@@ -136,15 +136,36 @@ const PdfView = ({
 				}
 			}
 			if (signResult) {
-				// если  все окей, отправляем на сервер
-				await requests.doc.signDocument(token, type, docId, {
-					pkcs7: signResult.pkcs7
+				//Fetching timestamp from the server
+				let timestampResponse = await requests.doc.getTimestamp({
+					signatureHex: signResult.signature
 				});
+				console.log({
+					timestampResponse: timestampResponse.json()
+						.timestamp_token_64
+				});
+
+				//Attaching timestamp
+				let attachedSign = await attach(
+					timestampResponse.json().timestamp_token_64
+				);
+				// если  все окей, отправляем на сервер
+				let signResponse = await requests.doc.signDocument(
+					token,
+					type,
+					docId,
+					{
+						pkcs7: attachedSign.pkcs7
+					}
+				);
 				//TODO implement getStats
 				// this.getStats(documentContent.type);
+				console.log(signResponse.json());
 			}
 		} catch (error) {
 			console.log(error.message, error);
+		} finally {
+			hideModal();
 		}
 	};
 	const onDeletePress = async () => {

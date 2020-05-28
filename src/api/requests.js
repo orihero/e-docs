@@ -53,9 +53,10 @@ let requests = {
 				"POST",
 				`${url}/documents/${type}/${id}/sign`,
 				{
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
 				},
-				credentials
+				JSON.stringify(credentials)
 			),
 		getSignedFile: (token, type, id, side) =>
 			instance.fetch(
@@ -64,7 +65,16 @@ let requests = {
 				{
 					Authorization: `Bearer ${token}`
 				},
-				credentials
+				JSON.stringify(credentials)
+			),
+		getTimestamp: credentials =>
+			instance.fetch(
+				"POST",
+				`${url}/dsvs/gettimestamp`,
+				{
+					"Content-Type": "application/json"
+				},
+				JSON.stringify(credentials)
 			)
 	},
 	pdf: {
