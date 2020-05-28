@@ -56,7 +56,10 @@ let strings = new LocalizedStrings({
 		downloadedSuccessfully: "Успешно загружено",
 		drafts: "Черновики",
 		deleted: "Корзина",
-		comment: "Комментарий"
+		comment: "Комментарий",
+		signedSuccessfully: "Успешно подписано",
+		writeComment: "Пожалуйста, напишите комментарий, чтобы отклонить",
+		rejectedSuccessfully: "Успешно отклонено"
 	},
 	uz: {},
 	en: {}

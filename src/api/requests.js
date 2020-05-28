@@ -44,9 +44,10 @@ let requests = {
 				"POST",
 				`${url}/documents/${type}/${id}/reject`,
 				{
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
 				},
-				credentials
+				JSON.stringify(credentials)
 			),
 		signDocument: (token, type, id, credentials) =>
 			instance.fetch(
@@ -63,7 +64,8 @@ let requests = {
 				"POST",
 				`${url}/documents/${type}/${id}/${side}/signedfile`,
 				{
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
 				},
 				JSON.stringify(credentials)
 			),

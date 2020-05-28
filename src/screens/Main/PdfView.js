@@ -94,6 +94,9 @@ const PdfView = ({
 	const onEditPress = () => {
 		alert("Not implemented");
 	};
+	/**
+	 ** Sign the document
+	 */
 	const onSubscribePress = async () => {
 		showModal(strings.loading);
 		console.log(
@@ -160,7 +163,10 @@ const PdfView = ({
 				);
 				//TODO implement getStats
 				// this.getStats(documentContent.type);
-				console.log(signResponse.json());
+				showMessage({
+					type: colors.green,
+					message: strings.signedSuccessfully
+				});
 			}
 		} catch (error) {
 			console.log(error.message, error);
@@ -168,34 +174,64 @@ const PdfView = ({
 			hideModal();
 		}
 	};
+	//Вот логика отклонения документа
 	const onDeletePress = async () => {
-		//Вот логика отклонения документа
-		let signedData = {
-			// структура, которая подписывается
-			Notes: comment // комментарий
-		};
-		let nameData = "Data";
-		if (documentContent.type == "factura") {
-			nameData = "Factura";
-		} else if (documentContent.type == "empowerment") {
-			nameData = "Empowerment";
-		} else if (documentContent.type == "waybill") {
-			nameData = "Waybill";
-		} else if (documentContent.type == "actGoodsAcceptance") {
-			nameData = "Waybill";
-		} else if (documentContent.type == "actWorkPerformed") {
-			nameData = "Act";
+		if (!comment) {
+			showMessage({
+				type: colors.killerRed,
+				message: strings.writeComment
+			});
+			return;
 		}
-		signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
-		const signResult = await sign(JSON.stringify(signedData)); // подписываем
-		console.log({ signResult });
-
-		// if (signResult) {
-		// 	// если все окей, отправляем на сервер
-		// 	await requests.doc.rejectDocument(token, type, docId, {
-		// 		pkcs7: signResult.pkcs7
-		// 	});
-		// }
+		showModal(strings.loading);
+		try {
+			let signedData = {
+				// структура, которая подписывается
+				Notes: comment // комментарий
+			};
+			let nameData = "Data";
+			if (documentContent.type == "factura") {
+				nameData = "Factura";
+			} else if (documentContent.type == "empowerment") {
+				nameData = "Empowerment";
+			} else if (documentContent.type == "waybill") {
+				nameData = "Waybill";
+			} else if (documentContent.type == "actGoodsAcceptance") {
+				nameData = "Waybill";
+			} else if (documentContent.type == "actWorkPerformed") {
+				nameData = "Act";
+			}
+			signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
+			const signResult = await sign(JSON.stringify(signedData)); // подписываем
+			if (signResult) {
+				let timestampResponse = await requests.doc.getTimestamp({
+					signatureHex: signResult.signature
+				});
+				//Attaching timestamp
+				let attachedSign = await attach(
+					timestampResponse.json().timestamp_token_64
+				);
+				// если все окей, отправляем на сервер
+				let rejectResponse = (await requests.doc.rejectDocument(
+					token,
+					type,
+					docId,
+					{
+						pkcs7: attachedSign.pkcs7
+					}
+				)).json();
+				if (rejectResponse.errors) {
+					console.log(rejectResponse.errors.msg);
+				}
+				showMessage({
+					type: colors.killerRed,
+					message: strings.rejectedSuccessfully
+				});
+			}
+		} catch (error) {
+		} finally {
+			hideModal();
+		}
 	};
 
 	return (
