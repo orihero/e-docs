@@ -59,7 +59,8 @@ let strings = new LocalizedStrings({
 		comment: "Комментарий",
 		signedSuccessfully: "Успешно подписано",
 		writeComment: "Пожалуйста, напишите комментарий, чтобы отклонить",
-		rejectedSuccessfully: "Успешно отклонено"
+		rejectedSuccessfully: "Успешно отклонено",
+		selectDocType: "Выберите тип документа"
 	},
 	uz: {},
 	en: {}

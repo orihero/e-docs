@@ -26,14 +26,14 @@ const RectangularSelect = ({
 	// if (value !== null && value !== undefined && items[value]){
 
 	// }
-	let val =
-		value !== null && value !== undefined
-			? items[value]
-				? items[value].label
-				: items.find(e => {
-						return e.actualValue === value;
-				  })?.label
-			: placeholder;
+	let val = !!value
+		? items[value]
+			? items[value].label
+			: items.find(e => {
+					return e.actualValue === value;
+			  }).label
+		: placeholder;
+	console.log(val);
 	return (
 		<Picker
 			style={styles.container}
