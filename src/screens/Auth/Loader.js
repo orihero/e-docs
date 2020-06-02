@@ -26,7 +26,6 @@ const Loader = ({
 		showModal(strings.refreshToken);
 		try {
 			let credentials = await AsyncStorage.getItem("@credentials");
-			console.log({ credentials });
 			if (credentials) {
 				let newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);

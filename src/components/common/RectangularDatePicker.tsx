@@ -69,10 +69,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		elevation:4
+		elevation:4,
+		paddingBottom:18
 	},
 	placeholder: {
-		color: colors.gray
+		color: colors.grayText
 	},
 	value: {
 		color: colors.black

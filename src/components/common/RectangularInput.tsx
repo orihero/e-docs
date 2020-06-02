@@ -38,7 +38,9 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.white,
 		padding: Platform.select({ android: 3, ios: 20 }),
 		paddingHorizontal: 20,
-		elevation: 4
+		elevation: 4,
+		paddingBottom: 2,
+		justifyContent: "center"
 	}
 });
 

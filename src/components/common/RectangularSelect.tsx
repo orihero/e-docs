@@ -22,54 +22,89 @@ const RectangularSelect = ({
 	onChange = () => {},
 	value
 }: RectangularSelectProps) => {
-	// let val = placeholder
-	// if (value !== null && value !== undefined && items[value]){
-
-	// }
-	let val = !!value
-		? items[value]
-			? items[value].label
-			: items.find(e => {
-					return e.actualValue === value;
-			  }).label
-		: placeholder;
-	console.log(val);
+	// let val =
+	// 	value !== null && value !== undefined
+	// 		? items[value]
+	// 			? items[value].label
+	// 			: items.find(e => {
+	// 					return e.actualValue === value;
+	// 			  })?.label||placeholder
+	// 		: placeholder;
 	return (
-		<Picker
-			style={styles.container}
-			onValueChange={e => {
-				onChange(e);
-			}}
-			disabled={disabled}
-			value={value}
-			placeholder={{ label: placeholder, value: -1, color: colors.gray }}
-			items={items}
-		>
-			<View style={[styles.container, containerStyle]}>
-				<Text style={[styles.placeholder, value && styles.value]}>
-					{val}
-				</Text>
-				<Icons name={"down"} size={18} color={colors.gray} />
-			</View>
-		</Picker>
+		<View style={styles.container}>
+			<Picker
+				style={pickerSelectStyles}
+				onValueChange={e => {
+					onChange(e);
+				}}
+				disabled={disabled}
+				value={value}
+				placeholder={{
+					label: placeholder,
+					value: 0,
+					color: colors.gray
+				}}
+				items={items}
+				useNativeAndroidPickerStyle={false}
+				Icon={() => (
+					<Icons
+						name={"down"}
+						color={colors.grayText}
+						size={24}
+						style={{
+							paddingHorizontal: 10,
+							paddingVertical: 16,
+							zIndex: 1
+						}}
+					/>
+				)}
+			/>
+		</View>
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		borderRadius: 8,
-		backgroundColor: colors.white,
-		padding: 20,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		elevation: 4
+const pickerSelectStyles = StyleSheet.create({
+	inputIOS: {
+		fontSize: 16,
+		paddingVertical: 12,
+		paddingHorizontal: 10,
+		borderWidth: 1,
+		borderColor: "gray",
+		borderRadius: 4,
+		color: "black",
+		paddingRight: 30 // to ensure the text is never behind the icon
 	},
+	inputAndroid: {
+		fontSize: 16,
+		paddingHorizontal: 10,
+		paddingVertical: 18,
+		// borderWidth: 1,
+		borderColor: colors.grayBorder,
+		color: "black",
+		paddingRight: 30 // to ensure the text is never behind the icon,
+	},
+	inputAndroidContainer: {
+		borderRadius: 8
+		// backgroundColor: colors.white,
+		// elevation: 4
+	},
+	iconContainer: {
+		alignItems: "center",
+		justifyContent: "center"
+	}
+});
+
+const styles = StyleSheet.create({
 	placeholder: {
 		color: colors.grayText
 	},
 	value: {
 		color: colors.black
+	},
+	container: {
+		backgroundColor: colors.white,
+		elevation: 4,
+		borderRadius: 8
 	}
 });
 

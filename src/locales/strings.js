@@ -44,7 +44,7 @@ let strings = new LocalizedStrings({
 		invoiceType: "Тип документа",
 		recieverInn: "ИНН получателя",
 		documentNumber: "№ документа",
-		selectDate: "Дата документа",
+		selectDate: "Дата",
 		enterAmount: "Введите сумму",
 		uzs: "Валюта",
 		enterComments: "Введите примечание к документу",
@@ -60,7 +60,10 @@ let strings = new LocalizedStrings({
 		signedSuccessfully: "Успешно подписано",
 		writeComment: "Пожалуйста, напишите комментарий, чтобы отклонить",
 		rejectedSuccessfully: "Успешно отклонено",
-		selectDocType: "Выберите тип документа"
+		selectDocType: "Выберите тип документа",
+		number: "Номер",
+		actGoodsAcceptance: "Акт выполненныих работ",
+		contract: "Договор"
 	},
 	uz: {},
 	en: {}
