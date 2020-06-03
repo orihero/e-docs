@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
 	promptText: {
 		color: colors.lightGray,
 		fontSize: 15,
-		marginRight: -20
+		marginRight: -20,
+		marginLeft: 10
 		// textAlignVertical: 'center'
 	}
 });

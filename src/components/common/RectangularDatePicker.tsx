@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import Picker from "@react-native-community/datetimepicker";
 import Text from "./Text";
-import Icons from 'react-native-vector-icons/AntDesign'
+import Icons from "react-native-vector-icons/AntDesign";
 import colors from "../../constants/colors";
+import { TextInput } from "react-native-paper";
 
 interface DatePickerProps {
 	placeholder?: string;
@@ -15,7 +16,7 @@ interface DatePickerProps {
 }
 
 const RectangularDatePicker = ({
-	placeholder ,
+	placeholder,
 	containerStyle,
 	items = [],
 	onChange = () => {},
@@ -41,11 +42,7 @@ const RectangularDatePicker = ({
 					<Text style={[styles.placeholder, value && styles.value]}>
 						{value ? value : placeholder}
 					</Text>
-					<Icons
-						name={"down"}
-						size={18}
-						color={colors.grayText}
-					/>
+					<Icons name={"down"} size={18} color={colors.grayText} />
 				</View>
 				{visible && (
 					<Picker
@@ -63,14 +60,18 @@ const RectangularDatePicker = ({
 
 const styles = StyleSheet.create({
 	container: {
-		borderRadius: 8,
-		backgroundColor: colors.white,
-		padding: 20,
+		borderRadius: 4,
+		backgroundColor: colors.paperGray,
+		padding: 28,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		elevation:4,
-		paddingBottom:18
+		// elevation: 4,
+		paddingBottom: 18,
+		borderBottomLeftRadius: 0,
+		borderBottomRightRadius: 0,
+		borderBottomWidth: 1,
+		borderColor: colors.lightGrayText
 	},
 	placeholder: {
 		color: colors.grayText

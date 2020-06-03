@@ -146,6 +146,7 @@ export let actGoodsAcceptanceFields = [
 ];
 
 export let actGoodsAcceptanceProduct = {
+	withoutvat: false,
 	ordno: 0,
 	name: "",
 	measureid: "0",
@@ -155,7 +156,6 @@ export let actGoodsAcceptanceProduct = {
 	vatrate: 0,
 	vatsum: 0,
 	totalsumwithvat: 0,
-	withoutvat: false,
 	fuelrate: 0,
 	fuelsum: 0,
 	totalsumwithfuel: 0

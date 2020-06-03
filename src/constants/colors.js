@@ -29,7 +29,8 @@ let colors = {
 	flowerBlue: "#5F87E7",
 	dimGreen: "#20C5BB",
 	jeansBlue: "#6AA9EB",
-	lightBlueBackground: "#F9FCFF"
+	lightBlueBackground: "#F9FCFF",
+	paperGray: "#e6e6e6"
 };
 
 export default colors;

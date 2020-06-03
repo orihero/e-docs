@@ -1,6 +1,7 @@
 import React from "react";
-import { View, TextInput, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import colors from "../../constants/colors";
+import { TextInput } from "react-native-paper";
 
 interface RectangularInputProps {
 	placeholder?: string;
@@ -22,11 +23,13 @@ const RectangularInput = ({
 		<View style={[styles.container, containerStyle]}>
 			<TextInput
 				{...rest}
+				label={placeholder}
 				numberOfLines={2}
 				placeholder={placeholder}
 				editable={!disabled}
 				value={value}
 				onChangeText={onChange}
+				// mode={"outlined"}
 			/>
 		</View>
 	);
@@ -38,7 +41,6 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.white,
 		padding: Platform.select({ android: 3, ios: 20 }),
 		paddingHorizontal: 20,
-		elevation: 4,
 		paddingBottom: 2,
 		justifyContent: "center"
 	}

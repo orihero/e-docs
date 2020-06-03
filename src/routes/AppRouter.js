@@ -22,6 +22,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import colors from "../constants/colors";
 import strings from "../locales/strings";
 import CustomFLoatingTabbar from "../components/navigation/CustomFloatingTabbar";
+import Products from "../screens/add/Products";
 
 const MainStack = createStackNavigator(
 	{
@@ -73,6 +74,12 @@ const ProfileStack = createStackNavigator({
 let NewDocumentStack = createStackNavigator({
 	Add: {
 		screen: Add,
+		navigationOptions: {
+			header: () => <Header />
+		}
+	},
+	Products: {
+		screen: Products,
 		navigationOptions: {
 			header: () => <Header />
 		}

@@ -78,15 +78,13 @@ const pickerSelectStyles = StyleSheet.create({
 		fontSize: 16,
 		paddingHorizontal: 10,
 		paddingVertical: 18,
-		// borderWidth: 1,
+		borderBottomWidth: 1,
 		borderColor: colors.grayBorder,
 		color: "black",
 		paddingRight: 30 // to ensure the text is never behind the icon,
 	},
 	inputAndroidContainer: {
 		borderRadius: 8
-		// backgroundColor: colors.white,
-		// elevation: 4
 	},
 	iconContainer: {
 		alignItems: "center",
@@ -102,9 +100,10 @@ const styles = StyleSheet.create({
 		color: colors.black
 	},
 	container: {
-		backgroundColor: colors.white,
-		elevation: 4,
-		borderRadius: 8
+		backgroundColor: colors.paperGray,
+		// elevation: 4,
+		borderTopLeftRadius: 4,
+		borderTopRightRadius: 4
 	}
 });
 

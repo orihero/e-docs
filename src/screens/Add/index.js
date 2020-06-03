@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+	ScrollView,
+	StyleSheet,
+	View,
+	TouchableWithoutFeedback
+} from "react-native";
 import FieldsRenderer from "../../components/generators/FieldsRenderer";
 import colors from "../../constants/colors";
 import RectangularSelect from "../../components/common/RectangularSelect";
 import strings from "../../locales/strings";
 import * as types from "../../docTypes";
-import { actGoodsAcceptanceFields } from "../../docTypes";
+import {
+	actGoodsAcceptanceFields,
+	actWorkPerformedFields,
+	actWorkPerformedProduct
+} from "../../docTypes";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Products from "./Products";
+import Text from "../../components/common/Text";
 
-const Add = () => {
+const Add = ({ navigation }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
 	useEffect(() => {
@@ -29,23 +41,23 @@ const Add = () => {
 		},
 		{
 			label: "Акт выполненных работ",
-			value: { fields: actGoodsAcceptanceFields }
+			value: {
+				fields: actWorkPerformedFields,
+				productModel: actWorkPerformedProduct
+			}
 		},
 		{
 			label: "Акт приема-передачи",
-			value: 3,
-			actualValue: {
-				doc: types.actGoodsAcceptanceDoc,
-				product: types.actGoodsAcceptanceProduct
+			value: {
+				fields: actGoodsAcceptanceFields,
+				productModel: types.actGoodsAcceptanceProduct
 			}
 		},
 		{
 			label: "Товарно транспортная накладная",
 			value: 4,
 			actualValue: {
-				doc: types.actWorkPerformedDoc,
-				product: types.actWorkPerformedDocProduct,
-				entity: types.actWorkPerformedDocEntity
+				doc: types.actWorkPerformedDoc
 			}
 		},
 		{
@@ -67,11 +79,40 @@ const Add = () => {
 			}
 		}
 	];
-	useEffect(() => {
-		// let temp = types.generateFields(docType);
-		//TODO
-		//  setFields(temp);
-	}, [docType]);
+	let footer = () => {
+		return (
+			<View>
+				{!!docType && (
+					<View style={styles.productsWrapper}>
+						<View style={styles.productsContainer}>
+							<Text style={styles.inputTitle}>
+								{strings.products}
+							</Text>
+							<Text style={styles.inputTitle}>{0}</Text>
+						</View>
+						<TouchableWithoutFeedback
+							onPress={() => {
+								navigation.navigate("Products", {
+									model: docType.productModel || {}
+								});
+							}}
+						>
+							<View style={styles.button}>
+								<Text style={styles.inputTitle}>
+									{strings.edit || "Edit   "}
+								</Text>
+								<AntDesign
+									name={"edit"}
+									size={20}
+									color={colors.green}
+								/>
+							</View>
+						</TouchableWithoutFeedback>
+					</View>
+				)}
+			</View>
+		);
+	};
 	return (
 		<View style={styles.container}>
 			<ScrollView
@@ -84,7 +125,7 @@ const Add = () => {
 					placeholder={strings.selectDocType}
 					onChange={e => setDocType(e)}
 				/>
-				<FieldsRenderer fields={fields} />
+				<FieldsRenderer fields={fields} footer={footer} />
 			</ScrollView>
 		</View>
 	);
@@ -94,7 +135,43 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.lightBlueBackground
-	}
+	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-around"
+	},
+	inputTitle: {
+		fontSize: 16,
+		color: colors.grayText,
+		marginVertical: 10
+	},
+	productsContainer: {
+		padding: 10,
+		borderWidth: 1,
+		borderRadius: 6,
+		borderStyle: "dashed",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		flex: 1,
+		borderColor: colors.grayText,
+		marginRight: 10
+	},
+	productsWrapper: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginVertical: 15,
+		marginHorizontal: 20
+	},
+	button: {
+		paddingHorizontal: 10,
+		borderRadius: 6,
+		borderWidth: 1,
+		borderColor: colors.grayText,
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center"
+	},
+	flex: { flex: 1 }
 });
 
 export { Add };
