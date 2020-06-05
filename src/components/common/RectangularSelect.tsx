@@ -15,8 +15,8 @@ interface RectangularSelectProps {
 }
 
 const RectangularSelect = ({
-	placeholder,
-	containerStyle,
+	placeholder = "",
+	style,
 	disabled = false,
 	items = [],
 	onChange = () => {},
@@ -33,7 +33,9 @@ const RectangularSelect = ({
 	return (
 		<View style={styles.container}>
 			<Picker
-				style={pickerSelectStyles}
+				style={{
+					...pickerSelectStyles
+				}}
 				onValueChange={e => {
 					onChange(e);
 				}}
@@ -42,8 +44,9 @@ const RectangularSelect = ({
 				placeholder={{
 					label: placeholder,
 					value: 0,
-					color: colors.gray
+					color: colors.black
 				}}
+				placeholderTextColor={colors.grayText}
 				items={items}
 				useNativeAndroidPickerStyle={false}
 				Icon={() => (
@@ -81,7 +84,7 @@ const pickerSelectStyles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderColor: colors.grayBorder,
 		color: "black",
-		paddingRight: 30 // to ensure the text is never behind the icon,
+		paddingRight: 30 // to ensure the text is never behind the icon,,
 	},
 	inputAndroidContainer: {
 		borderRadius: 8
@@ -103,7 +106,8 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.paperGray,
 		// elevation: 4,
 		borderTopLeftRadius: 4,
-		borderTopRightRadius: 4
+		borderTopRightRadius: 4,
+		marginHorizontal: 2
 	}
 });
 

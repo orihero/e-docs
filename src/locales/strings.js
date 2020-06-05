@@ -63,7 +63,12 @@ let strings = new LocalizedStrings({
 		selectDocType: "Выберите тип документа",
 		number: "Номер",
 		actGoodsAcceptance: "Акт выполненныих работ",
-		contract: "Договор"
+		contract: "Договор",
+		name: "Наименование",
+		buyer: "Покупатель",
+		seller: "Продавец",
+		product: "Товар",
+		measure: "Ед.Изм"
 	},
 	uz: {},
 	en: {}

@@ -6,7 +6,7 @@ export const instance = RNFetchBlob.config({
 	trusty: true
 });
 
-let requests = {
+export let requests = {
 	auth: {
 		login: credentials =>
 			instance.fetch("post", `${url}/loginpassword`, credentials),
@@ -77,7 +77,8 @@ let requests = {
 					"Content-Type": "application/json"
 				},
 				JSON.stringify(credentials)
-			)
+			),
+		getMeasures: () => instance.fetch("GET", `${url}/measures/all`)
 	},
 	pdf: {
 		loadFile: (token, docId) =>

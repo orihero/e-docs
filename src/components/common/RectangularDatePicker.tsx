@@ -22,16 +22,20 @@ const RectangularDatePicker = ({
 	onChange = () => {},
 	value
 }: DatePickerProps) => {
-	let normalize = selectedDate => {
-		let date = `${selectedDate?.getFullYear()}-${
-			selectedDate?.getMonth() >= 10
-				? selectedDate?.getMonth().toString()
-				: "0" + selectedDate?.getMonth().toString()
-		}-${
-			selectedDate?.getDate() >= 10
-				? selectedDate?.getDate().toString()
-				: "0" + selectedDate?.getDate().toString()
-		}`;
+	let normalize = selection => {
+		let selectedDate = selection || new Date();
+		let day =
+			selectedDate.getDate() >= 10
+				? selectedDate.getDate().toString()
+				: "0" + selectedDate.getDate().toString();
+		let year = selectedDate.getFullYear();
+		let month =
+			selectedDate.getMonth() >= 10
+				? (selectedDate.getMonth() + 1).toString()
+				: "0" + (selectedDate.getMonth() + 1).toString();
+
+		let date = `${day}.${month}.${year}`;
+		return date;
 		return date;
 	};
 	const [visible, setVisible] = useState(false);
@@ -71,7 +75,8 @@ const styles = StyleSheet.create({
 		borderBottomLeftRadius: 0,
 		borderBottomRightRadius: 0,
 		borderBottomWidth: 1,
-		borderColor: colors.lightGrayText
+		borderColor: colors.lightGrayText,
+		marginRight: 15
 	},
 	placeholder: {
 		color: colors.grayText

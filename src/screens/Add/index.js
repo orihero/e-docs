@@ -82,7 +82,7 @@ const Add = ({ navigation }) => {
 	let footer = () => {
 		return (
 			<View>
-				{!!docType && (
+				{!!docType && !!docType.productModel && (
 					<View style={styles.productsWrapper}>
 						<View style={styles.productsContainer}>
 							<Text style={styles.inputTitle}>

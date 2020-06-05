@@ -29,6 +29,7 @@ const RectangularInput = ({
 				editable={!disabled}
 				value={value}
 				onChangeText={onChange}
+				placeholderTextColor={colors.grayText}
 				// mode={"outlined"}
 			/>
 		</View>
@@ -40,7 +41,6 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		backgroundColor: colors.white,
 		padding: Platform.select({ android: 3, ios: 20 }),
-		paddingHorizontal: 20,
 		paddingBottom: 2,
 		justifyContent: "center"
 	}
