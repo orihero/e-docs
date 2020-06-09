@@ -68,7 +68,9 @@ let strings = new LocalizedStrings({
 		buyer: "Покупатель",
 		seller: "Продавец",
 		product: "Товар",
-		measure: "Ед.Изм"
+		measure: "Ед.Изм",
+		save: "Сохранить",
+		cancel: "Отменить"
 	},
 	uz: {},
 	en: {}

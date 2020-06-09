@@ -13,6 +13,8 @@ import {
 import LoadingModal from "../../components/containers/LoadingModal";
 import strings from "../../locales/strings";
 import requests from "../../api/requests";
+import Axios from "axios";
+import { url } from "../../api/configs";
 
 const Loader = ({
 	navigation,
@@ -29,6 +31,12 @@ const Loader = ({
 			if (credentials) {
 				let newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
+				// let check = await Axios.get(`${url}/token`, {
+				// 	headers: {
+				// 		Authorization: `Bearer ${newCredentials.token}`
+				// 	}
+				// });
+				// console.log(check);
 				let res = await requests.auth.validateToken(
 					newCredentials.token
 				);
@@ -45,6 +53,8 @@ const Loader = ({
 				return;
 			}
 		} catch (error) {
+			// console.log(Object.keys(error));
+			// console.log(error);
 			if (!!error) {
 				showMessage({
 					message: error.response,

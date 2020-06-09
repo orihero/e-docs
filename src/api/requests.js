@@ -18,7 +18,11 @@ export let requests = {
 	},
 	account: {
 		getProfile: token =>
-			instance.fetch("get", `${url}/profile`, {
+			instance.fetch("GET", `${url}/profile`, {
+				Authorization: `Bearer ${token}`
+			}),
+		getProfileByTin: (token, tin) =>
+			instance.fetch("GET", `${url}/profile/${tin}`, {
 				Authorization: `Bearer ${token}`
 			})
 	},

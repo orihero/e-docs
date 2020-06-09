@@ -1,5 +1,6 @@
 import { FieldSize, FieldType } from "../components/generators/FieldsRenderer";
 import strings from "../locales/strings";
+import requests from "../api/requests";
 
 export let actGoodsAcceptanceFields = [
 	{
@@ -45,7 +46,11 @@ export let actGoodsAcceptanceFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "sellertin",
-		title: strings.seller
+		title: strings.seller,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
 	},
 	{
 		type: FieldType.INPUT,
@@ -54,11 +59,16 @@ export let actGoodsAcceptanceFields = [
 		name: "sellername"
 	},
 	{
-		type: FieldType.INPUT,
+		type: FieldType.AUTOCOMPLETE,
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "buyertin",
-		title: strings.buyer
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
 	},
 	{
 		type: FieldType.INPUT,

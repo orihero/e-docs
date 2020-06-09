@@ -1,16 +1,16 @@
 import React, { Fragment, useEffect, useReducer, useState } from "react";
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
-import Autocomplete from "react-native-autocomplete-input";
 import DocumentPicker from "react-native-document-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Icons from "react-native-vector-icons/SimpleLineIcons";
+import colors from "../../constants/colors";
 import { reducer, SET } from "../../utils/state";
-// import { FieldSize, FieldType } from "../../views";
 import DefaultCheckbox from "../common/DefaultCheckbox";
 import RectangularDatePicker from "../common/RectangularDatePicker";
 import RectangularInput from "../common/RectangularInput";
 import RectangularSelect from "../common/RectangularSelect";
-import colors from "../../constants/colors";
+import requests from "../../api/requests";
+import { connect } from "react-redux";
 
 export let FieldSize = {
 	FULL: "full",
@@ -30,7 +30,7 @@ export let FieldType = {
 	AUTOCOMPLETE: 8
 };
 
-const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
+const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 	const [state, dispatch] = useReducer(reducer, initialValue || {});
 	const [validations, setValidations] = useState(() => {
 		let temp = fields.reduce(
@@ -165,109 +165,48 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 	let renderFields = fields => {
 		return fields.map(e => {
 			if (e.visible === false) return null;
+			let componentProps = e.componentProps || {};
+
+			//* Note that on iOS this method isn't called when using keyboardType="phone-pad"
+			let onSubmitEditing = async ({ nativeEvent: { text } }) => {
+				console.log("SUBMITING");
+				let res = (await e.fetch(token, text)).json();
+				updateState(e.parent || "buyer", res);
+				updateState(e.child || "buyername", res.name);
+			};
 			switch (e.type) {
 				case FieldType.AUTOCOMPLETE: {
-					let filterData = async text => {
-						if (state[e.name]) {
-							dispatch({ type: SET, name: e.name, value: "" });
-							return;
-						}
-						let res = await e.fetch(text);
-						dispatchItems({
-							type: SET,
-							name: e.name,
-							value: res.data
-						});
-					};
-					let autocompleteItem = ({ item }) => {
-						return (
-							<TouchableWithoutFeedback
-								onPress={() => {
-									dispatch({
-										type: SET,
-										name: e.name,
-										value: item
-									});
-									dispatchItems({
-										type: SET,
-										name: e.name,
-										value: []
-									});
-								}}
-							>
-								<Text
-									style={{
-										paddingVertical: 5,
-										marginVertical: 5,
-										borderRadius: 6,
-										backgroundColor: colors.white,
-										paddingHorizontal: 5
-									}}
-								>
-									{item.tin} {item.name}
-								</Text>
-							</TouchableWithoutFeedback>
-						);
-					};
 					return (
 						<View>
 							{!!e.title && (
 								<Text style={styles.inputTitle}>{e.title}</Text>
 							)}
-							<View
-								style={{
-									borderRadius: 6,
-									backgroundColor: colors.white,
-									elevation: 4,
-									justifyContent: "center",
-									alignItems: "center"
+							<RectangularInput
+								disabled={e.disabled}
+								onChange={val => updateState(e.name, val)}
+								value={state[e.name]}
+								placeholder={e.placeholder}
+								keyboardType={
+									e.validation?.float || e.validation?.integer
+										? "number"
+										: null
+								}
+								{...componentProps}
+								{...{
+									onSubmitEditing
 								}}
-							>
-								<Autocomplete
-									placeholder={e.placeholder}
-									listContainerStyle={{
-										borderWidth: 0,
-										backgroundColor: colors.white
-									}}
-									listStyle={{
-										borderWidth: 0,
-										backgroundColor: colors.white
-									}}
-									containerStyle={{
-										borderWidth: 0,
-										padding: 8,
-										backgroundColor: colors.white,
-										borderRadius: 6
-									}}
-									style={{
-										backgroundColor: colors.white
-									}}
-									inputContainerStyle={{
-										borderWidth: 0
-									}}
-									data={[
-										{
-											tine: "Me",
-											name: "you"
-										}
-									]}
-									value={
-										state[e.name]
-											? state[e.name].tin +
-											  " - " +
-											  state[e.name].name
-											: null
-									}
-									renderItem={autocompleteItem}
-									onChangeText={filterData}
-								/>
-							</View>
+							/>
 						</View>
 					);
 				}
 				case FieldType.CHECKBOX:
 					return (
-						<View style={{ marginVertical: 15, ...styles[e.size] }}>
+						<View
+							style={{
+								marginVertical: 15,
+								...styles[e.size]
+							}}
+						>
 							<DefaultCheckbox
 								size={14}
 								numberOfLines={1}
@@ -276,6 +215,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 									updateState(e.name, !state[e.name])
 								}
 								title={e.title}
+								{...componentProps}
 							/>
 						</View>
 					);
@@ -284,12 +224,20 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 						dispatchItems({
 							type: SET,
 							name: e.name,
-							value: { ...e, data: e.staticValue } || e
+							value:
+								{
+									...e,
+									data: e.staticValue
+								} || e
 						});
 					}
 					if (e.size === FieldSize.FULL) {
 						return (
-							<View style={{ marginVertical: 5 }}>
+							<View
+								style={{
+									marginVertical: 5
+								}}
+							>
 								{!!e.title && (
 									<Text style={styles.inputTitle}>
 										{e.title}
@@ -305,6 +253,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 										updateState(e.name, val);
 									}}
 									placeholder={e.placeholder}
+									{...componentProps}
 								/>
 							</View>
 						);
@@ -327,6 +276,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 									updateState(e.name, val);
 								}}
 								placeholder={e.placeholder}
+								{...componentProps}
 							/>
 						</View>
 					);
@@ -344,6 +294,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 									value={state[e.name]}
 									onChange={val => updateState(e.name, val)}
 									placeholder={e.placeholder}
+									{...componentProps}
 								/>
 							</View>
 						);
@@ -363,6 +314,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 								value={state[e.name]}
 								onChange={val => updateState(e.name, val)}
 								placeholder={e.placeholder}
+								{...componentProps}
 							/>
 						</View>
 					);
@@ -386,6 +338,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 											? "number"
 											: null
 									}
+									{...componentProps}
 								/>
 							</View>
 						);
@@ -410,6 +363,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 										? "number-pad"
 										: null
 								}
+								{...componentProps}
 							/>
 						</View>
 					);
@@ -456,7 +410,9 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, setData }) => {
 										numberOfLines={1}
 										style={[
 											styles.inputTitle,
-											{ width: 140 }
+											{
+												width: 140
+											}
 										]}
 									>
 										{state[e.name]
@@ -561,4 +517,111 @@ export const styles = StyleSheet.create({
 	}
 });
 
+const mapStateToProps = ({ user: { token } }) => ({
+	token
+});
+
+const mapDispatchToProps = {};
+
 export default FieldsRenderer;
+
+/**
+ * let filterData = async text => {
+						if (state[e.name]) {
+							dispatch({ type: SET, name: e.name, value: "" });
+							return;
+						}
+						let res = await e.fetch(text);
+						dispatchItems({
+							type: SET,
+							name: e.name,
+							value: res.data
+						});
+					};
+					let autocompleteItem = ({ item }) => {
+						return (
+							<TouchableWithoutFeedback
+								onPress={() => {
+									dispatch({
+										type: SET,
+										name: e.name,
+										value: item
+									});
+									dispatchItems({
+										type: SET,
+										name: e.name,
+										value: []
+									});
+								}}
+							>
+								<Text
+									style={{
+										paddingVertical: 5,
+										marginVertical: 5,
+										borderRadius: 6,
+										backgroundColor: colors.white,
+										paddingHorizontal: 5
+									}}
+								>
+									{item.tin} {item.name}
+								</Text>
+							</TouchableWithoutFeedback>
+						);
+					};
+					return (
+						<View>
+							{!!e.title && (
+								<Text style={styles.inputTitle}>{e.title}</Text>
+							)}
+							<View
+								style={{
+									borderRadius: 6,
+									backgroundColor: colors.white,
+									elevation: 4,
+									justifyContent: "center",
+									alignItems: "center"
+								}}
+							>
+								<Autocomplete
+									placeholder={e.placeholder}
+									listContainerStyle={{
+										borderWidth: 0,
+										backgroundColor: colors.white
+									}}
+									listStyle={{
+										borderWidth: 0,
+										backgroundColor: colors.white
+									}}
+									containerStyle={{
+										borderWidth: 0,
+										padding: 8,
+										backgroundColor: colors.white,
+										borderRadius: 6
+									}}
+									style={{
+										backgroundColor: colors.white
+									}}
+									inputContainerStyle={{
+										borderWidth: 0
+									}}
+									data={[
+										{
+											tine: "Me",
+											name: "you"
+										}
+									]}
+									value={
+										state[e.name]
+											? state[e.name].tin +
+											  " - " +
+											  state[e.name].name
+											: null
+									}
+									renderItem={autocompleteItem}
+									onChangeText={filterData}
+									{...componentProps}
+								/>
+							</View>
+						</View>
+					);
+ */

@@ -22,7 +22,9 @@ const HeadUpMessage = ({ headUpType, headUpMessage }) => {
 			]}
 		>
 			<Text numberOfLines={3} style={styles.text}>
-				{headUpMessage}
+				{typeof headUpMessage === "string"
+					? headUpMessage
+					: "Unknown error occured!"}
 			</Text>
 		</Animated.View>
 	);

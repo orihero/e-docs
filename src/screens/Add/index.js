@@ -2,26 +2,29 @@ import React, { useEffect, useState } from "react";
 import {
 	ScrollView,
 	StyleSheet,
-	View,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	View
 } from "react-native";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import RectangularSelect from "../../components/common/RectangularSelect";
+import Text from "../../components/common/Text";
 import FieldsRenderer from "../../components/generators/FieldsRenderer";
 import colors from "../../constants/colors";
-import RectangularSelect from "../../components/common/RectangularSelect";
-import strings from "../../locales/strings";
 import * as types from "../../docTypes";
 import {
 	actGoodsAcceptanceFields,
 	actWorkPerformedFields,
 	actWorkPerformedProduct
 } from "../../docTypes";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Products from "./Products";
-import Text from "../../components/common/Text";
+import strings from "../../locales/strings";
+import { connect } from "react-redux";
 
-const Add = ({ navigation }) => {
+const mapStateToProps = ({ user }) => ({ user });
+
+const Add = connect(mapStateToProps)(({ navigation, user }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
+	let products = navigation.getParam("products") || [];
 	useEffect(() => {
 		if (docType.fields) {
 			setFields(docType.fields);
@@ -35,8 +38,7 @@ const Add = ({ navigation }) => {
 			value: 1,
 			actualValue: {
 				doc: types.empowermentDoc,
-				product: types.empowermentProduct,
-				entity: types.empowermentEntity
+				productModel: types.empowermentProduct
 			}
 		},
 		{
@@ -65,7 +67,7 @@ const Add = ({ navigation }) => {
 			value: 5,
 			actualValue: {
 				doc: types.actWorkPerformedDoc,
-				product: types.actWorkPerformedDocProduct,
+				productModel: types.actWorkPerformedDocProduct,
 				entity: types.actWorkPerformedDocEntity
 			}
 		},
@@ -74,7 +76,6 @@ const Add = ({ navigation }) => {
 			value: 6,
 			actualValue: {
 				doc: types.actWorkPerformedDoc,
-				product: types.actWorkPerformedDocProduct,
 				entity: types.actWorkPerformedDocEntity
 			}
 		}
@@ -88,7 +89,9 @@ const Add = ({ navigation }) => {
 							<Text style={styles.inputTitle}>
 								{strings.products}
 							</Text>
-							<Text style={styles.inputTitle}>{0}</Text>
+							<Text style={styles.inputTitle}>
+								{products.length}
+							</Text>
 						</View>
 						<TouchableWithoutFeedback
 							onPress={() => {
@@ -125,11 +128,19 @@ const Add = ({ navigation }) => {
 					placeholder={strings.selectDocType}
 					onChange={e => setDocType(e)}
 				/>
-				<FieldsRenderer fields={fields} footer={footer} />
+				<FieldsRenderer
+					initialValue={{
+						sellertin: user.tin,
+						sellername: user.name
+					}}
+					fields={fields}
+					footer={footer}
+					token={user.token}
+				/>
 			</ScrollView>
 		</View>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	container: {
@@ -159,8 +170,7 @@ const styles = StyleSheet.create({
 	productsWrapper: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		marginVertical: 15,
-		marginHorizontal: 20
+		marginVertical: 15
 	},
 	button: {
 		paddingHorizontal: 10,
@@ -173,5 +183,9 @@ const styles = StyleSheet.create({
 	},
 	flex: { flex: 1 }
 });
+
+// const mapDispatchToProps = {};
+
+// let connected = connect(mapStateToProps)(Add);
 
 export { Add };

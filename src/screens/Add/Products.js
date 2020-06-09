@@ -13,6 +13,7 @@ import Text from "../../components/common/Text";
 import Feather from "react-native-vector-icons/Feather";
 import RectangularSelect from "../../components/common/RectangularSelect";
 import requests from "../../api/requests";
+import RectangleButton from "../../components/common/RectangleButton";
 
 const Products = ({ navigation }) => {
 	let model = navigation.getParam("model");
@@ -124,11 +125,41 @@ const Products = ({ navigation }) => {
 		setProducts([...products, model]);
 	};
 
+	let onComplete = () => {
+		navigation.navigate("Add", { products });
+	};
+	let onCancel = () => {
+		navigation.navigate("Add");
+	};
 	return (
 		<View>
 			<ScrollView>
 				<View style={styles.container}>
 					{products.map(renderProduct)}
+					<View style={styles.row}>
+						<RectangleButton
+							backColor={colors.white}
+							text={strings.cancel}
+							onPress={onCancel}
+							style={{
+								marginTop: 20,
+								// paddingVertical: 25,
+								marginHorizontal: 20,
+								startColor: colors.grayText,
+								endColor: colors.grayBorder
+							}}
+						/>
+						<RectangleButton
+							backColor={colors.white}
+							text={strings.save}
+							onPress={onComplete}
+							style={{
+								marginTop: 20,
+								// paddingVertical: 25,
+								marginHorizontal: 20
+							}}
+						/>
+					</View>
 				</View>
 			</ScrollView>
 			<View style={styles.roundButtonContainer}>
@@ -145,7 +176,8 @@ const Products = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 15,
-		backgroundColor: colors.lightBlueBackground
+		backgroundColor: colors.lightBlueBackground,
+		paddingBottom: 80
 	},
 	productContainer: {
 		backgroundColor: colors.lightBlueBackground,
@@ -169,6 +201,10 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		borderRadius: 60
+	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between"
 	}
 });
 
