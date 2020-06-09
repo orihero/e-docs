@@ -18,6 +18,7 @@ import {
 } from "../../docTypes";
 import strings from "../../locales/strings";
 import { connect } from "react-redux";
+import RectangleButton from "../../components/common/RectangleButton";
 
 const mapStateToProps = ({ user }) => ({ user });
 
@@ -80,6 +81,8 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			}
 		}
 	];
+	let onCreate = () => {};
+
 	let footer = () => {
 		return (
 			<View>
@@ -112,6 +115,17 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 							</View>
 						</TouchableWithoutFeedback>
 					</View>
+				)}
+				{!!docType.fields && (
+					<RectangleButton
+						backColor={colors.white}
+						text={strings.create}
+						onPress={onCreate}
+						style={{
+							marginTop: 20,
+							marginHorizontal: 20
+						}}
+					/>
 				)}
 			</View>
 		);
@@ -170,7 +184,8 @@ const styles = StyleSheet.create({
 	productsWrapper: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		marginVertical: 15
+		marginVertical: 15,
+		marginHorizontal: 4
 	},
 	button: {
 		paddingHorizontal: 10,
@@ -181,7 +196,11 @@ const styles = StyleSheet.create({
 		justifyContent: "space-around",
 		alignItems: "center"
 	},
-	flex: { flex: 1 }
+	flex: { flex: 1 },
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between"
+	}
 });
 
 // const mapDispatchToProps = {};
