@@ -211,7 +211,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 								size={14}
 								numberOfLines={1}
 								isActive={state[e.name]}
-								setActive={() =>
+								toggle={() =>
 									updateState(e.name, !state[e.name])
 								}
 								title={e.title}

@@ -11,7 +11,7 @@ export interface DefaultCheckboxProps {
 	activeBackColor?: string;
 	index?: number;
 	parentIndex?: number;
-	setActive?: Function;
+	toggle?: Function;
 	isActive?: boolean;
 	title: string;
 	numberOfLines?: number;
@@ -21,7 +21,7 @@ const DefaultCheckbox = ({
 	backgroundColor = "transparent",
 	size = 20,
 	activeBackColor = colors.flowerBlue,
-	setActive = () => {},
+	toggle = () => {},
 	index,
 	isActive,
 	title,
@@ -31,7 +31,7 @@ const DefaultCheckbox = ({
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
-				setActive();
+				toggle(!isActive);
 			}}
 		>
 			<View style={[styles.row, style]}>

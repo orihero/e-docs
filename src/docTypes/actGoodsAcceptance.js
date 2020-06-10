@@ -56,7 +56,7 @@ export let actGoodsAcceptanceFields = [
 				type: FieldType.DATE_PICKER,
 				placeholder: strings.selectDate,
 				size: FieldSize.QUERTER_THREE,
-				name: "truckdoc.contractdate"
+				name: "truckdoc.truckmodel"
 			}
 		]
 	},

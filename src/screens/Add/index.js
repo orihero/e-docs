@@ -14,7 +14,8 @@ import * as types from "../../docTypes";
 import {
 	actGoodsAcceptanceFields,
 	actWorkPerformedFields,
-	actWorkPerformedProduct
+	actWorkPerformedProduct,
+	actWorkPerformedDoc
 } from "../../docTypes";
 import strings from "../../locales/strings";
 import { connect } from "react-redux";
@@ -25,7 +26,7 @@ const mapStateToProps = ({ user }) => ({ user });
 const Add = connect(mapStateToProps)(({ navigation, user }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
-	let products = navigation.getParam("products") || [];
+	let productList = navigation.getParam("productList") || [];
 	useEffect(() => {
 		if (docType.fields) {
 			setFields(docType.fields);
@@ -46,7 +47,8 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			label: "Акт выполненных работ",
 			value: {
 				fields: actWorkPerformedFields,
-				productModel: actWorkPerformedProduct
+				productModel: actWorkPerformedProduct,
+				doc: actWorkPerformedDoc
 			}
 		},
 		{
@@ -90,7 +92,7 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 		let model = docType.productModel;
 		let doc = docType.doc;
 		console.log({ doc });
-		console.log({ data });
+		console.log({ data: { ...data, productList } });
 	};
 
 	let footer = ({ getSubmitData }) => {
@@ -103,7 +105,9 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 								{strings.products}
 							</Text>
 							<Text style={styles.inputTitle}>
-								{products.length}
+								{productList.products
+									? productList.products.length
+									: 0}
 							</Text>
 						</View>
 						<TouchableWithoutFeedback

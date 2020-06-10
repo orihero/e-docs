@@ -23,10 +23,10 @@ const Products = ({ navigation }) => {
 		key: "",
 		value: ""
 	};
-	const [products, setProducts] = useState([model]);
+	const [products, setProducts] = useState([{ ...model }]);
 	const [tempValue, setTempValue] = useState(defaultTemp);
 	const [list, setList] = useState([]);
-	const [measureIdList, setMeasureId] = useState({});
+	const [withoutVat, setWithoutVat] = useState(false);
 	useEffect(() => {
 		requests.doc.getMeasures().then(res => {
 			setList(
@@ -47,11 +47,25 @@ const Products = ({ navigation }) => {
 					let type = typeof model[key];
 					switch (type) {
 						case "boolean":
+							if (!withoutVat) return null;
 							return (
 								<DefaultCheckbox
-									style={{ margin: 10, marginHorizontal: 0 }}
+									style={{
+										margin: 10,
+										marginHorizontal: 0
+									}}
 									title={strings[key] || key}
-									value={productModel[key]}
+									isActive={productModel[key]}
+									toggle={val =>
+										setProducts(
+											products.filter((e, i) => {
+												if (i === index) {
+													e[key] = val;
+												}
+												return e;
+											})
+										)
+									}
 								/>
 							);
 						case "string":
@@ -60,13 +74,17 @@ const Products = ({ navigation }) => {
 								return (
 									<RectangularSelect
 										placeholder={strings.measure}
-										value={measureIdList[index]}
+										value={productModel[key]}
 										items={list}
-										onChange={e =>
-											setMeasureId({
-												...measureIdList,
-												[index]: e
-											})
+										onChange={val =>
+											setProducts(
+												products.filter((e, i) => {
+													if (i === index) {
+														e[key] = val;
+													}
+													return e;
+												})
+											)
 										}
 										style={{
 											marginHorizontal: 15
@@ -126,7 +144,9 @@ const Products = ({ navigation }) => {
 	};
 
 	let onComplete = () => {
-		navigation.navigate("Add", { products });
+		navigation.navigate("Add", {
+			productList: { hasVat: !withoutVat, products }
+		});
 	};
 	let onCancel = () => {
 		navigation.navigate("Add");
@@ -135,6 +155,12 @@ const Products = ({ navigation }) => {
 		<View>
 			<ScrollView>
 				<View style={styles.container}>
+					<DefaultCheckbox
+						style={{ margin: 10, marginHorizontal: 0 }}
+						title={strings.withoutVat}
+						isActive={withoutVat}
+						toggle={setWithoutVat}
+					/>
 					{products.map(renderProduct)}
 					<View style={styles.row}>
 						<RectangleButton

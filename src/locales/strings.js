@@ -72,7 +72,8 @@ let strings = new LocalizedStrings({
 		measure: "Ед.Изм",
 		save: "Сохранить",
 		cancel: "Отменить",
-		create: "Создать"
+		create: "Создать",
+		withoutVat: "Учитывать НДС"
 	},
 	uz: {},
 	en: {}
