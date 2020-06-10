@@ -53,7 +53,8 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			label: "Акт приема-передачи",
 			value: {
 				fields: actGoodsAcceptanceFields,
-				productModel: types.actGoodsAcceptanceProduct
+				productModel: types.actGoodsAcceptanceProduct,
+				doc: types.actGoodsAcceptanceDoc
 			}
 		},
 		{
@@ -81,9 +82,18 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			}
 		}
 	];
-	let onCreate = () => {};
 
-	let footer = () => {
+	/**
+	 ** Creation of document
+	 */
+	let onCreate = data => {
+		let model = docType.productModel;
+		let doc = docType.doc;
+		console.log({ doc });
+		console.log({ data });
+	};
+
+	let footer = ({ getSubmitData }) => {
 		return (
 			<View>
 				{!!docType && !!docType.productModel && (
@@ -120,7 +130,7 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 					<RectangleButton
 						backColor={colors.white}
 						text={strings.create}
-						onPress={onCreate}
+						onPress={() => onCreate(getSubmitData())}
 						style={{
 							marginTop: 20,
 							marginHorizontal: 20
@@ -202,9 +212,5 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between"
 	}
 });
-
-// const mapDispatchToProps = {};
-
-// let connected = connect(mapStateToProps)(Add);
 
 export { Add };

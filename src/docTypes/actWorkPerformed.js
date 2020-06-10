@@ -1,11 +1,12 @@
 import { FieldType, FieldSize } from "../components/generators/FieldsRenderer";
 import strings from "../locales/strings";
+import requests from "../api/requests";
 
 export let actWorkPerformedFields = [
 	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
-		title: strings.actGoodsAcceptance,
+		title: strings.actWorkPerformed,
 		columns: [
 			{
 				type: FieldType.INPUT,
@@ -41,107 +42,39 @@ export let actWorkPerformedFields = [
 		]
 	},
 	{
-		type: FieldType.LINE,
+		type: FieldType.INPUT,
+		placeholder: strings.inn,
 		size: FieldSize.FULL,
-		title: strings.contract,
-		columns: [
-			{
-				type: FieldType.INPUT,
-				size: FieldSize.HALF,
-				placeholder: strings.number,
-				name: "truckdoc.truckregno"
-			},
-			{
-				type: FieldType.INPUT,
-				placeholder: strings.selectDate,
-				size: FieldSize.HALF,
-				name: "truckdoc.truckmodel"
-			}
-		]
-	},
-	{
-		type: FieldType.LINE,
-		size: FieldSize.FULL,
-		columns: [
-			{
-				type: FieldType.INPUT,
-				title: strings.documentNumber,
-				size: FieldSize.HALF,
-				placeholder: strings.number,
-				name: "truckdoc.truckregno"
-			},
-			{
-				type: FieldType.INPUT,
-				placeholder: strings.selectDate,
-				size: FieldSize.HALF,
-				title: strings.selectDate,
-				name: "truckdoc.truckmodel"
-			}
-		]
+		name: "sellertin",
+		title: strings.seller,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
 	},
 	{
 		type: FieldType.INPUT,
-		title: strings.sellertin,
-		placeholder: strings.sellertin,
-		size: FieldSize.FULL,
-		name: "sellertin"
-		// fetch: requests.user.getRequisite
-	},
-	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
+		placeholder: strings.name,
 		size: FieldSize.FULL,
 		name: "sellername"
-		// fetch: requests.user.getRequisite
 	},
 	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
 		size: FieldSize.FULL,
-		name: "buyertin"
-		// fetch: requests.user.getRequisite
+		name: "buyertin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
 	},
 	{
 		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.reciever,
+		placeholder: strings.name,
 		size: FieldSize.FULL,
 		name: "buyername"
-		// fetch: requests.user.getRequisite
-	},
-	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
-		size: FieldSize.FULL,
-		name: "shippertin"
-		// fetch: requests.user.getRequisite
-	},
-	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
-		size: FieldSize.FULL,
-		name: "shippername"
-		// fetch: requests.user.getRequisite
-	},
-	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
-		size: FieldSize.FULL,
-		name: "consigneetin"
-		// fetch: requests.user.getRequisite
-	},
-	{
-		type: FieldType.INPUT,
-		title: strings.recieverInn,
-		placeholder: strings.recieverInn,
-		size: FieldSize.FULL,
-		name: "consigneename"
-		// fetch: requests.user.getRequisite
 	}
 ];
 

@@ -42,6 +42,25 @@ export let actGoodsAcceptanceFields = [
 		]
 	},
 	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.contract,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "truckdoc.truckregno"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "truckdoc.contractdate"
+			}
+		]
+	},
+	{
 		type: FieldType.INPUT,
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
