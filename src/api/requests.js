@@ -82,7 +82,17 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		getMeasures: () => instance.fetch("GET", `${url}/measures/all`)
+		getMeasures: () => instance.fetch("GET", `${url}/measures/all`),
+		create: (token, type, credentials) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}`,
+				{
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
+				},
+				JSON.stringify(credentials)
+			)
 	},
 	pdf: {
 		loadFile: (token, docId) =>

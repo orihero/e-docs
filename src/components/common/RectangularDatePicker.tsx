@@ -34,8 +34,7 @@ const RectangularDatePicker = ({
 				? (selectedDate.getMonth() + 1).toString()
 				: "0" + (selectedDate.getMonth() + 1).toString();
 
-		let date = `${day}.${month}.${year}`;
-		return date;
+		let date = `${year}-${month}-${day}`;
 		return date;
 	};
 	const [visible, setVisible] = useState(false);

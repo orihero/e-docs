@@ -20,6 +20,9 @@ import {
 import strings from "../../locales/strings";
 import { connect } from "react-redux";
 import RectangleButton from "../../components/common/RectangleButton";
+import { convertToTypeOf } from "../../utils/object";
+import signProvider from "../../utils/signProvider";
+import requests from "../../api/requests";
 
 const mapStateToProps = ({ user }) => ({ user });
 
@@ -48,7 +51,8 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			value: {
 				fields: actWorkPerformedFields,
 				productModel: actWorkPerformedProduct,
-				doc: actWorkPerformedDoc
+				doc: actWorkPerformedDoc,
+				docType: "actWorkPerformed"
 			}
 		},
 		{
@@ -87,12 +91,52 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 
 	/**
 	 ** Creation of document
+	 * @param {any} data Gathered after the completion of form
 	 */
-	let onCreate = data => {
-		let model = docType.productModel;
+	let onCreate = async data => {
+		//TODO start loading
+		//* Model for the product
+		let productModel = docType.productModel;
+		//* Model for the document
 		let doc = docType.doc;
-		console.log({ doc });
-		console.log({ data: { ...data, productList } });
+		//? Validation
+		//* Since React-native input generate only string we have to parse all the string to corresponding data type
+		let parsedProducts = productList.products.map(product => {
+			let parsedProduct = Object.keys(product).reduce((prev, key) => {
+				return {
+					...prev,
+					[key]: convertToTypeOf(productModel[key], product[key])
+				};
+			}, {});
+			return parsedProduct;
+		});
+		//* Temporary submit data
+		let temp = {
+			...data,
+			productlist: { ...productList, products: parsedProducts }
+		};
+		console.log({ parsedProducts });
+		console.log({ productModel });
+
+		//* Make sure that submit data is similar to document model
+		let submitData = Object.keys(doc).reduce((prev, key) => {
+			return { ...prev, [key]: temp[key] };
+		}, {});
+
+		try {
+			console.log("SENDING REQUEST TO CREATE", { submitData });
+			let res = await requests.doc.create(
+				user.token,
+				docType.docType,
+				submitData
+			);
+			console.log({ response: res.json() });
+		} catch (error) {
+			console.log(error);
+		}
+		console.log("SEND COMPLETE");
+
+		// let sign = await signProvider.sign(JSON.stringify(submitData));
 	};
 
 	let footer = ({ getSubmitData }) => {

@@ -23,6 +23,12 @@ export let actWorkPerformedFields = [
 		]
 	},
 	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "actdoc.acttext"
+	},
+	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
 		title: strings.contract,
@@ -82,7 +88,7 @@ export let actWorkPerformedProduct = {
 	withoutvat: false,
 	ordno: 0,
 	name: "",
-	measureid: "0",
+	measureid: "-1",
 	count: 0,
 	summa: 0,
 	totalsum: 0,
