@@ -1,3 +1,102 @@
+import { FieldSize, FieldType } from "../components/generators/FieldsRenderer";
+import strings from "../locales/strings";
+import requests from "../api/requests";
+
+export let actGoodsAcceptanceFields = [
+	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.factura,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "facturadoc.facturano"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "actdoc.actdate"
+			}
+		]
+	},
+	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.contract,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "contractdoc.contractno"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "contractdoc.contractdate"
+			}
+		]
+	},
+	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.contract,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "truckdoc.truckregno"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "truckdoc.truckmodel"
+			}
+		]
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "sellertin",
+		title: strings.seller,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "sellername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "buyertin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "buyername"
+	}
+];
+
 export let factureEntity = {
 	name: "",
 	account: "",

@@ -73,7 +73,8 @@ let strings = new LocalizedStrings({
 		save: "Сохранить",
 		cancel: "Отменить",
 		create: "Создать",
-		withoutVat: "Учитывать НДС"
+		withoutVat: "Учитывать НДС",
+		facture: "Счёт фактура"
 	},
 	uz: {},
 	en: {}

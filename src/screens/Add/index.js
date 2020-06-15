@@ -116,8 +116,6 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			productlist: { ...productList, products: parsedProducts }
 		};
 		console.log({ parsedProducts });
-		console.log({ productModel });
-
 		//* Make sure that submit data is similar to document model
 		let submitData = Object.keys(doc).reduce((prev, key) => {
 			return { ...prev, [key]: temp[key] };
@@ -132,10 +130,12 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			);
 			console.log({ response: res.json() });
 		} catch (error) {
+			//TODO show error message
 			console.log(error);
 		}
 		console.log("SEND COMPLETE");
-
+		//TODO stop loading
+		//TODO show success message
 		// let sign = await signProvider.sign(JSON.stringify(submitData));
 	};
 
