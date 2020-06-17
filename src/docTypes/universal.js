@@ -1,3 +1,145 @@
+import strings from "../locales/strings";
+import { FieldType, FieldSize } from "../components/generators/FieldsRenderer";
+
+export let universalFields = [
+	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.doc,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "doc.docno"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "doc.docdate"
+			}
+		]
+	},
+	{
+		type: FieldType.LINE,
+		size: FieldSize.FULL,
+		title: strings.contract,
+		columns: [
+			{
+				type: FieldType.INPUT,
+				size: FieldSize.QUARTER,
+				placeholder: strings.number,
+				name: "contractdoc.contractno"
+			},
+			{
+				type: FieldType.DATE_PICKER,
+				placeholder: strings.selectDate,
+				size: FieldSize.QUERTER_THREE,
+				name: "contractdoc.contractdate"
+			}
+		]
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.sender,
+		name: "ownerrole",
+		title: strings.seller
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "ownertin",
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "ownername"
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.sender,
+		name: "targetrole",
+		title: strings.receiver
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "targettin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "targetname"
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.sender,
+		name: "target2role",
+		title: strings.receiver
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "target2tin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "target2name"
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.sender,
+		name: "target3role",
+		title: strings.receiver
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "target3tin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "target3name"
+	}
+];
+
 export let universalDoc = {
 	doc: {
 		docno: "", // номер документа

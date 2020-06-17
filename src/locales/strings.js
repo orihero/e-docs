@@ -74,7 +74,10 @@ let strings = new LocalizedStrings({
 		cancel: "Отменить",
 		create: "Создать",
 		withoutVat: "Учитывать НДС",
-		facture: "Счёт фактура"
+		waybill: "Товарно транспортная накладная",
+		contractdoc: "Путевой лист",
+		sender: "Отправитель",
+		receiver: "Получатель"
 	},
 	uz: {},
 	en: {}
