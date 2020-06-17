@@ -1,11 +1,12 @@
 import strings from "../locales/strings";
 import { FieldType, FieldSize } from "../components/generators/FieldsRenderer";
+import requests from "../api/requests";
 
 export let universalFields = [
 	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
-		title: strings.doc,
+		title: strings.universal,
 		columns: [
 			{
 				type: FieldType.INPUT,
@@ -45,7 +46,7 @@ export let universalFields = [
 		size: FieldSize.FULL,
 		placeholder: strings.sender,
 		name: "ownerrole",
-		title: strings.seller
+		title: strings.sender
 	},
 	{
 		type: FieldType.INPUT,
@@ -66,7 +67,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.sender,
+		placeholder: strings.receiver,
 		name: "targetrole",
 		title: strings.receiver
 	},
@@ -75,7 +76,6 @@ export let universalFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "targettin",
-		title: strings.buyer,
 		componentProps: {
 			maxLength: 9,
 			keyboardType: "number-pad"
@@ -91,7 +91,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.sender,
+		placeholder: strings.receiver,
 		name: "target2role",
 		title: strings.receiver
 	},
@@ -100,7 +100,6 @@ export let universalFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "target2tin",
-		title: strings.buyer,
 		componentProps: {
 			maxLength: 9,
 			keyboardType: "number-pad"
@@ -116,7 +115,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.sender,
+		placeholder: strings.receiver,
 		name: "target3role",
 		title: strings.receiver
 	},
@@ -125,7 +124,6 @@ export let universalFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "target3tin",
-		title: strings.buyer,
 		componentProps: {
 			maxLength: 9,
 			keyboardType: "number-pad"
@@ -137,6 +135,13 @@ export let universalFields = [
 		placeholder: strings.name,
 		size: FieldSize.FULL,
 		name: "target3name"
+	},
+	{
+		type: FieldType.FILE,
+		placeholder: strings.selectFile,
+		size: FieldSize.FULL,
+		name: "file",
+		title: strings.clear
 	}
 ];
 

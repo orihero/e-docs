@@ -77,7 +77,9 @@ let strings = new LocalizedStrings({
 		waybill: "Товарно транспортная накладная",
 		contractdoc: "Путевой лист",
 		sender: "Отправитель",
-		receiver: "Получатель"
+		receiver: "Получатель",
+		clear: "Очистить",
+		universal: "Универсальный документ"
 	},
 	uz: {},
 	en: {}

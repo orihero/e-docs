@@ -1,33 +1,29 @@
 import React from "react";
+import Feather from "react-native-vector-icons/Feather";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import Text from "../components/common/Text";
-
 // import {createDrawerNavigator} from 'react-navigation-drawer';
 import { createStackNavigator } from "react-navigation-stack";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
-import {
-	Main,
-	Add,
-	Profile,
-	Login,
-	Product,
-	Checkout,
-	Loader,
-	List,
-	PdfView
-} from "../screens";
+import Text from "../components/common/Text";
 import Header from "../components/navigation/Header";
-import Feather from "react-native-vector-icons/Feather";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import colors from "../constants/colors";
 import strings from "../locales/strings";
-import CustomFLoatingTabbar from "../components/navigation/CustomFloatingTabbar";
+import Product from "../screens/product/Product";
+import ConnectedMain from "../screens/main/Boxes";
+import List from "../screens/main/List";
+import PdfView from "../screens/main/PdfView";
+import Checkout from "../screens/checkout/Checkout";
+import Profile from "../screens/profile/Profile";
+import Add from "../screens/add/Add";
 import Products from "../screens/add/Products";
+import Login from "../screens/auth/Login";
+import Loader from "../screens/auth/Loader";
 
 const MainStack = createStackNavigator(
 	{
 		Main: {
-			screen: Main,
+			screen: ConnectedMain,
 			navigationOptions: {
 				header: () => <Header secondary={true} />
 			}

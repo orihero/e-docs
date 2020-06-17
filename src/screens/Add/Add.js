@@ -6,27 +6,59 @@ import {
 	View
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { connect } from "react-redux";
+import requests from "../../api/requests";
+import RectangleButton from "../../components/common/RectangleButton";
 import RectangularSelect from "../../components/common/RectangularSelect";
 import Text from "../../components/common/Text";
 import FieldsRenderer from "../../components/generators/FieldsRenderer";
 import colors from "../../constants/colors";
-import * as types from "../../docTypes";
-import {
-	actGoodsAcceptanceFields,
-	actWorkPerformedFields,
-	actWorkPerformedProduct,
-	actWorkPerformedDoc
-} from "../../docTypes";
 import strings from "../../locales/strings";
-import { connect } from "react-redux";
-import RectangleButton from "../../components/common/RectangleButton";
 import { convertToTypeOf } from "../../utils/object";
-import signProvider from "../../utils/signProvider";
-import requests from "../../api/requests";
+import {
+	empowermentDoc,
+	empowermentFields,
+	empowermentProduct
+} from "../../docTypes/empowerment";
+
+import {
+	actWorkPerformedDoc,
+	actWorkPerformedFields,
+	actWorkPerformedProduct
+} from "../../docTypes/actWorkPerformed";
+
+import {
+	actGoodsAcceptanceDoc,
+	actGoodsAcceptanceFields,
+	actGoodsAcceptanceProduct
+} from "../../docTypes/actGoodsAcceptance";
+
+import {
+	waybillDoc,
+	waybillFields,
+	waybillProduct
+} from "../../docTypes/waybill";
+
+import { universalDoc, universalFields } from "../../docTypes/universal";
+
+import {
+	customerOrderDoc,
+	customerOrderFields,
+	customerOrderProduct
+} from "../../docTypes/waybill";
+import {
+	showModal,
+	hideModal,
+	showMessage,
+	hideMessage
+} from "../../redux/actions";
 
 const mapStateToProps = ({ user }) => ({ user });
 
-const Add = connect(mapStateToProps)(({ navigation, user }) => {
+const Add = connect(
+	mapStateToProps,
+	{ showModal, hideModal, showMessage, hideMessage }
+)(({ navigation, user }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
 	let productList = navigation.getParam("productList") || [];
@@ -41,9 +73,11 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 		{
 			label: "Доверенность",
 			value: 1,
-			actualValue: {
-				doc: types.empowermentDoc,
-				productModel: types.empowermentProduct
+			value: {
+				fields: empowermentFields,
+				productModel: empowermentProduct,
+				doc: empowermentDoc,
+				docType: "empowerment"
 			}
 		},
 		{
@@ -59,32 +93,37 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 			label: "Акт приема-передачи",
 			value: {
 				fields: actGoodsAcceptanceFields,
-				productModel: types.actGoodsAcceptanceProduct,
-				doc: types.actGoodsAcceptanceDoc
+				productModel: actGoodsAcceptanceProduct,
+				doc: actGoodsAcceptanceDoc
 			}
 		},
 		{
 			label: "Товарно транспортная накладная",
 			value: 4,
-			actualValue: {
-				doc: types.actWorkPerformedDoc
+			value: {
+				fields: waybillFields,
+				productModel: waybillProduct,
+				doc: waybillDoc,
+				docType: "waybill"
 			}
 		},
 		{
 			label: "Заказ",
 			value: 5,
-			actualValue: {
-				doc: types.actWorkPerformedDoc,
-				productModel: types.actWorkPerformedDocProduct,
-				entity: types.actWorkPerformedDocEntity
+			value: {
+				fields: customerOrderFields,
+				productModel: customerOrderProduct,
+				doc: customerOrderDoc,
+				docType: "customerOrder"
 			}
 		},
 		{
 			label: "Универсальный документ ",
 			value: 6,
-			actualValue: {
-				doc: types.actWorkPerformedDoc,
-				entity: types.actWorkPerformedDocEntity
+			value: {
+				fields: universalFields,
+				doc: universalDoc,
+				docType: "universal"
 			}
 		}
 	];
@@ -95,6 +134,7 @@ const Add = connect(mapStateToProps)(({ navigation, user }) => {
 	 */
 	let onCreate = async data => {
 		//TODO start loading
+		showModal();
 		//* Model for the product
 		let productModel = docType.productModel;
 		//* Model for the document
@@ -261,4 +301,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export { Add };
+export default Add;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, UIManager } from "react-native";
+import { Platform, UIManager, View } from "react-native";
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppNavigator from "./src/routes/AppRouter";
@@ -9,6 +9,7 @@ import LoadingModal from "./src/components/containers/LoadingModal";
 import HeadUpMessage from "./src/components/common/HeadUpMessage";
 import { configureAxios } from "./src/api/configs";
 import NavigationService from "./src/routes/NavigationService";
+import Text from "./src/components/common/Text";
 
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
