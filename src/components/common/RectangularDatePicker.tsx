@@ -70,12 +70,13 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		// elevation: 4,
-		paddingBottom: 18,
+		paddingBottom: 16,
 		borderBottomLeftRadius: 0,
 		borderBottomRightRadius: 0,
 		borderBottomWidth: 1,
 		borderColor: colors.lightGrayText,
-		marginRight: 15
+		marginTop: 3,
+		marginHorizontal: 2
 	},
 	placeholder: {
 		color: colors.grayText

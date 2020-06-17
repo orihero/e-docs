@@ -80,7 +80,8 @@ export let universalFields = [
 			maxLength: 9,
 			keyboardType: "number-pad"
 		},
-		fetch: requests.account.getProfileByTin
+		fetch: requests.account.getProfileByTin,
+		child: "targetname"
 	},
 	{
 		type: FieldType.INPUT,
@@ -104,7 +105,8 @@ export let universalFields = [
 			maxLength: 9,
 			keyboardType: "number-pad"
 		},
-		fetch: requests.account.getProfileByTin
+		fetch: requests.account.getProfileByTin,
+		child: "target2name"
 	},
 	{
 		type: FieldType.INPUT,
@@ -128,13 +130,26 @@ export let universalFields = [
 			maxLength: 9,
 			keyboardType: "number-pad"
 		},
-		fetch: requests.account.getProfileByTin
+		fetch: requests.account.getProfileByTin,
+		child: "target3name"
 	},
 	{
 		type: FieldType.INPUT,
 		placeholder: strings.name,
 		size: FieldSize.FULL,
 		name: "target3name"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.doctype,
+		size: FieldSize.FULL,
+		name: "doctype"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.totalsum,
+		size: FieldSize.FULL,
+		name: "productList.totalsum"
 	},
 	{
 		type: FieldType.FILE,

@@ -44,18 +44,18 @@ export let actGoodsAcceptanceFields = [
 	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
-		title: strings.contract,
+		title: strings.truck,
 		columns: [
 			{
 				type: FieldType.INPUT,
-				size: FieldSize.QUARTER,
-				placeholder: strings.number,
+				size: FieldSize.HALF,
+				placeholder: strings.carNumber,
 				name: "truckdoc.truckregno"
 			},
 			{
-				type: FieldType.DATE_PICKER,
-				placeholder: strings.selectDate,
-				size: FieldSize.QUERTER_THREE,
+				type: FieldType.INPUT,
+				placeholder: strings.carModel,
+				size: FieldSize.HALF,
 				name: "truckdoc.truckmodel"
 			}
 		]
@@ -94,6 +94,46 @@ export let actGoodsAcceptanceFields = [
 		placeholder: strings.name,
 		size: FieldSize.FULL,
 		name: "buyername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "shippertin",
+		title: strings.truckSender,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin,
+		child: "shippername",
+		parent: "other"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "shippername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "consigneetin",
+		title: strings.truckReceiver,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin,
+		parent: "other",
+		child: "consigneename"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "consigneename"
 	}
 ];
 

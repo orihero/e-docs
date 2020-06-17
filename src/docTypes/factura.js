@@ -2,7 +2,7 @@ import { FieldSize, FieldType } from "../components/generators/FieldsRenderer";
 import strings from "../locales/strings";
 import requests from "../api/requests";
 
-export let actGoodsAcceptanceFields = [
+export let facturaFields = [
 	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
@@ -18,7 +18,7 @@ export let actGoodsAcceptanceFields = [
 				type: FieldType.DATE_PICKER,
 				placeholder: strings.selectDate,
 				size: FieldSize.QUERTER_THREE,
-				name: "actdoc.actdate"
+				name: "facturadoc.facturadate"
 			}
 		]
 	},
@@ -42,23 +42,57 @@ export let actGoodsAcceptanceFields = [
 		]
 	},
 	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		title: strings.itemreleased,
+		placeholder: strings.fio,
+		name: "itemreleaseddoc.itemreleasedfio"
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.inn,
+		name: "itemreleaseddoc.itemreleasedtin",
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
+	},
+	{
 		type: FieldType.LINE,
 		size: FieldSize.FULL,
-		title: strings.contract,
+		title: strings.empowerment,
 		columns: [
 			{
 				type: FieldType.INPUT,
 				size: FieldSize.QUARTER,
 				placeholder: strings.number,
-				name: "truckdoc.truckregno"
+				name: "facturaempowermentdoc.empowermentno"
 			},
 			{
 				type: FieldType.DATE_PICKER,
 				placeholder: strings.selectDate,
 				size: FieldSize.QUERTER_THREE,
-				name: "truckdoc.truckmodel"
+				name: "facturaempowermentdoc.empowermentdate"
 			}
 		]
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.fio,
+		title: strings.agent,
+		name: "facturaempowermentdoc.agentfio"
+	},
+	{
+		type: FieldType.INPUT,
+		size: FieldSize.FULL,
+		placeholder: strings.inn,
+		name: "facturaempowermentdoc.agenttin",
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
 	},
 	{
 		type: FieldType.INPUT,
@@ -72,12 +106,6 @@ export let actGoodsAcceptanceFields = [
 		}
 	},
 	{
-		type: FieldType.INPUT,
-		placeholder: strings.name,
-		size: FieldSize.FULL,
-		name: "sellername"
-	},
-	{
 		type: FieldType.AUTOCOMPLETE,
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
@@ -88,12 +116,6 @@ export let actGoodsAcceptanceFields = [
 			keyboardType: "number-pad"
 		},
 		fetch: requests.account.getProfileByTin
-	},
-	{
-		type: FieldType.INPUT,
-		placeholder: strings.name,
-		size: FieldSize.FULL,
-		name: "buyername"
 	}
 ];
 

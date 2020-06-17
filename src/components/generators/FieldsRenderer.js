@@ -11,6 +11,7 @@ import RectangularInput from "../common/RectangularInput";
 import RectangularSelect from "../common/RectangularSelect";
 import requests from "../../api/requests";
 import { connect } from "react-redux";
+import RNFetchBlob from "rn-fetch-blob";
 
 export let FieldSize = {
 	FULL: "full",
@@ -32,16 +33,8 @@ export let FieldType = {
 
 const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 	const [state, dispatch] = useReducer(reducer, initialValue || {});
-	const [validations, setValidations] = useState(() => {
-		let temp = fields.reduce(
-			(prev, current) => ({
-				...prev,
-				[current.name]: current.validation
-			}),
-			{}
-		);
-		return temp;
-	});
+	const [validations, setValidations] = useState();
+	console.log({ initialValue });
 	let initialItems = () =>
 		fields.reduce((prev, current) => {
 			if (
@@ -107,13 +100,8 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 			const res = await DocumentPicker.pick({
 				type: [DocumentPicker.types.allFiles]
 			});
-			console.log(
-				res.uri,
-				res.type, // mime type
-				res.name,
-				res.size
-			);
-			updateState(e.name, res);
+			let content = await RNFetchBlob.fs.readFile(res.uri, "base64");
+			updateState(e.name, { ...res, base64: content });
 		} catch (err) {
 			if (DocumentPicker.isCancel(err)) {
 				// User cancelled the picker, exit any dialogs or menus and move on
@@ -152,18 +140,18 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 				delete normalState[key];
 			}
 			//* Parse to corresponding dataType
-			console.warn(validations[key]);
+			// console.warn(validations[key]);
 
-			if (validations[key]?.float) {
-				normalState[key] = parseFloat(normalState[key]);
-			}
+			// if (validations[key]?.float) {
+			// 	normalState[key] = parseFloat(normalState[key]);
+			// }
 			//TODO Validation
 		});
 		return normalState;
 	};
 
 	let renderFields = fields => {
-		return fields.map(e => {
+		return fields.map((e, ind) => {
 			if (e.visible === false) return null;
 			let componentProps = e.componentProps || {};
 
@@ -177,7 +165,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 			switch (e.type) {
 				case FieldType.AUTOCOMPLETE: {
 					return (
-						<View>
+						<View key={e.name}>
 							{!!e.title && (
 								<Text style={styles.inputTitle}>{e.title}</Text>
 							)}
@@ -202,6 +190,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 				case FieldType.CHECKBOX:
 					return (
 						<View
+							key={e.name}
 							style={{
 								marginVertical: 15,
 								...styles[e.size]
@@ -234,6 +223,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 					if (e.size === FieldSize.FULL) {
 						return (
 							<View
+								key={e.name}
 								style={{
 									marginVertical: 5
 								}}
@@ -259,7 +249,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 						);
 					}
 					return (
-						<View style={styles[e.size]}>
+						<View style={styles[e.size]} key={e.name}>
 							{e.title && (
 								<Text
 									numberOfLines={1}
@@ -283,7 +273,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 				case FieldType.DATE_PICKER:
 					if (e.size === FieldSize.FULL) {
 						return (
-							<View>
+							<View key={e.name}>
 								{!!e.title && (
 									<Text style={styles.inputTitle}>
 										{e.title}
@@ -300,7 +290,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 						);
 					}
 					return (
-						<View style={styles[e.size]}>
+						<View style={styles[e.size]} key={e.name}>
 							{!!e.title && (
 								<Text
 									numberOfLines={1}
@@ -321,7 +311,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 				case FieldType.INPUT:
 					if (e.size === FieldSize.FULL) {
 						return (
-							<View>
+							<View key={e.name}>
 								{!!e.title && (
 									<Text style={styles.inputTitle}>
 										{e.title}
@@ -344,7 +334,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 						);
 					}
 					return (
-						<View style={styles[e.size]}>
+						<View key={e.name} style={styles[e.size]}>
 							{!!e.title && (
 								<Text
 									numberOfLines={1}
@@ -369,14 +359,14 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 					);
 				case FieldType.COMPLEX:
 					return (
-						<Fragment>
+						<Fragment key={e.name}>
 							{!!e.title && (
 								<Text style={styles.inputTitle}>{e.title}</Text>
 							)}
 							{e.rows &&
-								e.rows.map(el => {
+								e.rows.map((el, i) => {
 									return (
-										<View style={styles.row}>
+										<View key={i} style={styles.row}>
 											{renderFields(el)}
 										</View>
 									);
@@ -385,7 +375,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 					);
 				case FieldType.LINE:
 					return (
-						<Fragment>
+						<Fragment key={ind}>
 							{!!e.title && (
 								<Text
 									numberOfLines={1}
@@ -401,7 +391,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 					);
 				case FieldType.FILE:
 					return (
-						<View style={styles.row}>
+						<View style={styles.row} key={e.name}>
 							<TouchableWithoutFeedback
 								onPress={() => pickFile(e)}
 							>

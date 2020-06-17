@@ -45,7 +45,14 @@ import {
 	customerOrderDoc,
 	customerOrderFields,
 	customerOrderProduct
-} from "../../docTypes/waybill";
+} from "../../docTypes/customerOrder";
+
+import {
+	facturaDoc,
+	facturaFields,
+	facturaProduct
+} from "../../docTypes/factura";
+
 import {
 	showModal,
 	hideModal,
@@ -58,7 +65,7 @@ const mapStateToProps = ({ user }) => ({ user });
 const Add = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
-)(({ navigation, user }) => {
+)(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
 	let productList = navigation.getParam("productList") || [];
@@ -71,8 +78,16 @@ const Add = connect(
 	}, [docType]);
 	let docTypes = [
 		{
+			label: "Счет-фактура",
+			value: {
+				fields: facturaFields,
+				productModel: facturaProduct,
+				doc: facturaDoc,
+				docType: "empowerment"
+			}
+		},
+		{
 			label: "Доверенность",
-			value: 1,
 			value: {
 				fields: empowermentFields,
 				productModel: empowermentProduct,
@@ -94,12 +109,12 @@ const Add = connect(
 			value: {
 				fields: actGoodsAcceptanceFields,
 				productModel: actGoodsAcceptanceProduct,
-				doc: actGoodsAcceptanceDoc
+				doc: actGoodsAcceptanceDoc,
+				docType: "actGoodsAcceptance"
 			}
 		},
 		{
 			label: "Товарно транспортная накладная",
-			value: 4,
 			value: {
 				fields: waybillFields,
 				productModel: waybillProduct,
@@ -109,7 +124,6 @@ const Add = connect(
 		},
 		{
 			label: "Заказ",
-			value: 5,
 			value: {
 				fields: customerOrderFields,
 				productModel: customerOrderProduct,
@@ -119,7 +133,6 @@ const Add = connect(
 		},
 		{
 			label: "Универсальный документ ",
-			value: 6,
 			value: {
 				fields: universalFields,
 				doc: universalDoc,
@@ -139,20 +152,50 @@ const Add = connect(
 		let productModel = docType.productModel;
 		//* Model for the document
 		let doc = docType.doc;
-		//? Validation
-		//* Since React-native input generate only string we have to parse all the string to corresponding data type
-		let parsedProducts = productList.products.map(product => {
-			let parsedProduct = Object.keys(product).reduce((prev, key) => {
-				return {
-					...prev,
-					[key]: convertToTypeOf(productModel[key], product[key])
-				};
-			}, {});
-			return parsedProduct;
-		});
+		let parsedProducts = [];
+		let temp = { ...data };
+		//? Universal document has no product
+		if (docType.docType !== "universal") {
+			//? Validation
+			//* Since React-native input generate only string we have to parse all the string to corresponding data type
+			parsedProducts = productList.products.map(product => {
+				let parsedProduct = Object.keys(product).reduce((prev, key) => {
+					return {
+						...prev,
+						[key]: convertToTypeOf(productModel[key], product[key])
+					};
+				}, {});
+				return parsedProduct;
+			});
+		} else {
+			//* Document is universal
+			let { base64: filebase64, type: filetype, name: filename } =
+				data.file || {};
+			temp = {
+				...temp,
+				file: { filebase64, filename, filetype }
+			};
+			let dataProductList = temp.productList || {};
+			let docProductList = docType.doc.productlist || {};
+			console.log({ dataProductList, docProductList });
+
+			let parsedProduct = Object.keys(dataProductList).reduce(
+				(prev, key) => {
+					return {
+						...prev,
+						[key]: convertToTypeOf(
+							docProductList[key],
+							dataProductList[key]
+						)
+					};
+				},
+				{}
+			);
+			productList = { ...docProductList, ...parsedProduct };
+		}
 		//* Temporary submit data
-		let temp = {
-			...data,
+		temp = {
+			...temp,
 			productlist: { ...productList, products: parsedProducts }
 		};
 		console.log({ parsedProducts });
@@ -162,21 +205,38 @@ const Add = connect(
 		}, {});
 
 		try {
+			//TODO Empoverment fill agent passport manually
+			if (docType.docType === "empowerment") {
+				let { passport } = data || {};
+				submitData.agent = {
+					...submitData.agent,
+					passport
+				};
+			}
+			console.log("SENDING FILE:", { file: data.file });
+
 			console.log("SENDING REQUEST TO CREATE", { submitData });
 			let res = await requests.doc.create(
 				user.token,
 				docType.docType,
 				submitData
 			);
-			console.log({ response: res.json() });
+			console.warn({ response: res.json() });
+			console.warn({ response: res.json().toString() });
+			showMessage({
+				type: colors.green,
+				message: strings.createdSuccessfully
+			});
 		} catch (error) {
 			//TODO show error message
-			console.log(error);
+			console.warn(error);
+			showMessage({ type: colors.killerRed, message: error.message });
 		}
 		console.log("SEND COMPLETE");
 		//TODO stop loading
 		//TODO show success message
 		// let sign = await signProvider.sign(JSON.stringify(submitData));
+		hideModal();
 	};
 
 	let footer = ({ getSubmitData }) => {
@@ -228,6 +288,7 @@ const Add = connect(
 			</View>
 		);
 	};
+
 	return (
 		<View style={styles.container}>
 			<ScrollView
@@ -240,15 +301,20 @@ const Add = connect(
 					placeholder={strings.selectDocType}
 					onChange={e => setDocType(e)}
 				/>
-				<FieldsRenderer
-					initialValue={{
-						sellertin: user.tin,
-						sellername: user.name
-					}}
-					fields={fields}
-					footer={footer}
-					token={user.token}
-				/>
+				{!!user.tin && (
+					<FieldsRenderer
+						initialValue={{
+							ownertin: user.tin,
+							ownername: user.name,
+							sellertin: user.tin,
+							sellername: user.name,
+							seller: user
+						}}
+						fields={fields}
+						footer={footer}
+						token={user.token}
+					/>
+				)}
 			</ScrollView>
 		</View>
 	);

@@ -4,23 +4,23 @@ import requests from "../api/requests";
 
 export let empowermentFields = [
 	{
-		type: FieldType.LINE,
+		type: FieldType.INPUT,
+		placeholder: strings.number,
 		size: FieldSize.FULL,
-		title: strings.actWorkPerformed,
-		columns: [
-			{
-				type: FieldType.INPUT,
-				size: FieldSize.QUARTER,
-				placeholder: strings.number,
-				name: "orderdoc.orderno"
-			},
-			{
-				type: FieldType.DATE_PICKER,
-				placeholder: strings.selectDate,
-				size: FieldSize.QUERTER_THREE,
-				name: "orderdoc.orderdate"
-			}
-		]
+		name: "empowermentdoc.empowermentno",
+		title: strings.empowerment
+	},
+	{
+		type: FieldType.DATE_PICKER,
+		placeholder: strings.dateofexpire,
+		size: FieldSize.HALF,
+		name: "empowermentdoc.empowermentdateofexpire"
+	},
+	{
+		type: FieldType.DATE_PICKER,
+		size: FieldSize.HALF,
+		placeholder: strings.dateofissue,
+		name: "empowermentdoc.empowermentdateofissue"
 	},
 	{
 		type: FieldType.LINE,
@@ -42,11 +42,46 @@ export let empowermentFields = [
 		]
 	},
 	{
-		type: FieldType.CHECKBOX,
-		placeholder: strings.needdelivery,
+		type: FieldType.INPUT,
+		placeholder: strings.fio,
 		size: FieldSize.FULL,
-		name: "needdelivery",
-		title: strings.needdelivery
+		name: "agent.fio",
+		title: strings.agent
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.jobtitle,
+		size: FieldSize.FULL,
+		name: "agent.jobtitle"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "agent.agenttin",
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		}
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.passportnumber,
+		size: FieldSize.FULL,
+		name: "passport.number",
+		title: strings.passport
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.issuedby,
+		size: FieldSize.FULL,
+		name: "passport.issuedby"
+	},
+	{
+		type: FieldType.DATE_PICKER,
+		placeholder: strings.dateofissue,
+		size: FieldSize.FULL,
+		name: "passport.dateofissue"
 	},
 	{
 		type: FieldType.INPUT,
@@ -60,13 +95,6 @@ export let empowermentFields = [
 		}
 	},
 	{
-		type: FieldType.INPUT,
-		placeholder: strings.name,
-		size: FieldSize.FULL,
-		name: "sellername",
-		disabled: true
-	},
-	{
 		type: FieldType.AUTOCOMPLETE,
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
@@ -76,14 +104,8 @@ export let empowermentFields = [
 			maxLength: 9,
 			keyboardType: "number-pad"
 		},
-		fetch: requests.account.getProfileByTin
-	},
-	{
-		type: FieldType.INPUT,
-		placeholder: strings.name,
-		size: FieldSize.FULL,
-		name: "buyername",
-		disabled: true
+		fetch: requests.account.getProfileByTin,
+		parent: "buyer"
 	}
 ];
 
@@ -104,7 +126,7 @@ export let empowermentEntity = {
 export let empowermentProduct = {
 	ordno: 0,
 	name: "",
-	measureid: "0",
+	measureid: "-1",
 	count: 0
 };
 

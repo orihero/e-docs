@@ -24,7 +24,7 @@ export let actWorkPerformedFields = [
 	},
 	{
 		type: FieldType.INPUT,
-		placeholder: strings.name,
+		placeholder: strings.description,
 		size: FieldSize.FULL,
 		name: "actdoc.acttext"
 	},
