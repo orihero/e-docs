@@ -100,7 +100,21 @@ let strings = new LocalizedStrings({
 		needdelivery: "Необходима доставка ",
 		doctype: "Тип документа",
 		totalsum: "Сумма",
-		itemreleased: "Товар отпустил  "
+		itemreleased: "Товар отпустил  ",
+		fillAllFields: "Пожалуйста заполните все поля",
+		phone: "Мобильний",
+		oked: "ОКЕД",
+		account: "Счет",
+		region: "Регион",
+		district: "Район",
+		address: "Адрес",
+		bank: "Банк",
+		director: "Директор",
+		accountant: "гл. Бухгалтер",
+		itemReleased: "Товар выдает",
+		vat: "Плательщик НДС",
+		vatRegCode: "Код плательщика НДС",
+		sent: "Отправленные"
 	},
 	uz: {},
 	en: {}

@@ -77,7 +77,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 							name: key,
 							value: {
 								...items[key],
-								data: res.data.map(items[key].map)
+								data: res.json().map(items[key].map)
 							}
 						});
 					})

@@ -75,7 +75,7 @@ const List = ({
 	let showTypes = [
 		{
 			label: strings.received,
-			value: docStatus.SENDED
+			value: docStatus.SENT
 		},
 		{
 			label: strings.signed,
@@ -88,6 +88,7 @@ const List = ({
 	];
 
 	if (boxType === boxTypes.OUT) {
+		showTypes[0].label = strings.sent;
 		showTypes.push({
 			label: strings.drafts,
 			value: docStatus.DRAFTS

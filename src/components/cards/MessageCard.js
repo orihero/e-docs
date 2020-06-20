@@ -5,6 +5,7 @@ import strings from "../../locales/strings";
 import Text from "../common/Text";
 import Moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { docStatus } from "../../redux/reducers/documents";
 
 const MessageCard = ({ item, navigation }) => {
 	// const example = {
@@ -44,13 +45,13 @@ const MessageCard = ({ item, navigation }) => {
 	let [backgroundColor, setBackgroundColor] = useState("transparent");
 	useEffect(() => {
 		switch (item.status) {
-			case "sended":
+			case docStatus.SIGNED:
 				setBackgroundColor(colors.green);
 				break;
-			case "drafts":
+			case docStatus.SENT:
 				setBackgroundColor(colors.gold);
 				break;
-			case "deleted":
+			case docStatus.REJECTED:
 				setBackgroundColor(colors.darkPink);
 				break;
 			default:

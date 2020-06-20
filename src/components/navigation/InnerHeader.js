@@ -35,22 +35,16 @@ const InnerHeader = ({ currentPage, setShowType, showTypes, navigation }) => {
 							}}
 							placeholder={{
 								label: strings.all,
-								value: ""
+								value: "all"
 							}}
 							placeholderTextColor={colors.darkViolet}
 							items={showTypes}
-							style={{
-								...pickerSelectStyles
-							}}
+							style={pickerSelectStyles}
 							Icon={() => (
 								<View>
 									<SimpleLineIcons
 										name="arrow-down"
 										size={15}
-										style={{
-											alignSelf: "center",
-											transform: [{ rotate: "0deg" }]
-										}}
 									/>
 								</View>
 							)}
@@ -111,7 +105,7 @@ const styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
 	inputAndroid: {
-		fontSize: 16,
+		fontSize: 14,
 		padding: 10,
 		borderRadius: 4,
 		backgroundColor: colors.white,
@@ -120,9 +114,8 @@ const pickerSelectStyles = StyleSheet.create({
 		textAlign: "right",
 		marginRight: 10,
 		fontFamily: "Rubik-Medium",
-		paddingRight: 30,
-		right: -20,
-		width: 150
+		textAlignVertical: "center",
+		paddingTop: 15
 	},
 	headlessAndroidContainer: {
 		flexDirection: "row",

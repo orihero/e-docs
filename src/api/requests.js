@@ -24,7 +24,10 @@ export let requests = {
 		getProfileByTin: (token, tin) =>
 			instance.fetch("GET", `${url}/profile/${tin}`, {
 				Authorization: `Bearer ${token}`
-			})
+			}),
+		getRegions: () => instance.fetch("GET", `${url}/regions/all`),
+		getDistricts: () => instance.fetch("GET", `${url}/districts/all`),
+		getBanks: () => instance.fetch("GET", `${url}/banks/all`)
 	},
 	doc: {
 		getStats: token =>
@@ -112,7 +115,8 @@ export let requests = {
 				{
 					Authorization: `Bearer ${token}`
 				}
-			)
+			),
+		getTypes: () => instance.fetch("GET", `${url}/groups/all`)
 	}
 };
 

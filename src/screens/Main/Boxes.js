@@ -112,7 +112,10 @@ const Main = ({
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						documentsLoaded({ data: [], boxType: boxTypes.OUT });
+						documentsLoaded({
+							data: [],
+							boxType: boxTypes.OUT
+						});
 						navigation.navigate("List", {
 							title: strings.outgoing
 						});
@@ -142,61 +145,7 @@ const Main = ({
 					</View>
 				</TouchableOpacity>
 			</View>
-			<View style={styles.gridWrapper}>
-				<View style={styles.grid}>
-					<TouchableWithoutFeedback
-						onPress={() => {
-							navigation.navigate("Product");
-						}}
-					>
-						<>
-							<View
-								style={[
-									styles.imageWrapper,
-									{
-										backgroundColor: colors.palewinterWizard
-									}
-								]}
-							>
-								<Image
-									style={styles.image}
-									source={images.tagIcon}
-								/>
-							</View>
-							<Text style={styles.name}>
-								{strings.subscription}
-							</Text>
-							<Text style={styles.info}>
-								{strings.left} 16 {strings.days}
-							</Text>
-						</>
-					</TouchableWithoutFeedback>
-				</View>
-				<View style={styles.grid}>
-					<View
-						style={[
-							styles.imageWrapper,
-							{
-								backgroundColor: colors.palePeachOrange
-							}
-						]}
-					>
-						<Image style={styles.image} source={images.bellIcon} />
-					</View>
-					<Text style={styles.name}>{strings.promoCodes}</Text>
-					<Text style={styles.info}>
-						{strings.activation} {strings.here}
-					</Text>
-				</View>
-			</View>
-			<View
-				style={[
-					styles.gridWrapper,
-					{
-						justifyContent: "center"
-					}
-				]}
-			>
+			<View style={[styles.gridWrapper]}>
 				<TouchableOpacity
 					onPress={() => {
 						navigation.navigate("Product");
@@ -207,7 +156,7 @@ const Main = ({
 							style={[
 								styles.imageWrapper,
 								{
-									backgroundColor: colors.paleGreen
+									backgroundColor: colors.palePeachOrange
 								}
 							]}
 						>
@@ -307,3 +256,54 @@ let ConnectedMain = connect(
 )(Main);
 
 export default ConnectedMain;
+
+/**
+ * <View style={styles.gridWrapper}>
+				<View style={styles.grid}>
+					<TouchableWithoutFeedback
+						onPress={() => {
+							navigation.navigate("Product");
+						}}
+					>
+						<>
+							<View
+								style={[
+									styles.imageWrapper,
+									{
+										backgroundColor: colors.palewinterWizard
+									}
+								]}
+							>
+								<Image
+									style={styles.image}
+									source={images.tagIcon}
+								/>
+							</View>
+							<Text style={styles.name}>
+								{strings.subscription}
+							</Text>
+							<Text style={styles.info}>
+								{strings.left} 16 {strings.days}
+							</Text>
+						</>
+					</TouchableWithoutFeedback>
+				</View>
+				<View style={styles.grid}>
+					<View
+						style={[
+							styles.imageWrapper,
+							{
+								backgroundColor: colors.palePeachOrange
+							}
+						]}
+					>
+						<Image style={styles.image} source={images.bellIcon} />
+					</View>
+					<Text style={styles.name}>{strings.promoCodes}</Text>
+					<Text style={styles.info}>
+						{strings.activation} {strings.here}
+					</Text>
+				</View>
+			</View>
+			
+ */

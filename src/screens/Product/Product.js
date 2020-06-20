@@ -95,8 +95,8 @@ const Product = ({
 	showMessage,
 	token
 }) => {
-	let [showType, setShowType] = useState("all");
-	let [infoList, setInfoList] = useState(productList);
+	let [filters, setFilters] = useState({});
+	let [groups, setGroups] = useState(productList);
 
 	let [products, setProducts] = useState([]);
 	let getProducts = async () => {
@@ -109,34 +109,29 @@ const Product = ({
 			hideModal();
 			console.warn(error.message);
 		}
+		try {
+			let res = await requests.product.getTypes();
+			setGroups(res.json().map());
+			hideModal();
+		} catch (error) {
+			hideModal();
+			console.warn(error.message);
+		}
 	};
 	useEffect(() => {
 		getProducts();
 	}, []);
 
 	useEffect(() => {
-		if (showType !== "all") {
-			setInfoList(
-				productList.filter(item => {
-					return showType === item.type;
-				})
-			);
-		} else {
-			setInfoList(productList);
-		}
-	}, [showType]);
+		getProducts();
+	}, [filters]);
 	return (
 		<View style={styles.container}>
 			<InnerHeader
 				navigation={navigation}
 				currentPage={strings.products}
-				showTypes={[
-					{
-						label: strings.soapProducts,
-						value: "soap"
-					}
-				]}
-				setShowType={setShowType}
+				showTypes={groups}
+				setShowType={setFilters}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
@@ -144,17 +139,7 @@ const Product = ({
 						paddingTop: 10
 					}}
 					showsVerticalScrollIndicator={false}
-					data={
-						products || {
-							id: "1",
-							name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-							price: 118200,
-							subName: "арт 36434",
-							firmName: "Fides Projects",
-							type: "soap",
-							quantity: "12"
-						}
-					}
+					data={products}
 					renderItem={({ item }) => (
 						<ProductCard item={item} key={item.id} />
 					)}

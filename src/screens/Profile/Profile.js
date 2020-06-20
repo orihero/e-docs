@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, ScrollView } from "react-native";
 import MessageCard from "../../components/cards/MessageCard";
 import colors from "../../constants/colors";
 import InnerHeader from "../../components/navigation/InnerHeader";
 import strings from "../../locales/strings";
+import FieldsRenderer, {
+	FieldType,
+	FieldSize
+} from "../../components/generators/FieldsRenderer";
+import { connect } from "react-redux";
+import requests from "../../api/requests";
 
 const messageList = [
 	// {
@@ -56,55 +62,132 @@ const messageList = [
 	// }
 ];
 
-const Profile = ({}) => {
-	let [showType, setShowType] = useState("all");
-	let [infoList, setInfoList] = useState(messageList);
+let fields = [
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "tin"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "name"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.phone,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "phone"
+	},
+	{
+		type: FieldType.SELECT,
+		placeholder: strings.bank,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "bankId",
+		fetch: requests.account.getBanks,
+		map: (e, index) => ({
+			label: e.nameRU,
+			value: e.bankId
+		})
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.account,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "account"
+	},
+	{
+		type: FieldType.SELECT,
+		placeholder: strings.region,
+		size: FieldSize.FULL,
+		name: "regionId",
+		fetch: requests.account.getRegions,
+		map: (e, index) => ({
+			label: e.nameRU,
+			value: e.regionId
+		})
+	},
+	{
+		type: FieldType.SELECT,
+		placeholder: strings.district,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "districtId",
+		fetch: requests.account.getDistricts,
+		map: (e, index) => ({
+			label: e.nameRU,
+			value: e.districtId
+		})
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.address,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "address"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.oked,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "oked"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.director,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "director"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.accountant,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "accountant"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.itemReleased,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "itemReleased"
+	},
+	{
+		type: FieldType.CHECKBOX,
+		placeholder: strings.vat,
+		size: FieldSize.FULL,
+		disabled: true,
+		title: strings.vat,
+		name: "vat"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.vatRegCode,
+		size: FieldSize.FULL,
+		disabled: true,
+		name: "vatRegCode"
+	}
+];
 
-	useEffect(() => {
-		if (showType !== "all") {
-			setInfoList(
-				messageList.filter(item => {
-					return showType === item.status;
-				})
-			);
-		} else {
-			setInfoList(messageList);
-		}
-	}, [showType]);
+const Profile = ({ user }) => {
+	console.log(user);
 
 	return (
 		<View style={styles.container}>
-			<InnerHeader
-				currentPage={strings.incoming}
-				showTypes={[
-					{
-						label: strings.signed,
-						value: "signed"
-					},
-					{
-						label: strings.received,
-						value: "received"
-					},
-					{
-						label: strings.rejected,
-						value: "rejected"
-					}
-				]}
-				setShowType={setShowType}
-			/>
-			<View style={styles.cardWrapper}>
-				<FlatList
-					contentContainerStyle={{
-						paddingTop: 10
-					}}
-					showsVerticalScrollIndicator={false}
-					data={infoList}
-					renderItem={({ item }) => (
-						<MessageCard item={item} key={item.id.toString()} />
-					)}
-					keyExtractor={item => item.id.toString()}
-				/>
-			</View>
+			<ScrollView showsVerticalScrollIndicator={false}>
+				{!!user.tin && (
+					<FieldsRenderer fields={fields} initialValue={user} />
+				)}
+			</ScrollView>
 		</View>
 	);
 };
@@ -112,11 +195,12 @@ const Profile = ({}) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.white
+		backgroundColor: colors.white,
+		padding: 10
 	},
 	cardWrapper: {
 		flex: 1
 	}
 });
 
-export default Profile;
+export default connect(({ user }) => ({ user }))(Profile);

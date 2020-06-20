@@ -155,54 +155,75 @@ const Add = connect(
 		let parsedProducts = [];
 		let temp = { ...data };
 		//? Universal document has no product
-		if (docType.docType !== "universal") {
-			//? Validation
-			//* Since React-native input generate only string we have to parse all the string to corresponding data type
-			parsedProducts = productList.products.map(product => {
-				let parsedProduct = Object.keys(product).reduce((prev, key) => {
-					return {
-						...prev,
-						[key]: convertToTypeOf(productModel[key], product[key])
-					};
-				}, {});
-				return parsedProduct;
-			});
-		} else {
-			//* Document is universal
-			let { base64: filebase64, type: filetype, name: filename } =
-				data.file || {};
+		try {
+			if (docType.docType !== "universal") {
+				//? Validation
+				//* Since React-native input generate only string we have to parse all the string to corresponding data type
+				parsedProducts = productList.products.map(product => {
+					let parsedProduct = Object.keys(product).reduce(
+						(prev, key) => {
+							return {
+								...prev,
+								[key]: convertToTypeOf(
+									productModel[key],
+									product[key]
+								)
+							};
+						},
+						{}
+					);
+					return parsedProduct;
+				});
+			} else {
+				//* Document is universal
+				let { base64: filebase64, type: filetype, name: filename } =
+					data.file || {};
+				temp = {
+					...temp,
+					file: { filebase64, filename, filetype }
+				};
+				let dataProductList = temp.productList || {};
+				let docProductList = docType.doc.productlist || {};
+				console.log({ dataProductList, docProductList });
+
+				let parsedProduct = Object.keys(dataProductList).reduce(
+					(prev, key) => {
+						return {
+							...prev,
+							[key]: convertToTypeOf(
+								docProductList[key],
+								dataProductList[key]
+							)
+						};
+					},
+					{}
+				);
+				productList = {
+					...docProductList,
+					...parsedProduct
+				};
+			}
+			//* Temporary submit data
 			temp = {
 				...temp,
-				file: { filebase64, filename, filetype }
+				productlist: {
+					...productList,
+					products: parsedProducts
+				}
 			};
-			let dataProductList = temp.productList || {};
-			let docProductList = docType.doc.productlist || {};
-			console.log({ dataProductList, docProductList });
-
-			let parsedProduct = Object.keys(dataProductList).reduce(
-				(prev, key) => {
-					return {
-						...prev,
-						[key]: convertToTypeOf(
-							docProductList[key],
-							dataProductList[key]
-						)
-					};
-				},
-				{}
-			);
-			productList = { ...docProductList, ...parsedProduct };
+			console.log({ parsedProducts });
+			//* Make sure that submit data is similar to document model
+			let submitData = Object.keys(doc).reduce((prev, key) => {
+				return { ...prev, [key]: temp[key] };
+			}, {});
+		} catch (error) {
+			//* Error in formulating submit data!
+			hideModal();
+			showMessage({
+				type: colors.killerRed,
+				message: strings.fillAllFields
+			});
 		}
-		//* Temporary submit data
-		temp = {
-			...temp,
-			productlist: { ...productList, products: parsedProducts }
-		};
-		console.log({ parsedProducts });
-		//* Make sure that submit data is similar to document model
-		let submitData = Object.keys(doc).reduce((prev, key) => {
-			return { ...prev, [key]: temp[key] };
-		}, {});
 
 		try {
 			//TODO Empoverment fill agent passport manually
