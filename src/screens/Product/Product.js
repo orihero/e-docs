@@ -20,6 +20,7 @@ import {
 } from "../../redux/actions";
 import { connect } from "react-redux";
 import requests from "../../api/requests";
+import { normalizeFilters } from "../../utils/object";
 
 let productList = [
 	{
@@ -95,14 +96,17 @@ const Product = ({
 	showMessage,
 	token
 }) => {
-	let [filters, setFilters] = useState({});
-	let [groups, setGroups] = useState(productList);
+	let [filters, setFilters] = useState({ page: 1, limit: 20, group: "" });
+	let [groups, setGroups] = useState([]);
 
 	let [products, setProducts] = useState([]);
 	let getProducts = async () => {
 		showModal(strings.gettingProducts);
 		try {
-			let res = await requests.product.getProducts(token, 1, 20);
+			let res = await requests.product.getProducts(
+				token,
+				normalizeFilters(filters)
+			);
 			setProducts(res.json().docs);
 			hideModal();
 		} catch (error) {
@@ -111,16 +115,19 @@ const Product = ({
 		}
 		try {
 			let res = await requests.product.getTypes();
-			setGroups(res.json().map());
+			setGroups(
+				res.json().map(e => ({
+					label: e.nameRU,
+					value: e._id,
+					...e
+				}))
+			);
 			hideModal();
 		} catch (error) {
 			hideModal();
 			console.warn(error.message);
 		}
 	};
-	useEffect(() => {
-		getProducts();
-	}, []);
 
 	useEffect(() => {
 		getProducts();

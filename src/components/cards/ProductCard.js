@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import colors from "../../constants/colors";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import SmallButton from "../common/SmallButton";
 import Text from "../common/Text";
 import strings from "../../locales/strings";
+import { TextInput } from "react-native";
 
 const ProductCard = ({ item, passive }) => {
+	const [count, setCount] = useState("");
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
@@ -19,7 +21,11 @@ const ProductCard = ({ item, passive }) => {
 					</Text>
 				</View>
 				<Text style={styles.price}>
-					{item.prices && item.prices[0].price} сум
+					{!!item.prices &&
+						(item.prices.length > 1
+							? `от ${item.prices[0].price}`
+							: item.prices[0].price)}{" "}
+					сум
 				</Text>
 			</View>
 			<View style={styles.bottom}>
@@ -36,10 +42,16 @@ const ProductCard = ({ item, passive }) => {
 						</Text>
 					) : (
 						<>
-							<SmallButton
-								backColor={colors.white}
-								borderColor={colors.jeansBlue}
-								text={item.prices && item.prices[0].count}
+							<TextInput
+								placeholder={
+									item.prices
+										? item.prices[0].count.toString()
+										: "0"
+								}
+								value={count}
+								style={styles.input}
+								onChangeText={setCount}
+								keyboardType={"number-pad"}
 							/>
 							<SmallButton
 								backColor={colors.dimGreen}
@@ -97,6 +109,14 @@ const styles = StyleSheet.create({
 	},
 	buttonWrapper: {
 		flexDirection: "row"
+	},
+	input: {
+		borderRadius: 8,
+		borderColor: colors.jeansBlue,
+		borderWidth: 1,
+		minWidth: 60,
+		textAlign: "center",
+		textAlignVertical: "center"
 	}
 });
 
