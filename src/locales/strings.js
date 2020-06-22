@@ -114,7 +114,8 @@ let strings = new LocalizedStrings({
 		itemReleased: "Товар выдает",
 		vat: "Плательщик НДС",
 		vatRegCode: "Код плательщика НДС",
-		sent: "Отправленные"
+		sent: "Отправленные",
+		fileCorrupted: "Файл поврежден или не существует"
 	},
 	uz: {},
 	en: {}

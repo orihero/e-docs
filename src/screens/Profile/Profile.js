@@ -179,8 +179,6 @@ let fields = [
 ];
 
 const Profile = ({ user }) => {
-	console.log(user);
-
 	return (
 		<View style={styles.container}>
 			<ScrollView showsVerticalScrollIndicator={false}>

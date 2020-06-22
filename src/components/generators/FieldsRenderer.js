@@ -34,7 +34,6 @@ export let FieldType = {
 const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 	const [state, dispatch] = useReducer(reducer, initialValue || {});
 	const [validations, setValidations] = useState();
-	console.log({ initialValue });
 	let initialItems = () =>
 		fields.reduce((prev, current) => {
 			if (

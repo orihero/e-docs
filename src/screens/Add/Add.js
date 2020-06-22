@@ -62,6 +62,71 @@ import {
 
 const mapStateToProps = ({ user }) => ({ user });
 
+export let docTypes = [
+	{
+		label: "Счет-фактура",
+		value: {
+			fields: facturaFields,
+			productModel: facturaProduct,
+			doc: facturaDoc,
+			docType: "empowerment"
+		}
+	},
+	{
+		label: "Доверенность",
+		value: {
+			fields: empowermentFields,
+			productModel: empowermentProduct,
+			doc: empowermentDoc,
+			docType: "empowerment"
+		}
+	},
+	{
+		label: "Акт выполненных работ",
+		value: {
+			fields: actWorkPerformedFields,
+			productModel: actWorkPerformedProduct,
+			doc: actWorkPerformedDoc,
+			docType: "actWorkPerformed"
+		}
+	},
+	{
+		label: "Акт приема-передачи",
+		value: {
+			fields: actGoodsAcceptanceFields,
+			productModel: actGoodsAcceptanceProduct,
+			doc: actGoodsAcceptanceDoc,
+			docType: "actGoodsAcceptance"
+		}
+	},
+	{
+		label: "Товарно транспортная накладная",
+		value: {
+			fields: waybillFields,
+			productModel: waybillProduct,
+			doc: waybillDoc,
+			docType: "waybill"
+		}
+	},
+	{
+		label: "Заказ",
+		value: {
+			fields: customerOrderFields,
+			productModel: customerOrderProduct,
+			doc: customerOrderDoc,
+			docType: "customerOrder"
+		}
+	},
+	{
+		label: "Универсальный документ ",
+		value: {
+			fields: universalFields,
+			doc: universalDoc,
+			docType: "universal"
+		}
+	}
+];
+
 const Add = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
@@ -69,6 +134,7 @@ const Add = connect(
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
 	let productList = navigation.getParam("productList") || [];
+	let document = navigation.getParam("document") || {};
 	useEffect(() => {
 		if (docType.fields) {
 			setFields(docType.fields);
@@ -76,70 +142,10 @@ const Add = connect(
 			setFields([]);
 		}
 	}, [docType]);
-	let docTypes = [
-		{
-			label: "Счет-фактура",
-			value: {
-				fields: facturaFields,
-				productModel: facturaProduct,
-				doc: facturaDoc,
-				docType: "empowerment"
-			}
-		},
-		{
-			label: "Доверенность",
-			value: {
-				fields: empowermentFields,
-				productModel: empowermentProduct,
-				doc: empowermentDoc,
-				docType: "empowerment"
-			}
-		},
-		{
-			label: "Акт выполненных работ",
-			value: {
-				fields: actWorkPerformedFields,
-				productModel: actWorkPerformedProduct,
-				doc: actWorkPerformedDoc,
-				docType: "actWorkPerformed"
-			}
-		},
-		{
-			label: "Акт приема-передачи",
-			value: {
-				fields: actGoodsAcceptanceFields,
-				productModel: actGoodsAcceptanceProduct,
-				doc: actGoodsAcceptanceDoc,
-				docType: "actGoodsAcceptance"
-			}
-		},
-		{
-			label: "Товарно транспортная накладная",
-			value: {
-				fields: waybillFields,
-				productModel: waybillProduct,
-				doc: waybillDoc,
-				docType: "waybill"
-			}
-		},
-		{
-			label: "Заказ",
-			value: {
-				fields: customerOrderFields,
-				productModel: customerOrderProduct,
-				doc: customerOrderDoc,
-				docType: "customerOrder"
-			}
-		},
-		{
-			label: "Универсальный документ ",
-			value: {
-				fields: universalFields,
-				doc: universalDoc,
-				docType: "universal"
-			}
-		}
-	];
+
+	useEffect(() => {
+		console.log("THE DOCUMENT", { document });
+	}, [document]);
 
 	/**
 	 ** Creation of document
@@ -329,7 +335,8 @@ const Add = connect(
 							ownername: user.name,
 							sellertin: user.tin,
 							sellername: user.name,
-							seller: user
+							seller: user,
+							...document
 						}}
 						fields={fields}
 						footer={footer}

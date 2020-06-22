@@ -60,18 +60,6 @@ const List = ({
 		getDocuments();
 	}, [boxType, status]);
 
-	// useEffect(() => {
-	// 	if (showType !== "all") {
-	// 		setInfoList(
-	// 			documents.filter(item => {
-	// 				return showType === item.status;
-	// 			})
-	// 		);
-	// 	} else {
-	// 		setInfoList(documents);
-	// 	}
-	// }, [showType]);
-
 	let showTypes = [
 		{
 			label: strings.received,
@@ -119,6 +107,7 @@ const List = ({
 							item={item}
 							key={item.id && item.id.toString()}
 							navigation={navigation}
+							{...{ status }}
 						/>
 					)}
 					keyExtractor={item => item.id && item.id.toString()}

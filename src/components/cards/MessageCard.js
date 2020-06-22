@@ -7,41 +7,18 @@ import Moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { docStatus } from "../../redux/reducers/documents";
 
-const MessageCard = ({ item, navigation }) => {
-	// const example = {
-	// 	_id: "5ea0362fb0b10417d8096549",
-	// 	baseDocs: [],
-	// 	contractDate: "2020-04-22T00:00:00.000Z",
-	// 	contractNumber: "123",
-	// 	createdAt: "2020-04-22T12:18:55.185Z",
-	// 	docDate: "2020-04-22T00:00:00.000Z",
-	// 	docNumber: "test1",
-	// 	local: true,
-	// 	notes: "",
-	// 	ownerName: '"FIDES PROJECTS" XK',
-	// 	ownerTin: "302204416",
-	// 	roumingId: "5ea036ff9dc17300019603a3",
-	// 	sentDate: "2020-04-22T12:19:26.825Z",
-	// 	stateId: 15,
-	// 	status: "sended",
-	// 	subType: "factura",
-	// 	targetTins: [
-	// 		{
-	// 			name: 'ООО "UCARD  ELEMENT"',
-	// 			side: "buyer",
-	// 			signed: 0,
-	// 			tin: "306589734"
-	// 		}
-	// 	],
-	// 	totalDocSum: 2829,
-	// 	totalFuelSum: 0,
-	// 	totalSum: 2829,
-	// 	totalSumWithVat: 2829,
-	// 	totalVatSum: 0,
-	// 	type: "factura",
-	// 	updatedAt: "2020-04-22T12:19:26.827Z"
-	// };
+export let docTypes = {
+	FACTURA: "Счет-фактура",
+	EMPOWERMENT: "Доверенность",
+	UNIVERSAL: "Универсальный документ",
+	ACTWORKPERFORMED: "Акт выполненных работ",
+	ACTGOODSACCEPTANCE: "Акт приема-передачи",
+	WAYBILL: "Товарно транспортная накладная",
+	INVOICE: "Счет на оплату",
+	CUSTOMERORDER: "Заказ"
+};
 
+const MessageCard = ({ item, navigation, status }) => {
 	let [backgroundColor, setBackgroundColor] = useState("transparent");
 	useEffect(() => {
 		switch (item.status) {
@@ -71,11 +48,16 @@ const MessageCard = ({ item, navigation }) => {
 				style={[
 					styles.container,
 					{
-						backgroundColor: backgroundColor
+						backgroundColor
 					}
 				]}
 			>
 				<View style={styles.content}>
+					{status === -1 || status === "all" || !status ? (
+						<Text style={styles.title}>
+							{docTypes[item.type.toUpperCase()] || ""}
+						</Text>
+					) : null}
 					<View style={styles.textWrapper}>
 						<Text style={styles.name}>{item.ownerName}</Text>
 						<Text style={styles.date}>
@@ -87,7 +69,7 @@ const MessageCard = ({ item, navigation }) => {
 							{strings.amount}: {item.totalSum}
 						</Text>
 						<Text style={styles.text}>
-							{item.contractNumber}/
+							№ {item.contractNumber} ―
 							{Moment(item.contractDate).format("DD.MM.YYYY")}
 						</Text>
 					</View>
@@ -129,7 +111,11 @@ const styles = StyleSheet.create({
 		color: colors.grayText
 		// fontWeight: 'bold',
 	},
-	text: { color: colors.darkGrayBorder, flexShrink: 1, flexWrap: "wrap" }
+	text: { color: colors.darkGrayBorder, flexShrink: 1, flexWrap: "wrap" },
+	title: {
+		fontSize: 16,
+		fontWeight: "bold"
+	}
 });
 
 export default MessageCard;

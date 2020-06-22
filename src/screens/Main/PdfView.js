@@ -72,6 +72,10 @@ const PdfView = ({
 	 ** Save the file to device's storage
 	 */
 	const onCopyPress = async () => {
+		alert("Not implemented");
+	};
+
+	let onDownloadPress = async () => {
 		showModal(strings.loadingPdf);
 		try {
 			let filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/`;
@@ -91,8 +95,11 @@ const PdfView = ({
 			hideModal();
 		}
 	};
+
 	const onEditPress = () => {
-		alert("Not implemented");
+		console.log({ document });
+
+		navigation.navigate("Add", { document });
 	};
 	/**
 	 ** Sign the document
@@ -256,22 +263,24 @@ const PdfView = ({
 					</View>
 
 					<View style={styles.right}>
-						<View style={styles.iconWrapper}>
-							<TouchableOpacity onPress={onCopyPress}>
-								<View
-									style={{
-										backgroundColor: colors.white,
-										padding: 8
-									}}
-								>
-									<AntDesign
-										name="copy1"
-										color={colors.linearBlue1}
-										size={18}
-									/>
-								</View>
-							</TouchableOpacity>
-						</View>
+						{type !== docStatus.SENT && (
+							<View style={styles.iconWrapper}>
+								<TouchableOpacity onPress={onCopyPress}>
+									<View
+										style={{
+											backgroundColor: colors.white,
+											padding: 8
+										}}
+									>
+										<AntDesign
+											name="copy1"
+											color={colors.linearBlue1}
+											size={18}
+										/>
+									</View>
+								</TouchableOpacity>
+							</View>
+						)}
 						<View style={styles.iconWrapper}>
 							<TouchableOpacity onPress={onEditPress}>
 								<View
@@ -323,23 +332,23 @@ const PdfView = ({
 								</View>
 							</TouchableOpacity>
 						</View>
-						{/* <View style={styles.iconWrapper}>
-						<TouchableOpacity onPress={onEditPress}>
-							<View
-								style={{
-									backgroundColor: colors.white,
-									padding: 8
-								}}
-							>
-								<AntDesign
-									name="printer"
-									color={colors.black}
-									size={18}
-									color={colors.blueish}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View> */}
+						<View style={styles.iconWrapper}>
+							<TouchableOpacity onPress={onDownloadPress}>
+								<View
+									style={{
+										backgroundColor: colors.white,
+										padding: 8
+									}}
+								>
+									<AntDesign
+										name="clouddownload"
+										color={colors.black}
+										size={18}
+										color={colors.blueish}
+									/>
+								</View>
+							</TouchableOpacity>
+						</View>
 					</View>
 				</View>
 				<TextInput
@@ -354,16 +363,12 @@ const PdfView = ({
 				source={{ uri: `data:application/pdf;base64,${baseFile}` }}
 				onError={error => {
 					showMessage({
-						message: error.response,
+						message: strings.fileCorrupted,
 						type: colors.killerRed
 					});
 				}}
 				activityIndicator={e => {
-					return (
-						<View>
-							<Text>asdas</Text>
-						</View>
-					);
+					return <View />;
 				}}
 				enablePaging
 				style={styles.pdf}

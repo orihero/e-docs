@@ -21,72 +21,7 @@ import {
 import { connect } from "react-redux";
 import requests from "../../api/requests";
 import { normalizeFilters } from "../../utils/object";
-
-let productList = [
-	{
-		id: "1",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "2",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "3",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "4",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "5",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "6",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		type: "soap",
-		quantity: "12"
-	},
-	{
-		id: "7",
-		name: "Body BOOM, мыло для рук грейпфрукт 380 мл",
-		price: 118200,
-		subName: "арт 36434",
-		firmName: "Fides Projects",
-		quantity: "12",
-		type: "soap"
-	}
-];
+import { cartLoaded } from "../../redux/actions/cart";
 
 const Product = ({
 	navigation,
@@ -94,12 +29,13 @@ const Product = ({
 	showModal,
 	hideMessage,
 	showMessage,
-	token
+	token,
+	cart,
+	cartLoaded
 }) => {
 	let [filters, setFilters] = useState({ page: 1, limit: 20, group: "" });
 	let [groups, setGroups] = useState([]);
-
-	let [products, setProducts] = useState([]);
+	let { products } = cart;
 	let getProducts = async () => {
 		showModal(strings.gettingProducts);
 		try {
@@ -107,7 +43,7 @@ const Product = ({
 				token,
 				normalizeFilters(filters)
 			);
-			setProducts(res.json().docs);
+			cartLoaded({ ...cart, products: res.json().docs });
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -132,6 +68,11 @@ const Product = ({
 	useEffect(() => {
 		getProducts();
 	}, [filters]);
+
+	let addToCart = async () => {
+		let res = await requests.product.addToCart();
+		// cartLoaded({});
+	};
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -148,7 +89,12 @@ const Product = ({
 					showsVerticalScrollIndicator={false}
 					data={products}
 					renderItem={({ item }) => (
-						<ProductCard item={item} key={item.id} />
+						<ProductCard
+							addToCart={addToCart}
+							item={item}
+							passive={!!cart[item._id]}
+							key={item.id}
+						/>
 					)}
 					keyExtractor={item => item.id}
 				/>
@@ -189,16 +135,18 @@ const styles = StyleSheet.create({
 	}
 });
 
-let mapStateToProps = ({ user }) => {
+let mapStateToProps = ({ user, cart }) => {
 	return {
-		token: user.token
+		token: user.token,
+		cart
 	};
 };
 let mapDispatchToProps = {
 	showMessage,
 	showModal,
 	hideMessage,
-	hideModal
+	hideModal,
+	cartLoaded
 };
 
 let ConnectedProduct = connect(

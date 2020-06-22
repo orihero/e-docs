@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import colors from "../../constants/colors";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import SmallButton from "../common/SmallButton";
@@ -7,7 +7,7 @@ import Text from "../common/Text";
 import strings from "../../locales/strings";
 import { TextInput } from "react-native";
 
-const ProductCard = ({ item, passive }) => {
+const ProductCard = ({ item, passive, addToCart }) => {
 	const [count, setCount] = useState("");
 	return (
 		<View style={styles.container}>
@@ -53,10 +53,12 @@ const ProductCard = ({ item, passive }) => {
 								onChangeText={setCount}
 								keyboardType={"number-pad"}
 							/>
-							<SmallButton
-								backColor={colors.dimGreen}
-								iconName="shoppingcart"
-							/>
+							<TouchableWithoutFeedback onPress={addToCart}>
+								<SmallButton
+									backColor={colors.dimGreen}
+									iconName="shoppingcart"
+								/>
+							</TouchableWithoutFeedback>
 						</>
 					)}
 				</View>

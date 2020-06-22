@@ -40,11 +40,15 @@ const Products = ({ navigation }) => {
 	let renderProduct = (productModel, index) => {
 		return (
 			<View style={styles.productContainer}>
-				<Text style={styles.title}>
-					{strings.product} № {index + 1}
-				</Text>
 				{Object.keys(productModel).map(key => {
 					let type = typeof model[key];
+					if (key === "orderno") {
+						return (
+							<Text style={styles.title}>
+								{strings.product} № {index + 1}
+							</Text>
+						);
+					}
 					switch (type) {
 						case "boolean":
 							if (!withoutVat) return null;

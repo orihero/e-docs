@@ -116,7 +116,8 @@ export let requests = {
 					Authorization: `Bearer ${token}`
 				}
 			),
-		getTypes: () => instance.fetch("GET", `${url}/groups/all`)
+		getTypes: () => instance.fetch("GET", `${url}/groups/all`),
+		addToCart: (token, count) => instance.fetch("POST", `${url}/cart`)
 	}
 };
 
