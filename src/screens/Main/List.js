@@ -33,7 +33,8 @@ const List = ({
 	};
 
 	let [documents, setDocuments] = useState([]);
-	let getDocuments = async () => {
+	let getDocuments = async (type, filter) => {
+		console.log("lol");
 		showModal(strings.gettingDocuments);
 		try {
 			let res = await requests.doc.getDocuments(
@@ -41,14 +42,16 @@ const List = ({
 				1,
 				20,
 				boxType,
-				status
+				status,
+				!!type && type,
+				!!filter && filter
 			);
 			let newRes = res.json();
 			setDocuments(newRes.docs);
 			hideModal();
 		} catch (error) {
 			hideModal();
-			console.warn(error.message);
+			console.warn(error.message, "here");
 			showMessage({ type: colors.killerRed, message: error.message });
 		}
 	};
@@ -94,6 +97,8 @@ const List = ({
 				currentPage={title}
 				showTypes={showTypes}
 				setShowType={setShowType}
+				onSearch={getDocuments}
+				onFilter={getDocuments}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList

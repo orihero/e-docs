@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+	View,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	TouchableOpacity
+} from "react-native";
 import colors from "../../constants/colors";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import SmallButton from "../common/SmallButton";
@@ -50,15 +55,21 @@ const ProductCard = ({ item, passive, addToCart }) => {
 								}
 								value={count}
 								style={styles.input}
-								onChangeText={setCount}
+								onChangeText={text => {
+									setCount(text);
+								}}
 								keyboardType={"number-pad"}
 							/>
-							<TouchableWithoutFeedback onPress={addToCart}>
+							<TouchableOpacity
+								onPress={() => {
+									addToCart();
+								}}
+							>
 								<SmallButton
 									backColor={colors.dimGreen}
 									iconName="shoppingcart"
 								/>
-							</TouchableWithoutFeedback>
+							</TouchableOpacity>
 						</>
 					)}
 				</View>

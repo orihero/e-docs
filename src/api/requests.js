@@ -34,10 +34,18 @@ export let requests = {
 			instance.fetch("get", `${url}/documents/all/get/stats`, {
 				Authorization: `Bearer ${token}`
 			}),
-		getDocuments: (token, page, limit, io = "", status = "") =>
+		getDocuments: (
+			token,
+			page,
+			limit,
+			io = "",
+			status = "",
+			type = "",
+			filter = ""
+		) =>
 			instance.fetch(
 				"get",
-				`${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}`,
+				`${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}&type=${type}&filter=${filter}`,
 				{
 					Authorization: `Bearer ${token}`
 				}
@@ -117,7 +125,19 @@ export let requests = {
 				}
 			),
 		getTypes: () => instance.fetch("GET", `${url}/groups/all`),
-		addToCart: (token, count) => instance.fetch("POST", `${url}/cart`)
+		addToCart: (token, data) =>
+			instance.fetch(
+				"POST",
+				`${url}/carts`,
+				{
+					Authorization: `Bearer ${token}`
+				},
+				data
+			),
+		cardOrder: token =>
+			instance.fetch("GET", `${url}/carts/order`, {
+				Authorization: `Bearer ${token}`
+			})
 	}
 };
 

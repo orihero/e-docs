@@ -15,10 +15,10 @@ import List from "../screens/main/List";
 import PdfView from "../screens/main/PdfView";
 import Checkout from "../screens/checkout/Checkout";
 import Profile from "../screens/profile/Profile";
-import Add from "../screens/add/Add";
-import Products from "../screens/add/Products";
 import Login from "../screens/auth/Login";
 import Loader from "../screens/auth/Loader";
+import Add from "../screens/add/Add";
+import Products from "../screens/add/Products";
 
 const MainStack = createStackNavigator(
 	{

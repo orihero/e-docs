@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -10,7 +10,50 @@ import Text from "../common/Text";
 import SearchBar from "./SearchBar";
 import { withNavigation } from "react-navigation";
 
-const InnerHeader = ({ currentPage, setShowType, showTypes, navigation }) => {
+export let docTypes = [
+	{
+		label: strings.factura,
+		value: "FACTURA"
+	},
+	{
+		label: strings.empowerment,
+		value: "EMPOWERMENT"
+	},
+	{
+		label: strings.universal,
+		value: "UNIVERSAL"
+	},
+	{
+		label: strings.actWorkPerformed,
+		value: "ACTWORKPERFORMED"
+	},
+	{
+		label: strings.actGoodsAcceptance,
+		value: "ACTGOODSACCEPTANCE"
+	},
+	{
+		label: strings.waybill,
+		value: "WAYBILL"
+	},
+	{
+		label: strings.invoice,
+		value: "INVOICE"
+	},
+	{
+		label: strings.customerOrder,
+		value: "CUSTOMERORDER"
+	}
+];
+const InnerHeader = ({
+	currentPage,
+	setShowType,
+	showTypes,
+	navigation,
+	onSearch,
+	onFilter
+}) => {
+	let filterRef = useRef(null);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
@@ -57,16 +100,37 @@ const InnerHeader = ({ currentPage, setShowType, showTypes, navigation }) => {
 				</View>
 			</View>
 			<View style={styles.bottom}>
-				<SearchBar />
-				<View style={styles.iconWrapper}>
-					<AntDesign
-						name="filter"
-						size={23}
-						style={{
-							color: colors.lightGrayText
-						}}
-					/>
-				</View>
+				<SearchBar onSearch={onSearch} />
+				<RNPickerSelect
+					ref={filterRef}
+					items={docTypes}
+					useNativeAndroidPickerStyle={false}
+					onValueChange={value => {
+						onFilter(value);
+					}}
+					Icon={() => {
+						<View
+							style={{
+								padding: 30,
+								marginRight: -10
+							}}
+						/>;
+					}}
+				>
+					<View style={styles.iconWrapper}>
+						<AntDesign
+							onPress={() => {
+								console.warn(filterRef.current);
+								filterRef.current.togglePicker();
+							}}
+							name="filter"
+							size={23}
+							style={{
+								color: colors.lightGrayText
+							}}
+						/>
+					</View>
+				</RNPickerSelect>
 			</View>
 		</View>
 	);
@@ -98,6 +162,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between"
 	},
 	iconWrapper: {
+		paddingTop: 6,
 		paddingHorizontal: 14,
 		justifyContent: "center"
 	}
