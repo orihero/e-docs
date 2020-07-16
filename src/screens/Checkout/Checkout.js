@@ -7,6 +7,8 @@ import ProductCard from "../../components/cards/ProductCard";
 import RectangleButton from "../../components/common/RectangleButton";
 import Text from "../../components/common/Text";
 import { withNavigation } from "react-navigation";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import requests from "../../api/requests";
 
 let productList = [
 	{
@@ -75,6 +77,13 @@ let productList = [
 ];
 
 const Checkout = ({ navigation }) => {
+	const onOrderPress = async () => {
+		//get token and pass
+		let res = await requests.product.cardOrder(token);
+
+		console.warn(res);
+	};
+
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -99,12 +108,14 @@ const Checkout = ({ navigation }) => {
 					<Text style={styles.total}>{strings.overall}</Text>
 					<Text style={styles.total}>1 834 200 сум</Text>
 				</View>
-				<View style={styles.buttonWrapper}>
-					<RectangleButton
-						text={strings.sendApplication}
-						backColor={colors.dimGreen}
-					/>
-				</View>
+				<TouchableOpacity onPress={onOrderPress}>
+					<View style={styles.buttonWrapper}>
+						<RectangleButton
+							text={strings.sendApplication}
+							backColor={colors.dimGreen}
+						/>
+					</View>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

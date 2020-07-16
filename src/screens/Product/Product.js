@@ -69,8 +69,14 @@ const Product = ({
 		getProducts();
 	}, [filters]);
 
-	let addToCart = async () => {
-		let res = await requests.product.addToCart();
+	let addToCart = async item => {
+		console.warn(item);
+		let res = await requests.product.addToCart({
+			itemId: item._id,
+			count: item.prices[0].count
+		});
+		console.warn(res);
+
 		// cartLoaded({});
 	};
 	return (
@@ -90,7 +96,7 @@ const Product = ({
 					data={products}
 					renderItem={({ item }) => (
 						<ProductCard
-							addToCart={addToCart}
+							addToCart={() => addToCart(item)}
 							item={item}
 							passive={!!cart[item._id]}
 							key={item.id}

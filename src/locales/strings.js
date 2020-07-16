@@ -2,6 +2,7 @@ import LocalizedStrings from "react-native-localization";
 
 let strings = new LocalizedStrings({
 	ru: {
+		customerOrder: "Заказ",
 		add: "Add",
 		main: "ГЛАВНАЯ",
 		profile: "ПРОФИЛЬ",

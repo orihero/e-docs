@@ -31,7 +31,7 @@ const SmallButton = ({ borderColor, backColor, iconName, text }) => {
 const styles = StyleSheet.create({
 	container: {
 		borderRadius: 5,
-		paddingVertical: 6,
+		paddingVertical: 12,
 		paddingHorizontal: 12,
 		minWidth: 60,
 		justifyContent: "center",
