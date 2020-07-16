@@ -127,14 +127,16 @@ export let docTypes = [
 	}
 ];
 
-const Add = connect(
+const Edit = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
 )(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
-	const [fields, setFields] = useState([]);
-	const [docType, setDocType] = useState(-1);
-	let productList = navigation.getParam("productList") || [];
 	let document = navigation.getParam("document") || {};
+	const [fields, setFields] = useState([]);
+	const [docType, setDocType] = useState(
+		docTypes.find(e => e.value.docType === document.type) || {}
+	);
+	let productList = navigation.getParam("productList") || [];
 	useEffect(() => {
 		if (docType.fields) {
 			setFields(docType.fields);
@@ -142,12 +144,6 @@ const Add = connect(
 			setFields([]);
 		}
 	}, [docType]);
-
-	// useEffect(() => {
-	// 	console.log("THE DOCUMENT LOADED");
-	// 	let doc = docTypes.find(e => e.value.docType === document.type) || {};
-	// 	setDocType(doc);
-	// }, [document]);
 
 	/**
 	 ** Creation of document
@@ -193,8 +189,6 @@ const Add = connect(
 				};
 				let dataProductList = temp.productList || {};
 				let docProductList = docType.doc.productlist || {};
-				console.log({ dataProductList, docProductList });
-
 				let parsedProduct = Object.keys(dataProductList).reduce(
 					(prev, key) => {
 						return {
@@ -404,4 +398,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Add;
+export default Edit;

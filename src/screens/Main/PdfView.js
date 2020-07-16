@@ -72,7 +72,7 @@ const PdfView = ({
 	 ** Save the file to device's storage
 	 */
 	const onCopyPress = async () => {
-		alert("Not implemented");
+		navigation.navigate("Edit", { document: documentContent });
 	};
 
 	let onDownloadPress = async () => {
@@ -97,9 +97,7 @@ const PdfView = ({
 	};
 
 	const onEditPress = () => {
-		console.log({ document });
-
-		navigation.navigate("Add", { document });
+		navigation.navigate("Edit", { document: documentContent });
 	};
 	/**
 	 ** Sign the document

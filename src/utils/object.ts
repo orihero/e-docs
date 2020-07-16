@@ -1,4 +1,13 @@
-export const getObjectProperty = (obj, path) => {
+/**
+ * Get the
+ * @param obj Source object
+ * @param path Path to the object inner property
+ * Each propert is seperated by  dot (.).
+ * @example
+ * getObjectProperty({a:{b:c:"dsa"}},"a.b.c")
+ * @returns "dsa"
+ */
+export const getObjectProperty = (obj: object, path: string) => {
 	if (!obj || !path) {
 		return null;
 	}

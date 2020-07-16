@@ -4,7 +4,7 @@ import DocumentPicker from "react-native-document-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Icons from "react-native-vector-icons/SimpleLineIcons";
 import colors from "../../constants/colors";
-import { reducer, SET } from "../../utils/state";
+import { reducer, SET, RESET } from "../../utils/state";
 import DefaultCheckbox from "../common/DefaultCheckbox";
 import RectangularDatePicker from "../common/RectangularDatePicker";
 import RectangularInput from "../common/RectangularInput";
@@ -50,6 +50,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 		}, {});
 
 	const [items, dispatchItems] = useReducer(reducer, {}, initialItems);
+
 	let fetchItems = () => {
 		Object.keys(items).map(key => {
 			if (typeof items[key].fetch === "function") {
@@ -111,6 +112,10 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 	};
 	let updateState = (name, value) => {
 		dispatch({ type: SET, name, value });
+	};
+
+	let resetData = () => {
+		dispatch({ type: RESET, value: initialValue });
 	};
 
 	let getSubmitData = () => {
@@ -441,6 +446,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 				<Footer
 					getSubmitData={getSubmitData}
 					getRawData={() => state}
+					resetData={resetData}
 				/>
 			)}
 		</View>

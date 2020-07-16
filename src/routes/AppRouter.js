@@ -19,6 +19,7 @@ import Add from "../screens/add/Add";
 import Products from "../screens/add/Products";
 import Login from "../screens/auth/Login";
 import Loader from "../screens/auth/Loader";
+import Edit from "../screens/add/Edit";
 
 const MainStack = createStackNavigator(
 	{
@@ -76,6 +77,12 @@ let NewDocumentStack = createStackNavigator({
 	},
 	Products: {
 		screen: Products,
+		navigationOptions: {
+			header: () => <Header />
+		}
+	},
+	Edit: {
+		screen: Edit,
 		navigationOptions: {
 			header: () => <Header />
 		}
@@ -161,7 +168,8 @@ const TabNavigator = createMaterialTopTabNavigator(
 			showIcon: true
 		},
 		tabBarPosition: "bottom",
-		swipeEnabled: false
+		swipeEnabled: false,
+		lazy: true
 		// tabBarComponent: CustomFLoatingTabbar
 	}
 );

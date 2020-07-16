@@ -15,6 +15,61 @@ import RectangularSelect from "../../components/common/RectangularSelect";
 import requests from "../../api/requests";
 import RectangleButton from "../../components/common/RectangleButton";
 
+let multiply = (first, second) => first * (second / 100);
+
+let add = (first, second) => first + second;
+
+let calculatedFields = {
+	deliverysum: {
+		firstField: "count",
+		secondField: "summa",
+		calculator: multiply
+	},
+	vatsum: {
+		firstField: "vatrate",
+		secondField: "deliverysum",
+		calculator: multiply
+	},
+	deliverysumwithvat: {
+		firstField: "vatsum",
+		secondField: "deliverysum",
+		calculator: add
+	},
+	fuelsum: {
+		firstField: "fuelrate",
+		secondField: "deliverysum",
+		calculator: multiply
+	},
+	deliverysumwithfuel: {
+		firstField: "fuelsum",
+		secondField: "deliverysumwithvat",
+		calculator: add
+	}
+};
+
+let reflectiveFields = {
+	count: {
+		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
+		secondField: "summa",
+		calculator: multiply
+	},
+	summa: {
+		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
+		secondField: "count",
+		calculator: multiply
+	},
+	vatrate: {
+		results: ["vatsum", "deliverysumwithvat", "deliverysumwithfuel"],
+		secondField: "count",
+		calculator: multiply
+	},
+	fuelrate: {
+		results: ["fuelsum", "deliverysumwithvat", "deliverysumwithfuel"],
+		secondField: "count",
+		calculator: multiply
+	}
+};
+
 const Products = ({ navigation }) => {
 	let model = navigation.getParam("model");
 	//TODO optimize by removing in focus and use onBlur only
@@ -37,16 +92,63 @@ const Products = ({ navigation }) => {
 			);
 		});
 	}, []);
+	let onBlur = key => {
+		setTempValue(defaultTemp);
+		let tempProducts = products.filter((temp, i) => {
+			if (i === tempValue.index) {
+				temp[key] = tempValue.value;
+				let reflectiveField = reflectiveFields[key];
+				if (!!reflectiveField) {
+					console.log({
+						reflectiveField
+					});
+					reflectiveField.results.forEach(field => {
+						if (!model[field]) return;
+						let calculatedField = calculatedFields[field];
+						console.log(calculatedField);
+						let result =
+							calculatedField.calculator(
+								parseFloat(temp[calculatedField.firstField]),
+								parseFloat(temp[calculatedField.secondField])
+							) || "";
+						temp[field] = result.toString();
+						console.log({
+							temp: temp,
+							result,
+							field,
+							firstField: temp[calculatedField.firstField],
+							calculatedField
+						});
+					});
+				}
+			}
+			return temp;
+		});
+		setProducts(tempProducts);
+	};
 	let renderProduct = (productModel, index) => {
 		return (
 			<View style={styles.productContainer}>
 				{Object.keys(productModel).map(key => {
 					let type = typeof model[key];
-					if (key === "orderno") {
+					if (key === "ordno") {
 						return (
 							<Text style={styles.title}>
 								{strings.product} № {index + 1}
 							</Text>
+						);
+					}
+					let isAutCalculated = !!calculatedFields[key];
+					if (isAutCalculated) {
+						return (
+							<RectangularInput
+								placeholder={strings[key.toUpperCase()] || key}
+								containerStyle={{
+									marginVertical: 5
+								}}
+								value={productModel[key]}
+								editable={false}
+							/>
 						);
 					}
 					switch (type) {
@@ -58,7 +160,7 @@ const Products = ({ navigation }) => {
 										margin: 10,
 										marginHorizontal: 0
 									}}
-									title={strings[key] || key}
+									title={strings[key.toUpperCase()] || key}
 									isActive={productModel[key]}
 									toggle={val =>
 										setProducts(
@@ -100,7 +202,9 @@ const Products = ({ navigation }) => {
 						default:
 							return (
 								<RectangularInput
-									placeholder={strings[key] || key}
+									placeholder={
+										strings[key.toUpperCase()] || key
+									}
 									containerStyle={{
 										marginVertical: 5
 									}}
@@ -123,16 +227,7 @@ const Products = ({ navigation }) => {
 											value
 										})
 									}
-									onBlur={() => {
-										setTempValue(defaultTemp);
-										let temp = products.filter((e, i) => {
-											if (i === tempValue.index) {
-												e[key] = tempValue.value;
-											}
-											return e;
-										});
-										setProducts(temp);
-									}}
+									onBlur={() => onBlur(key)}
 								/>
 							);
 					}
@@ -173,7 +268,6 @@ const Products = ({ navigation }) => {
 							onPress={onCancel}
 							style={{
 								marginTop: 20,
-								// paddingVertical: 25,
 								marginHorizontal: 20,
 								startColor: colors.grayText,
 								endColor: colors.grayBorder
@@ -185,7 +279,6 @@ const Products = ({ navigation }) => {
 							onPress={onComplete}
 							style={{
 								marginTop: 20,
-								// paddingVertical: 25,
 								marginHorizontal: 20
 							}}
 						/>

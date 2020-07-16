@@ -131,8 +131,8 @@ export let factureEntity = {
 	director: "",
 	accountant: "",
 	vatregcode: "",
-	treasuryaccount: "",
-	personalaccount: ""
+	branchcode: "",
+	branchname: ""
 };
 
 export let facturaProduct = {
@@ -146,16 +146,23 @@ export let facturaProduct = {
 	vatsum: 0,
 	deliverysumwithvat: 0,
 	withoutvat: false,
-	fuelrate: 0,
-	fuelsum: 0,
-	deliverysumwithfuel: 0,
-	series: "",
-	baseprice: 0,
-	extracharge: 0
+	committentname: "",
+	committenttin: "",
+	committentvatregcode: "",
+	exciserate: 0,
+	excisesum: 0,
+	serial: "",
+	basesumma: 0,
+	profitrate: 0
 };
 
 export let facturaDoc = {
 	facturadoc: {
+		facturano: "",
+		facturadate: ""
+	},
+	oldfacturadoc: {
+		facturaid: "",
 		facturano: "",
 		facturadate: ""
 	},
@@ -173,16 +180,19 @@ export let facturaDoc = {
 		itemreleasedfio: "",
 		itemreleasedtin: ""
 	},
+	version: 1,
+	facturatype: 0,
+	singlesidedtype: 0,
 	sellertin: "",
 	buyertin: "",
-	seller: factureEntity,
-	buyer: factureEntity,
+	seller: JSON.parse(JSON.stringify(factureEntity)),
+	buyer: JSON.parse(JSON.stringify(factureEntity)),
 	productlist: {
 		hasvat: false,
-		hasfuel: false,
+		hasexcise: false,
+		hascommittent: false,
+		hasmedical: false,
 		hasdiscount: false,
-		hasseries: false,
-		hasfarm: false,
 		discountrate: 0,
 		discountsum: 0,
 		discountvatsum: 0,
