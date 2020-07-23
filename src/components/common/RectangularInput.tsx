@@ -30,7 +30,6 @@ const RectangularInput = ({
 				value={value}
 				onChangeText={onChange}
 				placeholderTextColor={colors.grayText}
-				// mode={"outlined"}
 			/>
 		</View>
 	);

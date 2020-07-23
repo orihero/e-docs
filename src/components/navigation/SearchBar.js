@@ -22,7 +22,7 @@ const SearchBar = ({ onSearch }) => {
 			<EvilIcons
 				onPress={() => {
 					if (!!searchKey) {
-						onSearch(searchKey);
+						onSearch("", searchKey);
 						setSearchKey("");
 					}
 				}}

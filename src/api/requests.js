@@ -103,13 +103,23 @@ export let requests = {
 					"Content-Type": "application/json"
 				},
 				JSON.stringify(credentials)
+			),
+		edit: (token, type, id, credentials) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}/${id}/edit`,
+				{
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
+				},
+				JSON.stringify(credentials)
 			)
 	},
 	pdf: {
-		loadFile: (token, docId) =>
+		loadFile: (token, docId, type) =>
 			instance.fetch(
 				"get",
-				`${url}/documents/actWorkPerformed/${docId}/true/file`,
+				`${url}/documents/${type}/${docId}/true/file`,
 				{
 					Authorization: `Bearer ${token}`
 				}
@@ -136,6 +146,10 @@ export let requests = {
 			),
 		cardOrder: token =>
 			instance.fetch("GET", `${url}/carts/order`, {
+				Authorization: `Bearer ${token}`
+			}),
+		getCart: token =>
+			instance.fetch("GET", `${url}/carts?limit=1000`, {
 				Authorization: `Bearer ${token}`
 			})
 	}

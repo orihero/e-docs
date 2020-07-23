@@ -1,8 +1,9 @@
 import { DOCUMENTS_COUNT_LOADED, DOCUMENTS_LOADED } from "../types";
+import strings from "../../locales/strings";
 
 let initialState = {
 	boxType: -1,
-	status: -1,
+	status: { label: strings.all, value: "all" },
 	data: [],
 	count: {
 		in: {

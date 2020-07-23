@@ -72,13 +72,17 @@ let reflectiveFields = {
 
 const Products = ({ navigation }) => {
 	let model = navigation.getParam("model");
+	let initialProducts = navigation.getParam("products") || [];
 	//TODO optimize by removing in focus and use onBlur only
 	let defaultTemp = {
 		index: -1,
 		key: "",
 		value: ""
 	};
-	const [products, setProducts] = useState([{ ...model }]);
+	const [products, setProducts] = useState([
+		...initialProducts,
+		{ ...model }
+	]);
 	const [tempValue, setTempValue] = useState(defaultTemp);
 	const [list, setList] = useState([]);
 	const [withoutVat, setWithoutVat] = useState(false);
@@ -177,10 +181,11 @@ const Products = ({ navigation }) => {
 						case "string":
 						case "number": {
 							if (key.endsWith("id")) {
+								let val = productModel[key] || "";
 								return (
 									<RectangularSelect
 										placeholder={strings.measure}
-										value={productModel[key]}
+										value={val}
 										items={list}
 										onChange={val =>
 											setProducts(
@@ -199,7 +204,8 @@ const Products = ({ navigation }) => {
 								);
 							}
 						}
-						default:
+						default: {
+							let val = productModel[key] || "";
 							return (
 								<RectangularInput
 									placeholder={
@@ -219,7 +225,9 @@ const Products = ({ navigation }) => {
 										tempValue.key === key &&
 										index === tempValue.index
 											? tempValue.value
-											: productModel[key]
+											: typeof val !== "string"
+											? val.toString()
+											: ""
 									}
 									onChange={value =>
 										setTempValue({
@@ -230,6 +238,7 @@ const Products = ({ navigation }) => {
 									onBlur={() => onBlur(key)}
 								/>
 							);
+						}
 					}
 				})}
 			</View>

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Picker } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
@@ -34,10 +34,6 @@ export let docTypes = [
 	{
 		label: strings.waybill,
 		value: "WAYBILL"
-	},
-	{
-		label: strings.invoice,
-		value: "INVOICE"
 	},
 	{
 		label: strings.customerOrder,
@@ -91,11 +87,7 @@ const InnerHeader = ({
 									/>
 								</View>
 							)}
-						>
-							{/* <View style={{borderWidth: 1}}>
-                                <Text>some</Text>
-                            </View> */}
-						</RNPickerSelect>
+						/>
 					)}
 				</View>
 			</View>
@@ -104,9 +96,12 @@ const InnerHeader = ({
 				<RNPickerSelect
 					ref={filterRef}
 					items={docTypes}
-					useNativeAndroidPickerStyle={false}
 					onValueChange={value => {
 						onFilter(value);
+					}}
+					placeholder={{
+						label: strings.selectDocType,
+						value: null
 					}}
 					Icon={() => {
 						<View
@@ -148,8 +143,8 @@ const styles = StyleSheet.create({
 	titleWrapper: {
 		paddingVertical: 7,
 		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center"
+		justifyContent: "space-between"
+		// alignItems: "center"
 	},
 	title: {
 		fontSize: 16,
@@ -172,19 +167,12 @@ const pickerSelectStyles = StyleSheet.create({
 	inputAndroid: {
 		fontSize: 14,
 		padding: 10,
-		borderRadius: 4,
 		backgroundColor: colors.white,
 		color: colors.darkViolet,
 		borderWidth: 0,
 		textAlign: "right",
 		marginRight: 10,
-		fontFamily: "Rubik-Medium",
-		textAlignVertical: "center",
-		paddingTop: 15
-	},
-	headlessAndroidContainer: {
-		flexDirection: "row",
-		position: "relative"
+		textAlignVertical: "center"
 	},
 	iconContainer: {
 		top: 17

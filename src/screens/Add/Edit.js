@@ -132,11 +132,11 @@ const Edit = connect(
 	{ showModal, hideModal, showMessage, hideMessage }
 )(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
 	let document = navigation.getParam("document") || {};
+	let isCopy = !!navigation.getParam("isCopy");
 	const [fields, setFields] = useState([]);
-	const [docType, setDocType] = useState(
-		docTypes.find(e => e.value.docType === document.type) || {}
-	);
-	let productList = navigation.getParam("productList") || [];
+	const [docType, setDocType] = useState(-1);
+	let productList = document.data.productlist || [];
+	console.log({ document, productList: document.data.productlist.products });
 	useEffect(() => {
 		if (docType.fields) {
 			setFields(docType.fields);
@@ -145,11 +145,36 @@ const Edit = connect(
 		}
 	}, [docType]);
 
+	useEffect(() => {
+		setDocType(
+			docTypes.find(e => e.value.docType === document.type).value || {}
+		);
+	}, []);
+
+	let spreadObjectProperties = obj => {
+		let r = Object.keys(obj).reduce((prev, current) => {
+			let tmp = obj[current];
+			if (
+				typeof tmp === "object" &&
+				!Array.isArray(tmp) &&
+				current.toLowerCase() !== "productlist"
+			) {
+				let res = {};
+				Object.keys(tmp).forEach(e => {
+					res[`${current}.${e}`] = tmp[e];
+				});
+				return { ...prev, ...res };
+			}
+			return { ...prev, [current]: tmp };
+		}, {});
+		return r;
+	};
+	let spreadDocument = spreadObjectProperties(document.data);
 	/**
 	 ** Creation of document
 	 * @param {any} data Gathered after the completion of form
 	 */
-	let onCreate = async (data, resetData) => {
+	let onSave = async (data, resetData) => {
 		//TODO start loading
 		showModal();
 		//* Model for the product
@@ -185,8 +210,19 @@ const Edit = connect(
 					data.file || {};
 				temp = {
 					...temp,
-					file: { filebase64, filename, filetype }
+					file: {
+						filebase64: filebase64 || data.file.filebase64,
+						filename: filename || data.file.filename,
+						filetype: filetype || data.file.filetype
+					}
 				};
+				console.log({ file: data.file });
+				if (!data.file) {
+					temp = {
+						...temp,
+						file: document.data.file
+					};
+				}
 				let dataProductList = temp.productList || {};
 				let docProductList = docType.doc.productlist || {};
 				let parsedProduct = Object.keys(dataProductList).reduce(
@@ -245,12 +281,21 @@ const Edit = connect(
 			console.log("SENDING FILE:", { file: data.file });
 
 			console.log("SENDING REQUEST TO CREATE", { submitData });
-			let res = await requests.doc.create(
-				user.token,
-				docType.docType,
-				submitData
-			);
-			console.warn({ response: res.json() });
+			if (isCopy) {
+				let res = await requests.doc.create(
+					user.token,
+					docType.docType,
+					submitData
+				);
+			} else {
+				let res = await requests.doc.edit(
+					user.token,
+					docType.docType,
+					document._id,
+					submitData
+				);
+				console.warn(res.json());
+			}
 			showMessage({
 				type: colors.green,
 				message: strings.createdSuccessfully
@@ -287,7 +332,8 @@ const Edit = connect(
 						<TouchableWithoutFeedback
 							onPress={() => {
 								navigation.navigate("Products", {
-									model: docType.productModel || {}
+									model: docType.productModel || {},
+									products: productList.products
 								});
 							}}
 						>
@@ -307,8 +353,8 @@ const Edit = connect(
 				{!!docType.fields && (
 					<RectangleButton
 						backColor={colors.white}
-						text={strings.create}
-						onPress={() => onCreate(getSubmitData(), resetData)}
+						text={isCopy ? strings.create : strings.save}
+						onPress={() => onSave(getSubmitData(), resetData)}
 						style={{
 							marginTop: 20,
 							marginHorizontal: 20
@@ -330,6 +376,7 @@ const Edit = connect(
 					items={docTypes}
 					placeholder={strings.selectDocType}
 					onChange={e => setDocType(e)}
+					disabled={true}
 				/>
 				{!!user.tin && (
 					<FieldsRenderer
@@ -339,7 +386,7 @@ const Edit = connect(
 							sellertin: user.tin,
 							sellername: user.name,
 							seller: user,
-							...document
+							...spreadDocument
 						}}
 						fields={fields}
 						footer={footer}

@@ -13,25 +13,22 @@ import strings from "../../locales/strings";
 import { TextInput } from "react-native";
 
 const ProductCard = ({ item, passive, addToCart }) => {
+	let name = `${item && item.name} ${item && item.description}`;
+	let subName = `${strings.article}: ${item && item.sellerTin}`;
+	let price = `${!!item.prices &&
+		(item.prices.length > 1
+			? `от ${item.prices[0].price}`
+			: item.prices[0].price)}{" "}
+					сум`;
 	const [count, setCount] = useState("");
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
 				<View style={styles.nameWrapper}>
-					<Text style={styles.name}>
-						{item && item.name} {item && item.description}
-					</Text>
-					<Text style={styles.subName}>
-						{strings.article}: {item && item.sellerTin}
-					</Text>
+					<Text style={styles.name}>{name}</Text>
+					<Text style={styles.subName}>{subName}</Text>
 				</View>
-				<Text style={styles.price}>
-					{!!item.prices &&
-						(item.prices.length > 1
-							? `от ${item.prices[0].price}`
-							: item.prices[0].price)}{" "}
-					сум
-				</Text>
+				<Text style={styles.price}>{price}</Text>
 			</View>
 			<View style={styles.bottom}>
 				<View style={styles.firmWrapper}>

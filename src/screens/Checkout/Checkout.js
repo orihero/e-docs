@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import InnerHeader from "../../components/navigation/InnerHeader";
 import colors from "../../constants/colors";
@@ -9,6 +9,7 @@ import Text from "../../components/common/Text";
 import { withNavigation } from "react-navigation";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import requests from "../../api/requests";
+import { connect } from "react-redux";
 
 let productList = [
 	{
@@ -76,13 +77,23 @@ let productList = [
 	}
 ];
 
-const Checkout = ({ navigation }) => {
+const Checkout = ({ navigation, token }) => {
+	const [orders, setOrders] = useState([]);
 	const onOrderPress = async () => {
 		//get token and pass
 		let res = await requests.product.cardOrder(token);
 
 		console.warn(res);
 	};
+
+	let effect = async () => {
+		let res = await requests.product.getCart(token);
+		console.log(res.json());
+	};
+
+	useEffect(() => {
+		effect();
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -150,4 +161,12 @@ const styles = StyleSheet.create({
 	buttonWrapper: { flex: 1, paddingHorizontal: 40, paddingTop: 20 }
 });
 
-export default withNavigation(Checkout);
+let mapStateToProps = ({ user, cart }) => {
+	return {
+		token: user.token,
+		cart
+	};
+};
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps)(withNavigation(Checkout));

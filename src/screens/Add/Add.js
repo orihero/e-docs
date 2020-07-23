@@ -344,8 +344,7 @@ const Add = connect(
 							ownername: user.name,
 							sellertin: user.tin,
 							sellername: user.name,
-							seller: user,
-							...document
+							seller: user
 						}}
 						fields={fields}
 						footer={footer}

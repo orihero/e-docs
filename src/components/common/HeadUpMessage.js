@@ -6,14 +6,13 @@ import colors from "../../constants/colors";
 const HeadUpMessage = ({ headUpType, headUpMessage }) => {
 	const [translateY, setAnimation] = useState(new Animated.Value(-200));
 	useEffect(() => {
-		if (headUpMessage) {
-			Animated.timing(translateY, { toValue: 0 }).start();
-			setTimeout(
-				() => Animated.timing(translateY, { toValue: -200 }).start(),
-				3000
-			);
-		}
-	}, [headUpMessage]);
+		translateY.stopAnimation();
+		Animated.timing(translateY, { toValue: 0 }).start();
+		setTimeout(
+			() => Animated.timing(translateY, { toValue: -200 }).start(),
+			3000
+		);
+	}, [headUpMessage, headUpType]);
 	return (
 		<Animated.View
 			style={[

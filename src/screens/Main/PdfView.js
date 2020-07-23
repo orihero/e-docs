@@ -51,7 +51,7 @@ const PdfView = ({
 	const loadFile = async () => {
 		showModal(strings.loadingPdf);
 		try {
-			let res = await requests.pdf.loadFile(token, docId);
+			let res = await requests.pdf.loadFile(token, docId, type);
 			let newRes = res.json();
 			setBaseFile(newRes.base64);
 			hideModal();
@@ -72,7 +72,10 @@ const PdfView = ({
 	 ** Save the file to device's storage
 	 */
 	const onCopyPress = async () => {
-		navigation.navigate("Edit", { document: documentContent });
+		navigation.navigate("Edit", {
+			document: documentContent,
+			isCopy: true
+		});
 	};
 
 	let onDownloadPress = async () => {
@@ -168,19 +171,29 @@ const PdfView = ({
 				);
 				//TODO implement getStats
 				// this.getStats(documentContent.type);
+				hideModal();
 				showMessage({
 					type: colors.green,
 					message: strings.signedSuccessfully
 				});
+				navigation.navigate("List", { reload: true });
 			}
 		} catch (error) {
-			console.log(error.message, error);
-		} finally {
 			hideModal();
+		} finally {
 		}
 	};
 	//Вот логика отклонения документа
 	const onDeletePress = async () => {
+		// if(docStatus===docStatus.DRAFTS){
+		// 	showModal(strings.loading);
+		// 	try {
+		// 		let delRes = await requests.doc.delete()
+		// 	} catch (error) {
+
+		// 	}
+		// 	return;
+		// }
 		if (!comment) {
 			showMessage({
 				type: colors.killerRed,
@@ -228,17 +241,30 @@ const PdfView = ({
 				if (rejectResponse.errors) {
 					console.log(rejectResponse.errors.msg);
 				}
+				hideModal();
+				navigation.navigate("List", { reload: true });
 				showMessage({
 					type: colors.green,
 					message: strings.rejectedSuccessfully
 				});
 			}
 		} catch (error) {
-		} finally {
 			hideModal();
 		}
 	};
 
+	let renderAccept =
+		(documentContent.status === docStatus.SENT &&
+			boxType === boxTypes.IN) ||
+		(boxType === boxTypes.OUT &&
+			documentContent.status === docStatus.DRAFTS);
+	let renderReject =
+		(documentContent.status === docStatus.SENT &&
+			boxType === boxTypes.OUT) ||
+		(documentContent.status === docStatus.SENT &&
+			boxType === boxTypes.IN) ||
+		(boxType === boxTypes.OUT &&
+			documentContent.status === docStatus.DRAFTS);
 	return (
 		<View style={styles.container}>
 			<View style={styles.topPanel}>
@@ -259,9 +285,8 @@ const PdfView = ({
 							</View>
 						</TouchableOpacity>
 					</View>
-
 					<View style={styles.right}>
-						{type !== docStatus.SENT && (
+						{boxType === boxTypes.OUT && (
 							<View style={styles.iconWrapper}>
 								<TouchableOpacity onPress={onCopyPress}>
 									<View
@@ -279,57 +304,64 @@ const PdfView = ({
 								</TouchableOpacity>
 							</View>
 						)}
-						<View style={styles.iconWrapper}>
-							<TouchableOpacity onPress={onEditPress}>
-								<View
-									style={{
-										backgroundColor: colors.white,
-										padding: 8
-									}}
-								>
-									<AntDesign
-										name="edit"
-										color={colors.black}
-										size={18}
-										color={colors.gold}
-									/>
+						{documentContent.status === docStatus.DRAFTS &&
+							boxType === "out" && (
+								<View style={styles.iconWrapper}>
+									<TouchableOpacity onPress={onEditPress}>
+										<View
+											style={{
+												backgroundColor: colors.white,
+												padding: 8
+											}}
+										>
+											<AntDesign
+												name="edit"
+												color={colors.black}
+												size={18}
+												color={colors.gold}
+											/>
+										</View>
+									</TouchableOpacity>
 								</View>
-							</TouchableOpacity>
-						</View>
-						<View style={styles.iconWrapper}>
-							<TouchableOpacity onPress={onSubscribePress}>
-								<View
-									style={{
-										backgroundColor: colors.white,
-										padding: 8
-									}}
-								>
-									<AntDesign
-										name="checkcircleo"
-										color={colors.black}
-										size={18}
-										color={colors.green}
-									/>
-								</View>
-							</TouchableOpacity>
-						</View>
-						<View style={styles.iconWrapper}>
-							<TouchableOpacity onPress={onDeletePress}>
-								<View
-									style={{
-										backgroundColor: colors.white,
-										padding: 8
-									}}
-								>
-									<AntDesign
-										name="delete"
-										color={colors.black}
-										size={18}
-										color={colors.killerRed}
-									/>
-								</View>
-							</TouchableOpacity>
-						</View>
+							)}
+						{renderAccept && (
+							<View style={styles.iconWrapper}>
+								<TouchableOpacity onPress={onSubscribePress}>
+									<View
+										style={{
+											backgroundColor: colors.white,
+											padding: 8
+										}}
+									>
+										<AntDesign
+											name="checkcircleo"
+											color={colors.black}
+											size={18}
+											color={colors.green}
+										/>
+									</View>
+								</TouchableOpacity>
+							</View>
+						)}
+						{renderReject && (
+							<View style={styles.iconWrapper}>
+								<TouchableOpacity onPress={onDeletePress}>
+									<View
+										style={{
+											backgroundColor: colors.white,
+											padding: 8
+										}}
+									>
+										<AntDesign
+											name="delete"
+											color={colors.black}
+											size={18}
+											color={colors.killerRed}
+										/>
+									</View>
+								</TouchableOpacity>
+							</View>
+						)}
 						<View style={styles.iconWrapper}>
 							<TouchableOpacity onPress={onDownloadPress}>
 								<View

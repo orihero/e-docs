@@ -53,24 +53,29 @@ const MessageCard = ({ item, navigation, status }) => {
 				]}
 			>
 				<View style={styles.content}>
-					{status === -1 || status === "all" || !status ? (
-						<Text style={styles.title}>
-							{docTypes[item.type.toUpperCase()] || ""}
-						</Text>
-					) : null}
+					<Text style={styles.title}>
+						{docTypes[item.type.toUpperCase()] || ""}
+					</Text>
 					<View style={styles.textWrapper}>
 						<Text style={styles.name}>{item.ownerName}</Text>
-						<Text style={styles.date}>
-							{Moment(item.docDate).format("DD.MM.YYYY")}
-						</Text>
+						{!!item.docDate && (
+							<Text style={styles.date}>
+								{Moment(item.docDate).format("DD.MM.YYYY")}
+							</Text>
+						)}
 					</View>
 					<View style={styles.textWrapper}>
 						<Text style={[styles.text]}>
 							{strings.amount}: {item.totalSum}
 						</Text>
 						<Text style={styles.text}>
-							№ {item.contractNumber} ―
-							{Moment(item.contractDate).format("DD.MM.YYYY")}
+							{!!item.contractNumber &&
+								`№ ${item.contractNumber}`}
+							{item.contractDate
+								? ` ― ${Moment(item.contractDate).format(
+										"DD.MM.YYYY"
+								  )}`
+								: ""}
 						</Text>
 					</View>
 				</View>

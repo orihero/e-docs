@@ -67,7 +67,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.receiver,
+		placeholder: strings.role,
 		name: "targetrole",
 		title: strings.receiver
 	},
@@ -92,7 +92,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.receiver,
+		placeholder: strings.role,
 		name: "target2role",
 		title: strings.receiver
 	},
@@ -117,7 +117,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.receiver,
+		placeholder: strings.role,
 		name: "target3role",
 		title: strings.receiver
 	},
@@ -143,7 +143,8 @@ export let universalFields = [
 		type: FieldType.INPUT,
 		placeholder: strings.doctype,
 		size: FieldSize.FULL,
-		name: "doctype"
+		name: "doctype",
+		title: strings.documentDetails
 	},
 	{
 		type: FieldType.INPUT,

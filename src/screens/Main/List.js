@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
 import MessageCard from "../../components/cards/MessageCard";
 import colors from "../../constants/colors";
 import InnerHeader from "../../components/navigation/InnerHeader";
@@ -23,30 +23,38 @@ const List = ({
 	hideMessage,
 	hideModal,
 	documents: { data, boxType, status, ...rest },
-	documentsLoaded
+	documentsLoaded,
+	loading
 }) => {
 	let [infoList, setInfoList] = useState(documents);
 	let title = navigation.getParam("title");
-
+	let reload = navigation.getParam("reload");
+	useEffect(() => {
+		if (!!reload) {
+			getDocuments();
+			navigation.setParams({ reload: false });
+		}
+	}, [reload]);
 	let setShowType = async e => {
 		documentsLoaded({ data, boxType, status: e, ...rest });
 	};
 
 	let [documents, setDocuments] = useState([]);
 	let getDocuments = async (type, filter) => {
-		console.log("lol");
 		showModal(strings.gettingDocuments);
+		console.log({ boxType, status, type, filter });
 		try {
 			let res = await requests.doc.getDocuments(
 				token,
 				1,
-				20,
+				1000,
 				boxType,
-				status,
-				!!type && type,
-				!!filter && filter
+				status === "all" ? "" : status,
+				type ? type.toLowerCase() : "",
+				filter
 			);
 			let newRes = res.json();
+			console.log({ newRes });
 			setDocuments(newRes.docs);
 			hideModal();
 		} catch (error) {
@@ -90,6 +98,10 @@ const List = ({
 		});
 	}
 
+	let onRefresh = () => {
+		getDocuments();
+	};
+
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -107,6 +119,8 @@ const List = ({
 					}}
 					showsVerticalScrollIndicator={false}
 					data={infoList}
+					onRefresh={onRefresh}
+					refreshing={loading}
 					renderItem={({ item }) => (
 						<MessageCard
 							item={item}
@@ -134,7 +148,8 @@ const styles = StyleSheet.create({
 
 let mapStateToProps = ({ user, appState, documents }) => ({
 	token: user.token,
-	documents
+	documents,
+	loading: appState.modalVisible
 });
 let mapDispatchToProps = {
 	showMessage,
