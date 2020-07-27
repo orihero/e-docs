@@ -111,6 +111,7 @@ const List = ({
 				setShowType={setShowType}
 				onSearch={getDocuments}
 				onFilter={getDocuments}
+				showType={status}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList

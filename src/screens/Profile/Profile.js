@@ -10,6 +10,8 @@ import FieldsRenderer, {
 } from "../../components/generators/FieldsRenderer";
 import { connect } from "react-redux";
 import requests from "../../api/requests";
+import RectangleButton from "../../components/common/RectangleButton";
+import { userLoggedOut } from "../../redux/actions";
 
 const messageList = [
 	// {
@@ -178,13 +180,26 @@ let fields = [
 	}
 ];
 
-const Profile = ({ user }) => {
+const Profile = ({ user, dispatch, navigation }) => {
+	let logout = () => {
+		dispatch(userLoggedOut());
+		navigation.navigate("Login");
+	};
 	return (
 		<View style={styles.container}>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				{!!user.tin && (
 					<FieldsRenderer fields={fields} initialValue={user} />
 				)}
+				<RectangleButton
+					backColor={colors.jeansBlue}
+					text={strings.logout}
+					onPress={logout}
+					style={{
+						marginTop: 20,
+						marginHorizontal: 20
+					}}
+				/>
 			</ScrollView>
 		</View>
 	);

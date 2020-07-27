@@ -78,6 +78,12 @@ export let facturaFields = [
 		]
 	},
 	{
+		type: FieldType.DATE_PICKER,
+		size: FieldSize.FULL,
+		placeholder: strings.dateofissue,
+		name: "facturaempowermentdoc.empowermentdateofissue"
+	},
+	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
 		placeholder: strings.fio,

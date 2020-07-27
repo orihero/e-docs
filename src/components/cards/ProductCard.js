@@ -17,18 +17,26 @@ const ProductCard = ({ item, passive, addToCart }) => {
 	let subName = `${strings.article}: ${item && item.sellerTin}`;
 	let price = `${!!item.prices &&
 		(item.prices.length > 1
-			? `от ${item.prices[0].price}`
-			: item.prices[0].price)}{" "}
-					сум`;
+			? `${item.prices[0].price} - ${
+					item.prices[item.prices.length - 1].price
+			  }`
+			: item.prices[0].price)} сум`;
 	const [count, setCount] = useState("");
 	return (
 		<View style={styles.container}>
 			<View style={styles.top}>
 				<View style={styles.nameWrapper}>
 					<Text style={styles.name}>{name}</Text>
-					<Text style={styles.subName}>{subName}</Text>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between"
+						}}
+					>
+						<Text style={styles.subName}>{subName}</Text>
+						<Text style={styles.price}>{price}</Text>
+					</View>
 				</View>
-				<Text style={styles.price}>{price}</Text>
 			</View>
 			<View style={styles.bottom}>
 				<View style={styles.firmWrapper}>
@@ -40,7 +48,7 @@ const ProductCard = ({ item, passive, addToCart }) => {
 				<View style={styles.buttonWrapper}>
 					{passive ? (
 						<Text style={styles.quantity}>
-							{item.prices && item.prices[0].count} штук
+							{item.prices && item.count} штук
 						</Text>
 					) : (
 						<>
@@ -59,7 +67,7 @@ const ProductCard = ({ item, passive, addToCart }) => {
 							/>
 							<TouchableOpacity
 								onPress={() => {
-									addToCart();
+									addToCart(count);
 								}}
 							>
 								<SmallButton

@@ -67,14 +67,14 @@ export let waybillFields = [
 		columns: [
 			{
 				type: FieldType.INPUT,
-				size: FieldSize.QUARTER,
+				size: FieldSize.HALF,
 				placeholder: strings.number,
 				name: "truckdoc.truckregno"
 			},
 			{
-				type: FieldType.DATE_PICKER,
-				placeholder: strings.selectDate,
-				size: FieldSize.QUERTER_THREE,
+				type: FieldType.INPUT,
+				placeholder: strings.number,
+				size: FieldSize.HALF,
 				name: "truckdoc.truckmodel"
 			}
 		]
@@ -128,7 +128,7 @@ export let waybillFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "carriertin",
-		title: strings.buyer,
+		title: strings.carrier,
 		componentProps: {
 			maxLength: 9,
 			keyboardType: "number-pad"

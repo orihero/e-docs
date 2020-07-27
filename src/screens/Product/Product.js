@@ -39,10 +39,9 @@ const Product = ({
 	let getProducts = async () => {
 		showModal(strings.gettingProducts);
 		try {
-			let res = await requests.product.getProducts(
-				token,
-				normalizeFilters(filters)
-			);
+			let f = normalizeFilters(filters);
+			console.warn({ f });
+			let res = await requests.product.getProducts(token, f);
 			cartLoaded({ ...cart, products: res.json().docs });
 			hideModal();
 		} catch (error) {
@@ -51,13 +50,13 @@ const Product = ({
 		}
 		try {
 			let res = await requests.product.getTypes();
-			setGroups(
-				res.json().map(e => ({
-					label: e.nameRU,
-					value: e._id,
-					...e
-				}))
-			);
+			let results = res.json().map(e => ({
+				label: e.nameRU,
+				value: e._id,
+				...e
+			}));
+			setGroups(results);
+			console.log({ results });
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -69,14 +68,23 @@ const Product = ({
 		getProducts();
 	}, [filters]);
 
-	let addToCart = async item => {
-		console.warn(item);
-		let res = await requests.product.addToCart({
-			itemId: item._id,
-			count: item.prices[0].count
-		});
-		console.warn(res);
+	let onCategoryChange = el => {
+		setFilters({ ...filters, group: el });
+		console.warn({ el });
+	};
 
+	let addToCart = async (item, count) => {
+		showModal();
+		let data = {
+			itemId: item._id,
+			count: count
+		};
+		let res = await requests.product.addToCart(token, data);
+		showMessage({
+			type: colors.green,
+			message: `${item.name} ${strings.added}`
+		});
+		hideModal();
 		// cartLoaded({});
 	};
 	return (
@@ -85,7 +93,8 @@ const Product = ({
 				navigation={navigation}
 				currentPage={strings.products}
 				showTypes={groups}
-				setShowType={setFilters}
+				setShowType={onCategoryChange}
+				recursive
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
@@ -96,7 +105,7 @@ const Product = ({
 					data={products}
 					renderItem={({ item }) => (
 						<ProductCard
-							addToCart={() => addToCart(item)}
+							addToCart={count => addToCart(item, count)}
 							item={item}
 							passive={!!cart[item._id]}
 							key={item.id}

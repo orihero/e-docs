@@ -10,6 +10,12 @@ import { withNavigation } from "react-navigation";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import requests from "../../api/requests";
 import { connect } from "react-redux";
+import {
+	hideMessage,
+	hideModal,
+	showMessage,
+	showModal
+} from "../../redux/actions";
 
 let productList = [
 	{
@@ -77,23 +83,40 @@ let productList = [
 	}
 ];
 
-const Checkout = ({ navigation, token }) => {
+const Checkout = ({ navigation, token, showMessage, showModal, hideModal }) => {
 	const [orders, setOrders] = useState([]);
 	const onOrderPress = async () => {
-		//get token and pass
+		showModal();
 		let res = await requests.product.cardOrder(token);
-
 		console.warn(res);
+		await effect();
+		showMessage({
+			type: colors.green,
+			message: strings.createdSuccessfully
+		});
+		hideModal();
 	};
 
 	let effect = async () => {
 		let res = await requests.product.getCart(token);
-		console.log(res.json());
+		let data = res.json();
+		setOrders(data.docs);
 	};
 
 	useEffect(() => {
 		effect();
 	}, []);
+
+	let onClearPress = async () => {
+		showModal();
+		await requests.product.clearCart(token);
+		showMessage({
+			type: colors.green,
+			message: strings.deletedSuccessfully
+		});
+		await effect();
+		hideModal();
+	};
 
 	return (
 		<View style={styles.container}>
@@ -107,7 +130,7 @@ const Checkout = ({ navigation, token }) => {
 						paddingTop: 10
 					}}
 					showsVerticalScrollIndicator={false}
-					data={productList}
+					data={orders}
 					renderItem={({ item }) => (
 						<ProductCard item={item} key={item.id} passive={true} />
 					)}
@@ -115,18 +138,29 @@ const Checkout = ({ navigation, token }) => {
 				/>
 			</View>
 			<View style={styles.bottom}>
-				<View style={styles.totalWrapper}>
-					<Text style={styles.total}>{strings.overall}</Text>
-					<Text style={styles.total}>1 834 200 сум</Text>
+				{/* <View style={styles.totalWrapper}>
+					<Text style={styles.total}>{strings.overAll}</Text>
+					<Text style={styles.total}>{orders.reduce((prev,current)=>{
+						return prev+(parseFloat(current.
+					},0)}</Text>
+				</View> */}
+				<View style={styles.buttonWrapper}>
+					<RectangleButton
+						onPress={onOrderPress}
+						text={strings.sendApplication}
+						backColor={colors.dimGreen}
+					/>
+					<RectangleButton
+						onPress={onClearPress}
+						text={strings.clear}
+						backColor={colors.killerRed}
+						style={{
+							startColor: "red",
+							endColor: colors.killerRed,
+							marginVertical: 10
+						}}
+					/>
 				</View>
-				<TouchableOpacity onPress={onOrderPress}>
-					<View style={styles.buttonWrapper}>
-						<RectangleButton
-							text={strings.sendApplication}
-							backColor={colors.dimGreen}
-						/>
-					</View>
-				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -167,6 +201,13 @@ let mapStateToProps = ({ user, cart }) => {
 		cart
 	};
 };
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+	showMessage,
+	showModal,
+	hideModal
+};
 
-export default connect(mapStateToProps)(withNavigation(Checkout));
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(withNavigation(Checkout));

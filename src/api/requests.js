@@ -113,6 +113,16 @@ export let requests = {
 					"Content-Type": "application/json"
 				},
 				JSON.stringify(credentials)
+			),
+		delete: (token, type, id, credentials) =>
+			instance.fetch(
+				"POST",
+				`${url}/documents/${type}/${id}/delete`,
+				{
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
+				},
+				JSON.stringify(credentials)
 			)
 	},
 	pdf: {
@@ -126,26 +136,27 @@ export let requests = {
 			)
 	},
 	product: {
-		getProducts: (token, page, limit) =>
-			instance.fetch(
-				"get",
-				`${url}/items/market?page=${page}&limit=${limit}`,
-				{
-					Authorization: `Bearer ${token}`
-				}
-			),
+		getProducts: (token, filters) =>
+			instance.fetch("get", `${url}/items/market${filters}`, {
+				Authorization: `Bearer ${token}`
+			}),
 		getTypes: () => instance.fetch("GET", `${url}/groups/all`),
 		addToCart: (token, data) =>
 			instance.fetch(
 				"POST",
 				`${url}/carts`,
 				{
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json"
 				},
-				data
+				JSON.stringify(data)
 			),
 		cardOrder: token =>
 			instance.fetch("GET", `${url}/carts/order`, {
+				Authorization: `Bearer ${token}`
+			}),
+		clearCart: token =>
+			instance.fetch("GET", `${url}/carts/clear`, {
 				Authorization: `Bearer ${token}`
 			}),
 		getCart: token =>

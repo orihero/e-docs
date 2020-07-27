@@ -10,6 +10,6 @@ export const userLoaded = payload => ({
 	payload
 });
 
-export const userLoggedOud = () => ({
+export const userLoggedOut = () => ({
 	type: USER_LOGGED_OUT
 });

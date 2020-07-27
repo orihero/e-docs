@@ -109,16 +109,24 @@ const PdfView = ({
 		showModal(strings.loading);
 		console.log(
 			"SIGNING BEGINS",
-			boxType == boxTypes.IN && status == docStatus.SENT
+			boxType == boxTypes.IN && document.status == docStatus.SENT
 		);
 		try {
 			let signResult = ""; // Результат подпcи
-			if (boxType === boxTypes.OUT && status === docStatus.DRAFTS) {
+			console.log(
+				"BOX TYPE ",
+				boxType === boxTypes.OUT && document.status === docStatus.DRAFTS
+			);
+			console.log("SIGNING DATA", documentContent.data);
+			if (
+				boxType === boxTypes.OUT &&
+				document.status === docStatus.DRAFTS
+			) {
 				// если исходящий черновик
-				signResult = await sign(JSON.stringify(documentdata)); // подписываем струку json
+				signResult = await sign(JSON.stringify(documentContent.data)); // подписываем струку json
 			} else if (
 				boxType == boxTypes.IN &&
-				status == docStatus.SENT &&
+				document.status == docStatus.SENT &&
 				documentContent.type == "empowerment"
 			) {
 				// если входящая доверенность подписывается агентом, получаем файл подписи с сервера и добавляем к ней подписть
@@ -147,90 +155,17 @@ const PdfView = ({
 				}
 			}
 			if (signResult) {
+				console.log("GOT SIGN");
 				//Fetching timestamp from the server
 				let timestampResponse = await requests.doc.getTimestamp({
 					signatureHex: signResult.signature
 				});
-				console.log({
-					timestampResponse: timestampResponse.json()
-						.timestamp_token_64
-				});
-
 				//Attaching timestamp
 				let attachedSign = await attach(
 					timestampResponse.json().timestamp_token_64
 				);
 				// если  все окей, отправляем на сервер
-				let signResponse = await requests.doc.signDocument(
-					token,
-					type,
-					docId,
-					{
-						pkcs7: attachedSign.pkcs7
-					}
-				);
-				//TODO implement getStats
-				// this.getStats(documentContent.type);
-				hideModal();
-				showMessage({
-					type: colors.green,
-					message: strings.signedSuccessfully
-				});
-				navigation.navigate("List", { reload: true });
-			}
-		} catch (error) {
-			hideModal();
-		} finally {
-		}
-	};
-	//Вот логика отклонения документа
-	const onDeletePress = async () => {
-		// if(docStatus===docStatus.DRAFTS){
-		// 	showModal(strings.loading);
-		// 	try {
-		// 		let delRes = await requests.doc.delete()
-		// 	} catch (error) {
-
-		// 	}
-		// 	return;
-		// }
-		if (!comment) {
-			showMessage({
-				type: colors.killerRed,
-				message: strings.writeComment
-			});
-			return;
-		}
-		showModal(strings.loading);
-		try {
-			let signedData = {
-				// структура, которая подписывается
-				Notes: comment // комментарий
-			};
-			let nameData = "Data";
-			if (documentContent.type == "factura") {
-				nameData = "Factura";
-			} else if (documentContent.type == "empowerment") {
-				nameData = "Empowerment";
-			} else if (documentContent.type == "waybill") {
-				nameData = "Waybill";
-			} else if (documentContent.type == "actGoodsAcceptance") {
-				nameData = "Waybill";
-			} else if (documentContent.type == "actWorkPerformed") {
-				nameData = "Act";
-			}
-			signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
-			const signResult = await sign(JSON.stringify(signedData)); // подписываем
-			if (signResult) {
-				let timestampResponse = await requests.doc.getTimestamp({
-					signatureHex: signResult.signature
-				});
-				//Attaching timestamp
-				let attachedSign = await attach(
-					timestampResponse.json().timestamp_token_64
-				);
-				// если все окей, отправляем на сервер
-				let rejectResponse = (await requests.doc.rejectDocument(
+				let signResponse = (await requests.doc.signDocument(
 					token,
 					type,
 					docId,
@@ -238,18 +173,119 @@ const PdfView = ({
 						pkcs7: attachedSign.pkcs7
 					}
 				)).json();
-				if (rejectResponse.errors) {
-					console.log(rejectResponse.errors.msg);
-				}
+
+				//TODO implement getStats
+				// this.getStats(documentContent.type);
 				hideModal();
-				navigation.navigate("List", { reload: true });
+				if (!signResponse.success) {
+					showMessage({
+						type: colors.killerRed,
+						message: signResponse.errors.msg
+					});
+					console.log({ err: signResponse.errors.msg });
+					return;
+				}
 				showMessage({
 					type: colors.green,
-					message: strings.rejectedSuccessfully
+					message: strings.signedSuccessfully
 				});
+				navigation.navigate("List", { reload: true });
 			}
 		} catch (error) {
+			console.log(error);
 			hideModal();
+		}
+	};
+	//Вот логика отклонения документа
+	const onDeletePress = async () => {
+		if (
+			boxType === boxTypes.IN &&
+			documentContent.status === docStatus.SENT
+		) {
+			if (!comment) {
+				showMessage({
+					type: colors.killerRed,
+					message: strings.writeComment
+				});
+				return;
+			}
+			showModal(strings.loading);
+			try {
+				let signedData = {
+					// структура, которая подписывается
+					Notes: comment // комментарий
+				};
+				let nameData = "Data";
+				if (documentContent.type == "factura") {
+					nameData = "Factura";
+				} else if (documentContent.type == "empowerment") {
+					nameData = "Empowerment";
+				} else if (documentContent.type == "waybill") {
+					nameData = "Waybill";
+				} else if (documentContent.type == "actGoodsAcceptance") {
+					nameData = "Waybill";
+				} else if (documentContent.type == "actWorkPerformed") {
+					nameData = "Act";
+				}
+				signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
+				const signResult = await sign(JSON.stringify(signedData)); // подписываем
+				if (signResult) {
+					let timestampResponse = await requests.doc.getTimestamp({
+						signatureHex: signResult.signature
+					});
+					//Attaching timestamp
+					let attachedSign = await attach(
+						timestampResponse.json().timestamp_token_64
+					);
+					// если все окей, отправляем на сервер
+					let rejectResponse = (await requests.doc.rejectDocument(
+						token,
+						type,
+						docId,
+						{
+							pkcs7: attachedSign.pkcs7
+						}
+					)).json();
+					if (rejectResponse.errors) {
+						console.log(rejectResponse.errors.msg);
+					}
+					hideModal();
+					navigation.navigate("List", { reload: true });
+					showMessage({
+						type: colors.green,
+						message: strings.rejectedSuccessfully
+					});
+				}
+			} catch (error) {
+				hideModal();
+			}
+		} else {
+			showModal(strings.loading);
+			try {
+				const signResult = await sign(
+					JSON.stringify(documentContent.data)
+				);
+				let delRes = (await requests.doc.delete(
+					token,
+					documentContent.type,
+					documentContent._id,
+					{ pkcs7: signResult.pkcs7 }
+				)).json();
+				console.warn(delRes);
+				if (!delRes.success) {
+					showMessage({
+						type: colors.killerRed,
+						message: delRes.errors.msg
+					});
+					return;
+				}
+				showMessage({
+					type: colors.green,
+					message: strings.deletedSuccessfully
+				});
+				navigation.navigate("List", { reload: true });
+			} catch (error) {}
+			return;
 		}
 	};
 

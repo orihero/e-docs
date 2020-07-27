@@ -69,7 +69,7 @@ export let docTypes = [
 			fields: facturaFields,
 			productModel: facturaProduct,
 			doc: facturaDoc,
-			docType: "empowerment"
+			docType: "factura"
 		}
 	},
 	{
@@ -78,7 +78,8 @@ export let docTypes = [
 			fields: empowermentFields,
 			productModel: empowermentProduct,
 			doc: empowermentDoc,
-			docType: "empowerment"
+			docType: "empowerment",
+			reverse: true
 		}
 	},
 	{
@@ -114,7 +115,8 @@ export let docTypes = [
 			fields: customerOrderFields,
 			productModel: customerOrderProduct,
 			doc: customerOrderDoc,
-			docType: "customerOrder"
+			docType: "customerOrder",
+			reverse: true
 		}
 	},
 	{
@@ -225,6 +227,11 @@ const Add = connect(
 			submitData = Object.keys(doc).reduce((prev, key) => {
 				return { ...prev, [key]: temp[key] };
 			}, {});
+			submitData.seller.mobile = submitData.seller.mobile || "";
+			submitData.seller.workphone = submitData.seller.mobile || "";
+			submitData.buyer.mobile = submitData.buyer.mobile || "";
+			submitData.buyer.workphone = submitData.buyer.workphone || "";
+			console.log("DSA", submitData);
 		} catch (error) {
 			//* Error in formulating submit data!
 			hideModal();
@@ -248,6 +255,15 @@ const Add = connect(
 					data.buyer?.name
 				);
 			}
+			if (docType.reverse) {
+				let tObj = submitData.buyername;
+				let tTin = submitData.buyertin;
+				let t = submitData.buyer;
+				submitData.buyertin = submitData.sellertin;
+				submitData.buyername = submitData.sellername;
+				submitData.sellertin = tTin;
+				submitData.sellername = tObj;
+			}
 			console.log("SENDING FILE:", { file: data.file });
 
 			console.log("SENDING REQUEST TO CREATE", { submitData });
@@ -262,6 +278,7 @@ const Add = connect(
 				message: strings.createdSuccessfully
 			});
 			setDocType(-1);
+			resetData && resetData();
 			navigation.navigate("Main");
 		} catch (error) {
 			//TODO show error message

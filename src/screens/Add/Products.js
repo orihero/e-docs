@@ -15,7 +15,8 @@ import RectangularSelect from "../../components/common/RectangularSelect";
 import requests from "../../api/requests";
 import RectangleButton from "../../components/common/RectangleButton";
 
-let multiply = (first, second) => first * (second / 100);
+let percent = (first, second) => first * (second / 100);
+let multipy = (first, second) => first * second;
 
 let add = (first, second) => first + second;
 
@@ -23,12 +24,12 @@ let calculatedFields = {
 	deliverysum: {
 		firstField: "count",
 		secondField: "summa",
-		calculator: multiply
+		calculator: multipy
 	},
 	vatsum: {
 		firstField: "vatrate",
 		secondField: "deliverysum",
-		calculator: multiply
+		calculator: percent
 	},
 	deliverysumwithvat: {
 		firstField: "vatsum",
@@ -38,7 +39,7 @@ let calculatedFields = {
 	fuelsum: {
 		firstField: "fuelrate",
 		secondField: "deliverysum",
-		calculator: multiply
+		calculator: percent
 	},
 	deliverysumwithfuel: {
 		firstField: "fuelsum",
@@ -51,22 +52,22 @@ let reflectiveFields = {
 	count: {
 		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
 		secondField: "summa",
-		calculator: multiply
+		calculator: percent
 	},
 	summa: {
 		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
 		secondField: "count",
-		calculator: multiply
+		calculator: percent
 	},
 	vatrate: {
 		results: ["vatsum", "deliverysumwithvat", "deliverysumwithfuel"],
 		secondField: "count",
-		calculator: multiply
+		calculator: percent
 	},
 	fuelrate: {
 		results: ["fuelsum", "deliverysumwithvat", "deliverysumwithfuel"],
 		secondField: "count",
-		calculator: multiply
+		calculator: percent
 	}
 };
 
@@ -107,7 +108,9 @@ const Products = ({ navigation }) => {
 						reflectiveField
 					});
 					reflectiveField.results.forEach(field => {
-						if (!model[field]) return;
+						console.log("MODEL", model[field]);
+						if (model[field] === undefined || model[field] === null)
+							return;
 						let calculatedField = calculatedFields[field];
 						console.log(calculatedField);
 						let result =
@@ -227,7 +230,7 @@ const Products = ({ navigation }) => {
 											? tempValue.value
 											: typeof val !== "string"
 											? val.toString()
-											: ""
+											: val
 									}
 									onChange={value =>
 										setTempValue({

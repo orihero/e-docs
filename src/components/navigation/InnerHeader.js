@@ -9,6 +9,7 @@ import strings from "../../locales/strings";
 import Text from "../common/Text";
 import SearchBar from "./SearchBar";
 import { withNavigation } from "react-navigation";
+import CustomPicker from "../common/CustomPicker";
 
 export let docTypes = [
 	{
@@ -46,7 +47,9 @@ const InnerHeader = ({
 	showTypes,
 	navigation,
 	onSearch,
-	onFilter
+	onFilter,
+	showType,
+	recursive
 }) => {
 	let filterRef = useRef(null);
 
@@ -67,57 +70,26 @@ const InnerHeader = ({
 				</View>
 				<View>
 					{!!showTypes && (
-						<RNPickerSelect
-							useNativeAndroidPickerStyle={false}
-							onValueChange={value => {
-								setShowType(value);
-							}}
-							placeholder={{
-								label: strings.all,
-								value: "all"
-							}}
-							placeholderTextColor={colors.darkViolet}
+						<CustomPicker
 							items={showTypes}
-							style={pickerSelectStyles}
-							Icon={() => (
-								<View>
-									<SimpleLineIcons
-										name="arrow-down"
-										size={15}
-									/>
-								</View>
-							)}
+							placeholder={strings.all}
+							onValueChange={setShowType}
+							value={showType}
+							recursive={recursive}
 						/>
 					)}
 				</View>
 			</View>
 			<View style={styles.bottom}>
 				<SearchBar onSearch={onSearch} />
-				<RNPickerSelect
-					ref={filterRef}
+				<CustomPicker
 					items={docTypes}
 					onValueChange={value => {
 						onFilter(value);
 					}}
-					placeholder={{
-						label: strings.selectDocType,
-						value: null
-					}}
-					Icon={() => {
-						<View
-							style={{
-								padding: 30,
-								marginRight: -10
-							}}
-						/>;
-					}}
 				>
 					<View style={styles.iconWrapper}>
 						<AntDesign
-							onPress={() => {
-								console.warn(filterRef.current);
-								filterRef.current.togglePicker();
-							}}
 							name="filter"
 							size={23}
 							style={{
@@ -125,7 +97,7 @@ const InnerHeader = ({
 							}}
 						/>
 					</View>
-				</RNPickerSelect>
+				</CustomPicker>
 			</View>
 		</View>
 	);
@@ -138,7 +110,8 @@ const styles = StyleSheet.create({
 	},
 	top: {
 		justifyContent: "space-between",
-		flexDirection: "row"
+		flexDirection: "row",
+		alignItems: "center"
 	},
 	titleWrapper: {
 		paddingVertical: 7,
@@ -170,9 +143,8 @@ const pickerSelectStyles = StyleSheet.create({
 		backgroundColor: colors.white,
 		color: colors.darkViolet,
 		borderWidth: 0,
-		textAlign: "right",
 		marginRight: 10,
-		textAlignVertical: "center"
+		width: "60%"
 	},
 	iconContainer: {
 		top: 17
@@ -180,3 +152,25 @@ const pickerSelectStyles = StyleSheet.create({
 });
 
 export default withNavigation(InnerHeader);
+
+// <RNPickerSelect
+// 							useNativeAndroidPickerStyle={false}
+// 							onValueChange={value => {
+// 								setShowType(value);
+// 							}}
+// 							placeholder={{
+// 								label: strings.all,
+// 								value: "all"
+// 							}}
+// 							placeholderTextColor={colors.darkViolet}
+// 							items={showTypes}
+// 							style={pickerSelectStyles}
+// 							Icon={() => (
+// 								<View>
+// 									<SimpleLineIcons
+// 										name="arrow-down"
+// 										size={15}
+// 									/>
+// 								</View>
+// 							)}
+// 						/>

@@ -15,6 +15,7 @@ import strings from "../../locales/strings";
 import requests from "../../api/requests";
 import Axios from "axios";
 import { url } from "../../api/configs";
+import CustomPicker from "../../components/common/CustomPicker";
 
 const Loader = ({
 	navigation,
@@ -78,6 +79,7 @@ const Loader = ({
 	return (
 		<View style={styles.container}>
 			<LoadingModal modalVisible={true} message={strings.tokenRefresh} />
+			{/* <CustomPicker items={[{ value: "val", label: "Label" }]} /> */}
 		</View>
 	);
 };
