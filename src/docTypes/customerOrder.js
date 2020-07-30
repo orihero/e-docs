@@ -56,8 +56,10 @@ export let customerOrderFields = [
 		title: strings.seller,
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
-		}
+			keyboardType: "number-pad",
+			disabled: true
+		},
+		disabled: true
 	},
 	{
 		type: FieldType.INPUT,

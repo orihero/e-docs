@@ -1,6 +1,6 @@
 import LottieView from "lottie-react-native";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform } from "react-native";
 import { connect } from "react-redux";
 import fileLoading from "../../assets/lottie/fileLoading.json";
 import colors from "../../constants/colors";
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 	text: {
 		color: colors.black,
 		fontSize: 18,
-		marginTop: 300
+		marginTop: Platform.select({ android: 300, ios: 360 })
 	}
 });
 

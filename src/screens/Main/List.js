@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
-import MessageCard from "../../components/cards/MessageCard";
-import colors from "../../constants/colors";
-import InnerHeader from "../../components/navigation/InnerHeader";
-import strings from "../../locales/strings";
-import requests from "../../api/requests";
+import React, { useEffect, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
+import requests from "../../api/requests";
+import MessageCard from "../../components/cards/MessageCard";
+import InnerHeader from "../../components/navigation/InnerHeader";
+import colors from "../../constants/colors";
+import strings from "../../locales/strings";
 import {
-	hideModal,
-	showModal,
+	documentsLoaded,
 	hideMessage,
+	hideModal,
 	showMessage,
-	documentsLoaded
+	showModal
 } from "../../redux/actions";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
 
@@ -22,13 +22,34 @@ const List = ({
 	showModal,
 	hideMessage,
 	hideModal,
-	documents: { data, boxType, status, ...rest },
+	documents: docs,
 	documentsLoaded,
 	loading
 }) => {
+	let { data, boxType, status, page, limit, filter, type } = docs;
 	let [infoList, setInfoList] = useState(documents);
 	let title = navigation.getParam("title");
 	let reload = navigation.getParam("reload");
+
+	let showTypes = [
+		{
+			label: strings.all,
+			value: "all"
+		},
+		{
+			label: strings.received,
+			value: docStatus.SENT
+		},
+		{
+			label: strings.signed,
+			value: docStatus.SIGNED
+		},
+		{
+			label: strings.rejected,
+			value: docStatus.REJECTED
+		}
+	];
+
 	useEffect(() => {
 		if (!!reload) {
 			getDocuments();
@@ -36,25 +57,24 @@ const List = ({
 		}
 	}, [reload]);
 	let setShowType = async e => {
-		documentsLoaded({ data, boxType, status: e, ...rest });
+		documentsLoaded({ ...docs, data, boxType, status: e, page: 1 });
 	};
 
 	let [documents, setDocuments] = useState([]);
-	let getDocuments = async (type, filter) => {
+	let getDocuments = async (filters = {}) => {
 		showModal(strings.gettingDocuments);
-		console.log({ boxType, status, type, filter });
+		let { type, filter, page: pge = page } = filters;
 		try {
 			let res = await requests.doc.getDocuments(
 				token,
-				1,
-				1000,
+				pge,
+				limit,
 				boxType,
 				status === "all" ? "" : status,
 				type ? type.toLowerCase() : "",
 				filter
 			);
 			let newRes = res.json();
-			console.log({ newRes });
 			setDocuments(newRes.docs);
 			hideModal();
 		} catch (error) {
@@ -71,23 +91,8 @@ const List = ({
 		getDocuments();
 	}, [boxType, status]);
 
-	let showTypes = [
-		{
-			label: strings.received,
-			value: docStatus.SENT
-		},
-		{
-			label: strings.signed,
-			value: docStatus.SIGNED
-		},
-		{
-			label: strings.rejected,
-			value: docStatus.REJECTED
-		}
-	];
-
 	if (boxType === boxTypes.OUT) {
-		showTypes[0].label = strings.sent;
+		showTypes[1].label = strings.sent;
 		showTypes.push({
 			label: strings.drafts,
 			value: docStatus.DRAFTS
@@ -102,6 +107,38 @@ const List = ({
 		getDocuments();
 	};
 
+	let onEndReached = async () => {
+		let p = Math.ceil(documents.length / limit) + 1;
+		console.log("ON END REACHED", {
+			page,
+			p,
+			res: data.length
+		});
+		if (page === p) return;
+		let res = await requests.doc.getDocuments(
+			token,
+			p,
+			limit,
+			boxType,
+			status === "all" ? "" : status,
+			type ? type.toLowerCase() : "",
+			filter
+		);
+		let newRes = res.json();
+		console.log({ newRes });
+		setDocuments([...documents, ...newRes.docs]);
+	};
+
+	let onSearch = (_, filter) => {
+		documentsLoaded({ ...docs, filter, page: 1 });
+		getDocuments({ filter, page: 1 });
+	};
+
+	let onFilter = t => {
+		documentsLoaded({ ...docs, type: t, page: 1 });
+		getDocuments({ type: t, page: 1 });
+	};
+
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -109,9 +146,10 @@ const List = ({
 				currentPage={title}
 				showTypes={showTypes}
 				setShowType={setShowType}
-				onSearch={getDocuments}
-				onFilter={getDocuments}
+				onSearch={onSearch}
+				onFilter={onFilter}
 				showType={status}
+				filter={filter}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
@@ -127,10 +165,11 @@ const List = ({
 							item={item}
 							key={item.id && item.id.toString()}
 							navigation={navigation}
-							{...{ status }}
+							{...{ status, boxType }}
 						/>
 					)}
 					keyExtractor={item => item.id && item.id.toString()}
+					onEndReached={onEndReached}
 				/>
 			</View>
 		</View>

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import Picker from "react-native-picker-select";
 import Text from "./Text";
 import Icons from "react-native-vector-icons/AntDesign";
@@ -69,13 +69,12 @@ const RectangularSelect = ({
 const pickerSelectStyles = StyleSheet.create({
 	inputIOS: {
 		fontSize: 16,
-		paddingVertical: 12,
 		paddingHorizontal: 10,
-		borderWidth: 1,
-		borderColor: "gray",
-		borderRadius: 4,
+		paddingVertical: 18,
+		borderBottomWidth: 1,
+		borderColor: colors.grayBorder,
 		color: "black",
-		paddingRight: 30 // to ensure the text is never behind the icon
+		paddingRight: 30 // to ensure the text is never behind the icon,,
 	},
 	inputAndroid: {
 		fontSize: 16,
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
 		// elevation: 4,
 		borderTopLeftRadius: 4,
 		borderTopRightRadius: 4,
-		marginHorizontal: 2
+		marginHorizontal: Platform.select({ android: 2, ios: 20 })
 	}
 });
 

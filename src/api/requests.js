@@ -42,14 +42,17 @@ export let requests = {
 			status = "",
 			type = "",
 			filter = ""
-		) =>
-			instance.fetch(
+		) => {
+			let u = `${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}&type=${type}&filter=${filter}`;
+			console.log({ url: u });
+			return instance.fetch(
 				"get",
 				`${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}&type=${type}&filter=${filter}`,
 				{
 					Authorization: `Bearer ${token}`
 				}
-			),
+			);
+		},
 		getContent: (type, id, token) =>
 			instance.fetch("GET", `${url}/documents/${type}/${id}`, {
 				Authorization: `Bearer ${token}`

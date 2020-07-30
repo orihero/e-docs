@@ -32,12 +32,6 @@ const Loader = ({
 			if (credentials) {
 				let newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
-				// let check = await Axios.get(`${url}/token`, {
-				// 	headers: {
-				// 		Authorization: `Bearer ${newCredentials.token}`
-				// 	}
-				// });
-				// console.log(check);
 				let res = await requests.auth.validateToken(
 					newCredentials.token
 				);
@@ -54,8 +48,6 @@ const Loader = ({
 				return;
 			}
 		} catch (error) {
-			// console.log(Object.keys(error));
-			// console.log(error);
 			if (!!error) {
 				showMessage({
 					message: error.response,
@@ -79,7 +71,6 @@ const Loader = ({
 	return (
 		<View style={styles.container}>
 			<LoadingModal modalVisible={true} message={strings.tokenRefresh} />
-			{/* <CustomPicker items={[{ value: "val", label: "Label" }]} /> */}
 		</View>
 	);
 };

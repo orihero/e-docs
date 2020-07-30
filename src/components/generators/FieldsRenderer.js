@@ -208,6 +208,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 									updateState(e.name, !state[e.name])
 								}
 								title={e.title}
+								disabled={e.disabled}
 								{...componentProps}
 							/>
 						</View>
@@ -308,6 +309,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 								value={state[e.name]}
 								onChange={val => updateState(e.name, val)}
 								placeholder={e.placeholder}
+								half={true}
 								{...componentProps}
 							/>
 						</View>

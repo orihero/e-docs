@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
 	Dimensions,
+	Image,
+	ScrollView,
 	StyleSheet,
-	Text,
+	TextInput,
 	TouchableOpacity,
 	View,
-	Modal,
-	TextInput
+	PermissionsAndroid,
+	Platform
 } from "react-native";
 import Pdf from "react-native-pdf";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -22,7 +24,7 @@ import {
 	showModal
 } from "../../redux/actions/appState";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
-import { sign, append, attach } from "../../utils/signProvider";
+import { append, attach, sign } from "../../utils/signProvider";
 
 const PdfView = ({
 	user,
@@ -77,9 +79,30 @@ const PdfView = ({
 			isCopy: true
 		});
 	};
+	const requestCameraPermission = async () => {
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+				{
+					title: "E-DOCS",
+					message: strings.writeToStoragePermission,
+					buttonNegative: strings.cancel,
+					buttonPositive: strings.allow
+				}
+			);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("You can use the camera");
+			} else {
+				console.log("Camera permission denied");
+			}
+		} catch (err) {
+			console.warn(err);
+		}
+	};
 
 	let onDownloadPress = async () => {
 		showModal(strings.loadingPdf);
+		await requestCameraPermission();
 		try {
 			let filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/`;
 			let fileName = `${type}.${docId}.pdf`;
@@ -106,6 +129,9 @@ const PdfView = ({
 	 ** Sign the document
 	 */
 	const onSubscribePress = async () => {
+		if (Platform.OS === "ios") {
+			return;
+		}
 		showModal(strings.loading);
 		console.log(
 			"SIGNING BEGINS",
@@ -198,6 +224,9 @@ const PdfView = ({
 	};
 	//Вот логика отклонения документа
 	const onDeletePress = async () => {
+		if (Platform.OS === "ios") {
+			return;
+		}
 		if (
 			boxType === boxTypes.IN &&
 			documentContent.status === docStatus.SENT
@@ -223,7 +252,7 @@ const PdfView = ({
 				} else if (documentContent.type == "waybill") {
 					nameData = "Waybill";
 				} else if (documentContent.type == "actGoodsAcceptance") {
-					nameData = "Waybill";
+					nameData = "actGoodsAcceptance";
 				} else if (documentContent.type == "actWorkPerformed") {
 					nameData = "Act";
 				}
@@ -301,6 +330,39 @@ const PdfView = ({
 			boxType === boxTypes.IN) ||
 		(boxType === boxTypes.OUT &&
 			documentContent.status === docStatus.DRAFTS);
+	let { width, height } = Dimensions.get("window");
+	let renderUniversal = () => {
+		if (documentContent.type === "universal") {
+			if (documentContent.data.file.filetype.split("/")[0] === "image") {
+				return (
+					<Image
+						style={{ width, height }}
+						source={{
+							uri: `data:${
+								documentContent.data.file.filetype
+							};base64,${documentContent.data.file.filebase64}`
+						}}
+					/>
+				);
+			}
+			return (
+				<Pdf
+					source={{
+						uri: `data:${
+							documentContent.data.file.filetype
+						};base64,${documentContent.data.file.filebase64}`
+					}}
+					onError={error => {}}
+					activityIndicator={e => {
+						return <View />;
+					}}
+					enablePaging
+					style={styles.pdf}
+				/>
+			);
+		}
+		return null;
+	};
 	return (
 		<View style={styles.container}>
 			<View style={styles.topPanel}>
@@ -425,20 +487,22 @@ const PdfView = ({
 					style={styles.comment}
 				/>
 			</View>
-			<Pdf
-				source={{ uri: `data:application/pdf;base64,${baseFile}` }}
-				onError={error => {
-					showMessage({
-						message: strings.fileCorrupted,
-						type: colors.killerRed
-					});
-				}}
-				activityIndicator={e => {
-					return <View />;
-				}}
-				enablePaging
-				style={styles.pdf}
-			/>
+			<View style={{ flex: 1 }}>
+				<ScrollView>
+					<Pdf
+						source={{
+							uri: `data:application/pdf;base64,${baseFile}`
+						}}
+						onError={error => {}}
+						activityIndicator={e => {
+							return <View />;
+						}}
+						enablePaging
+						style={styles.pdf}
+					/>
+					{renderUniversal()}
+				</ScrollView>
+			</View>
 		</View>
 	);
 };
@@ -460,7 +524,13 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 		backgroundColor: colors.white,
 		elevation: 10,
-		width: "100%"
+		width: "100%",
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	},
 	panelContent: {
 		flexDirection: "row",
@@ -474,7 +544,13 @@ const styles = StyleSheet.create({
 		borderRadius: 40,
 		overflow: "hidden",
 		marginRight: 10,
-		elevation: 4
+		elevation: 4,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	},
 	comment: {
 		marginTop: 15

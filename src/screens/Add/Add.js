@@ -135,7 +135,7 @@ const Add = connect(
 )(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
-	let productList = navigation.getParam("productList") || [];
+	let productList = navigation.getParam("productList") || { products: [] };
 	let document = navigation.getParam("document") || {};
 	useEffect(() => {
 		if (docType.fields) {
@@ -170,21 +170,22 @@ const Add = connect(
 			if (docType.docType !== "universal") {
 				//? Validation
 				//* Since React-native input generate only string we have to parse all the string to corresponding data type
-				parsedProducts = productList.products.map(product => {
-					let parsedProduct = Object.keys(product).reduce(
-						(prev, key) => {
-							return {
-								...prev,
-								[key]: convertToTypeOf(
-									productModel[key],
-									product[key]
-								)
-							};
-						},
-						{}
-					);
-					return parsedProduct;
-				});
+				parsedProducts =
+					productList.products.map(product => {
+						let parsedProduct = Object.keys(product).reduce(
+							(prev, key) => {
+								return {
+									...prev,
+									[key]: convertToTypeOf(
+										productModel[key],
+										product[key]
+									)
+								};
+							},
+							{}
+						);
+						return parsedProduct;
+					}) || doc.productlist;
 			} else {
 				//* Document is universal
 				let { base64: filebase64, type: filetype, name: filename } =
@@ -225,7 +226,8 @@ const Add = connect(
 			console.log({ parsedProducts });
 			//* Make sure that submit data is similar to document model
 			submitData = Object.keys(doc).reduce((prev, key) => {
-				return { ...prev, [key]: temp[key] };
+				console.log({ docKey: doc[key] });
+				return { ...prev, [key]: temp[key] || doc[key] };
 			}, {});
 			submitData.seller.mobile = submitData.seller.mobile || "";
 			submitData.seller.workphone = submitData.seller.mobile || "";
@@ -272,7 +274,24 @@ const Add = connect(
 				docType.docType,
 				submitData
 			);
-			console.warn({ response: res.json() });
+			console.warn({ json: res.json(), submitData });
+			let r = res.json();
+			if (r.success === false) {
+				hideModal();
+				let { errors } = r || {};
+				let errorMsg = errors.msg.reduce((prev, current) => {
+					return (
+						prev +
+						`${strings[current.msg] || current.msg} ${
+							current.param
+						}  `
+					);
+				}, "");
+				return showMessage({
+					type: colors.killerRed,
+					message: errorMsg
+				});
+			}
 			showMessage({
 				type: colors.green,
 				message: strings.createdSuccessfully
@@ -352,7 +371,9 @@ const Add = connect(
 					value={docType}
 					items={docTypes}
 					placeholder={strings.selectDocType}
-					onChange={e => setDocType(e)}
+					onChange={e => {
+						if (!!e) setDocType(e);
+					}}
 				/>
 				{!!user.tin && (
 					<FieldsRenderer

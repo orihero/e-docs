@@ -43,11 +43,20 @@ const Login = ({
 				login,
 				password
 			});
-			userLoggedIn(res.json());
+			let data = res.json();
+			if (data.success === false) {
+				showMessage({
+					type: colors.killerRed,
+					message: strings[data.errors.msg] || data.errors.msg
+				});
+				hideModal();
+				return;
+			}
+			userLoggedIn(data);
 			navigation.navigate("Main");
 			hideModal();
 		} catch (error) {
-			console.log(error.request);
+			console.log(error);
 			let { response } = error;
 			if (!!response) {
 				console.log(response);
@@ -85,12 +94,14 @@ const Login = ({
 			<View>
 				<RectangleButton
 					backColor={colors.jeansBlue}
-					text={strings.startWorking}
+					text={strings.startWorking || "DSA"}
 					onPress={requestLogin}
 					style={{
 						marginTop: 20,
 						paddingVertical: 25,
-						marginHorizontal: 20
+						marginHorizontal: 20,
+						paddingBottom: 30,
+						paddingTop: 15
 					}}
 				/>
 			</View>

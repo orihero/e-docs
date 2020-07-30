@@ -31,18 +31,23 @@ const Product = ({
 	showMessage,
 	token,
 	cart,
-	cartLoaded
+	cartLoaded,
+	modalVisible
 }) => {
 	let [filters, setFilters] = useState({ page: 1, limit: 20, group: "" });
 	let [groups, setGroups] = useState([]);
-	let { products } = cart;
+	let { products = [] } = cart;
+	const [group, setGroup] = useState("");
 	let getProducts = async () => {
 		showModal(strings.gettingProducts);
 		try {
 			let f = normalizeFilters(filters);
-			console.warn({ f });
+			console.warn({ f, products });
 			let res = await requests.product.getProducts(token, f);
-			cartLoaded({ ...cart, products: res.json().docs });
+			cartLoaded({
+				...cart,
+				products: res.json().docs
+			});
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -56,7 +61,6 @@ const Product = ({
 				...e
 			}));
 			setGroups(results);
-			console.log({ results });
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -69,7 +73,9 @@ const Product = ({
 	}, [filters]);
 
 	let onCategoryChange = el => {
-		setFilters({ ...filters, group: el });
+		setGroup(el);
+		cartLoaded({ ...cart, products: [] });
+		setFilters({ ...filters, group: el, page: 1 });
 		console.warn({ el });
 	};
 
@@ -87,6 +93,20 @@ const Product = ({
 		hideModal();
 		// cartLoaded({});
 	};
+
+	let onEndReached = () => {
+		let page = Math.ceil(products.length / filters.limit) + 1;
+		if (page === filters.page) return;
+		setFilters({
+			...filters,
+			page
+		});
+	};
+
+	let onRefresh = () => {
+		cartLoaded({ ...cart, products: [] });
+		setFilters({ ...filters, group: "", page: 1 });
+	};
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -94,6 +114,7 @@ const Product = ({
 				currentPage={strings.products}
 				showTypes={groups}
 				setShowType={onCategoryChange}
+				showType={group}
 				recursive
 			/>
 			<View style={styles.cardWrapper}>
@@ -111,7 +132,12 @@ const Product = ({
 							key={item.id}
 						/>
 					)}
+					onRefresh={onRefresh}
+					refreshing={modalVisible}
 					keyExtractor={item => item.id}
+					// onEndReachedThreshold={0.9}
+					// onEndReached={onEndReached}
+					style={{ flex: 1 }}
 				/>
 			</View>
 			<TouchableWithoutFeedback
@@ -146,14 +172,21 @@ const styles = StyleSheet.create({
 		borderRadius: 40,
 		position: "absolute",
 		bottom: 10,
-		right: 15
+		right: 15,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	}
 });
 
-let mapStateToProps = ({ user, cart }) => {
+let mapStateToProps = ({ user, cart, appState: { modalVisible } }) => {
 	return {
 		token: user.token,
-		cart
+		cart,
+		modalVisible
 	};
 };
 let mapDispatchToProps = {

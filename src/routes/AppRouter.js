@@ -20,6 +20,7 @@ import Loader from "../screens/auth/Loader";
 import Edit from "../screens/add/Edit";
 import Add from "../screens/add/Add";
 import Products from "../screens/add/Products";
+import { Platform } from "react-native";
 
 const MainStack = createStackNavigator(
 	{
@@ -54,9 +55,7 @@ const MainStack = createStackNavigator(
 			}
 		}
 	},
-	{
-		initialRouteName: "List"
-	}
+	{}
 );
 
 const ProfileStack = createStackNavigator({
@@ -113,7 +112,8 @@ const TabNavigator = createMaterialTopTabNavigator(
 					<Ionicons
 						name="ios-add-circle"
 						color={colors.violet}
-						size={55}
+						size={40}
+						style={{ marginTop: -15 }}
 					/>
 				),
 				tabBarLabel: ({ tintColor, focused }) => {
@@ -158,7 +158,8 @@ const TabNavigator = createMaterialTopTabNavigator(
 			tabStyle: {
 				overflow: "visible",
 				borderColor: "red",
-				height: 60
+				height: 60,
+				paddingBottom: Platform.select({ android: 0, ios: 20 })
 			},
 			style: {
 				backgroundColor: "white",
@@ -170,7 +171,6 @@ const TabNavigator = createMaterialTopTabNavigator(
 		tabBarPosition: "bottom",
 		swipeEnabled: false,
 		lazy: true
-		// tabBarComponent: CustomFLoatingTabbar
 	}
 );
 
@@ -186,6 +186,7 @@ const LoginStack = createStackNavigator({
 const SwitchNavigator = createSwitchNavigator(
 	{
 		Loader,
+		PinCode,
 		LoginStack,
 		TabNavigator
 	},

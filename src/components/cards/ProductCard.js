@@ -53,11 +53,7 @@ const ProductCard = ({ item, passive, addToCart }) => {
 					) : (
 						<>
 							<TextInput
-								placeholder={
-									item.prices
-										? item.prices[0].count.toString()
-										: "0"
-								}
+								placeholder={"0"}
 								value={count}
 								style={styles.input}
 								onChangeText={text => {
@@ -92,7 +88,13 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.white,
 		flex: 1,
 		paddingHorizontal: 10,
-		paddingVertical: 10
+		paddingVertical: 10,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	},
 	top: {
 		flexDirection: "row",

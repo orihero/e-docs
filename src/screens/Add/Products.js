@@ -319,7 +319,13 @@ const styles = StyleSheet.create({
 		elevation: 4,
 		marginVertical: 10,
 		paddingBottom: 15,
-		padding: 15
+		padding: 15,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	},
 	title: {
 		fontSize: 18

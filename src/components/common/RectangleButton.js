@@ -4,7 +4,13 @@ import colors from "../../constants/colors";
 import LinearGradient from "react-native-linear-gradient";
 
 const RectangleButton = ({ text, backColor, onPress, style = {} }) => {
-	let { startColor = "#7EB6FF", endColor = "#5F87E7" } = style;
+	let {
+		startColor = "#7EB6FF",
+		endColor = "#5F87E7",
+		padding,
+		paddingVertical,
+		...containerStyle
+	} = style;
 	return (
 		<TouchableWithoutFeedback onPress={onPress}>
 			<View
@@ -13,7 +19,7 @@ const RectangleButton = ({ text, backColor, onPress, style = {} }) => {
 					{
 						backgroundColor: backColor
 					},
-					style
+					containerStyle
 				]}
 			>
 				<LinearGradient
@@ -22,7 +28,9 @@ const RectangleButton = ({ text, backColor, onPress, style = {} }) => {
 					style={[StyleSheet.absoluteFill, {}]}
 					colors={[startColor, endColor]}
 				/>
-				<Text style={styles.text}>{text}</Text>
+				<Text style={{ ...styles.text, padding, paddingVertical }}>
+					{text}
+				</Text>
 			</View>
 		</TouchableWithoutFeedback>
 	);

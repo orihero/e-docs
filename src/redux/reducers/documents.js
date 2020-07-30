@@ -18,7 +18,11 @@ let initialState = {
 			deleted: -1,
 			downloaded: -1
 		}
-	}
+	},
+	page: 1,
+	limit: 20,
+	filter: "",
+	type: ""
 };
 
 export const docStatus = {
@@ -39,8 +43,8 @@ export default (state = initialState, { type, payload }) => {
 		case DOCUMENTS_COUNT_LOADED:
 			return { ...state, count: payload };
 		case DOCUMENTS_LOADED: {
-			let { data, boxType, status } = payload;
-			return { ...state, data, boxType, status };
+			let { data, boxType, status, ...rest } = payload;
+			return { ...state, data, boxType, status, ...rest };
 		}
 		default:
 			return state;

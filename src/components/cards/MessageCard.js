@@ -5,7 +5,7 @@ import strings from "../../locales/strings";
 import Text from "../common/Text";
 import Moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { docStatus } from "../../redux/reducers/documents";
+import { docStatus, boxTypes } from "../../redux/reducers/documents";
 
 export let docTypes = {
 	FACTURA: "Счет-фактура",
@@ -18,7 +18,7 @@ export let docTypes = {
 	CUSTOMERORDER: "Заказ"
 };
 
-const MessageCard = ({ item, navigation, status }) => {
+const MessageCard = ({ item, navigation, status, boxType }) => {
 	let [backgroundColor, setBackgroundColor] = useState("transparent");
 	useEffect(() => {
 		switch (item.status) {
@@ -42,6 +42,15 @@ const MessageCard = ({ item, navigation, status }) => {
 		});
 	};
 
+	let name =
+		boxType === boxTypes.IN
+			? item.ownerName
+			: `${item.targetTins[0]?.name} ${
+					item.targetTins.length > 1
+						? `(+${item.targetTins.length - 1})`
+						: ""
+			  }`;
+
 	return (
 		<TouchableOpacity onPress={onPress}>
 			<View
@@ -57,7 +66,11 @@ const MessageCard = ({ item, navigation, status }) => {
 						{docTypes[item.type.toUpperCase()] || ""}
 					</Text>
 					<View style={styles.textWrapper}>
-						<Text style={styles.name}>{item.ownerName}</Text>
+						<View style={{ flex: 1 }}>
+							<Text style={styles.name} numberOfLines={2}>
+								{name}
+							</Text>
+						</View>
 						{!!item.docDate && (
 							<Text style={styles.date}>
 								{Moment(item.docDate).format("DD.MM.YYYY")}
@@ -90,7 +103,13 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		marginBottom: 10,
 		elevation: 3,
-		marginHorizontal: 20
+		marginHorizontal: 20,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		}
 	},
 	content: {
 		backgroundColor: colors.white,
@@ -110,7 +129,8 @@ const styles = StyleSheet.create({
 	name: {
 		color: colors.darkViolet,
 		fontSize: 14,
-		fontWeight: "bold"
+		fontWeight: "bold",
+		flexWrap: "wrap"
 	},
 	date: {
 		color: colors.grayText

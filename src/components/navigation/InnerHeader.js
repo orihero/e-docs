@@ -13,6 +13,10 @@ import CustomPicker from "../common/CustomPicker";
 
 export let docTypes = [
 	{
+		label: strings.all,
+		value: "all"
+	},
+	{
 		label: strings.factura,
 		value: "FACTURA"
 	},
@@ -49,7 +53,8 @@ const InnerHeader = ({
 	onSearch,
 	onFilter,
 	showType,
-	recursive
+	recursive,
+	filter
 }) => {
 	let filterRef = useRef(null);
 
@@ -81,7 +86,7 @@ const InnerHeader = ({
 				</View>
 			</View>
 			<View style={styles.bottom}>
-				<SearchBar onSearch={onSearch} />
+				<SearchBar value={filter} onSearch={onSearch} />
 				<CustomPicker
 					items={docTypes}
 					onValueChange={value => {

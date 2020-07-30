@@ -26,12 +26,14 @@ const DefaultCheckbox = ({
 	isActive,
 	title,
 	style,
-	numberOfLines
+	numberOfLines,
+	disabled
 }: DefaultCheckboxProps) => {
 	return (
 		<TouchableWithoutFeedback
 			onPress={() => {
-				toggle(!isActive);
+				console.warn({ disabled });
+				if (!disabled) toggle(!isActive);
 			}}
 		>
 			<View style={[styles.row, style]}>

@@ -14,7 +14,7 @@ import { string } from "react-native-redash";
 import strings from "../../locales/strings";
 
 const CustomPicker = ({
-	items,
+	items: initialItems,
 	onValueChange,
 	placeholder = "Select",
 	value,
@@ -23,6 +23,7 @@ const CustomPicker = ({
 }) => {
 	const [expanded, setExpanded] = useState(false);
 	const [parent, setParent] = useState("");
+	const [items, setItems] = useState([]);
 	let onPickerPress = () => {
 		setExpanded(!expanded);
 	};
@@ -33,7 +34,7 @@ const CustomPicker = ({
 	};
 
 	let onParentPress = e => {
-		let childs = formulateItems();
+		let childs = formulateChildren(e);
 		if (childs.length === 0) {
 			onValueChange && onValueChange(e.value);
 			setParent("");
@@ -41,21 +42,26 @@ const CustomPicker = ({
 			return;
 		}
 		setParent(e);
+		setItems(childs);
 	};
 
-	let formulateItems = (tempParent = parent) => {
-		if (!tempParent) {
-			return items.filter(e => e.main);
+	let formulateChildren = (tempParent = parent) => {
+		if (tempParent === "") {
+			return [];
 		}
-		let index = items.findIndex(el => el.value === tempParent.value) || -1;
-		console.warn({ tempParent });
-		if (index !== -1) {
+		let index = items.findIndex(el => el.value === tempParent.value);
+		let hasChildren = index !== -1 && items[index].children.length > 0;
+		if (hasChildren) {
 			return items.slice(index + 1, index + items[index].children.length);
 		}
-		return items.filter(e => e.main);
+		return [];
 	};
 
-	let actualItems = recursive ? formulateItems(parent) : items;
+	useEffect(() => {
+		setItems(recursive ? initialItems.filter(e => e.main) : initialItems);
+	}, [initialItems]);
+
+	let actualItems = items;
 
 	let val = !!value ? value : placeholder;
 	if (!!value) {
@@ -90,7 +96,10 @@ const CustomPicker = ({
 						<TouchableOpacity onPress={() => onItemPress(parent)}>
 							<Text
 								style={{
-									maxWidth: 240
+									maxWidth: 240,
+									fontSize: 16,
+									fontWeight: "bold",
+									paddingVertical: 2
 								}}
 							>
 								{strings.all}
@@ -118,7 +127,10 @@ const CustomPicker = ({
 								)}
 								<Text
 									style={{
-										maxWidth: 240
+										maxWidth: 240,
+										fontSize: 16,
+										fontWeight: "bold",
+										paddingVertical: 2
 									}}
 								>
 									{e.label}
@@ -155,6 +167,12 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		right: 0,
 		minWidth: 300,
+		shadowColor: colors.black,
+		shadowOpacity: 0.1,
+		shadowOffset: {
+			height: 5,
+			width: 0
+		},
 		zIndex: 1000
 	},
 	icon: {

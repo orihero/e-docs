@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 
-const SearchBar = ({ onSearch }) => {
-	let [searchKey, setSearchKey] = useState("");
-
+const SearchBar = ({ onSearch, value }) => {
+	let [searchKey, setSearchKey] = useState(value);
+	useEffect(() => {
+		setSearchKey(value);
+	}, [value]);
 	return (
 		<View style={styles.container}>
 			<TextInput

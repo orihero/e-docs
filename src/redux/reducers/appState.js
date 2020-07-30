@@ -12,6 +12,7 @@ const initialState = {
 	message: "",
 	headUpMessage: null,
 	headUpType: "",
+	headUpKey: 0,
 	notification: false,
 	notificationData: {}
 };
@@ -24,7 +25,8 @@ export default (state = initialState, { type, payload }) => {
 			return {
 				...state,
 				headUpMessage: payload.message,
-				headUpType: payload.type
+				headUpType: payload.type,
+				headUpKey: state.headUpKey + 1
 			};
 		case HIDE_HEAD_UP:
 			return { ...state, headUpMessage: null, headUpType: "" };

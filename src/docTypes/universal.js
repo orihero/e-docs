@@ -44,7 +44,7 @@ export let universalFields = [
 	{
 		type: FieldType.INPUT,
 		size: FieldSize.FULL,
-		placeholder: strings.sender,
+		placeholder: strings.role,
 		name: "ownerrole",
 		title: strings.sender
 	},
@@ -55,13 +55,16 @@ export let universalFields = [
 		name: "ownertin",
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
-		}
+			keyboardType: "number-pad",
+			disabled: true
+		},
+		disabled: true
 	},
 	{
 		type: FieldType.INPUT,
 		placeholder: strings.name,
 		size: FieldSize.FULL,
+		disabled: true,
 		name: "ownername"
 	},
 	{

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import {
+	StyleSheet,
+	View,
+	TouchableWithoutFeedback,
+	Dimensions
+} from "react-native";
 import Picker from "@react-native-community/datetimepicker";
 import Text from "./Text";
 import Icons from "react-native-vector-icons/AntDesign";
@@ -13,14 +18,18 @@ interface DatePickerProps {
 	items?: any[];
 	onChange?: Function;
 	value?: string;
+	half?: boolean;
 }
+
+let { width } = Dimensions.get("window");
 
 const RectangularDatePicker = ({
 	placeholder,
 	containerStyle,
 	items = [],
 	onChange = () => {},
-	value
+	value,
+	half
 }: DatePickerProps) => {
 	let normalize = selection => {
 		let selectedDate = selection || new Date();
@@ -53,6 +62,10 @@ const RectangularDatePicker = ({
 						onChange={(e, selectedDate) => {
 							setVisible(false);
 							onChange(normalize(selectedDate || Date.now()));
+						}}
+						style={{
+							width,
+							transform: [{ translateX: half ? -width * 0.4 : 0 }]
 						}}
 					/>
 				)}

@@ -27,6 +27,7 @@
 		5E3EFA56BE0E40609EB83CF0 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23D319B3C4494849A77AB429 /* Foundation.ttf */; };
 		624C0C76117247F4A5BCF274 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0FC36F8E08448A88BFE0D8 /* SimpleLineIcons.ttf */; };
 		66FEBA43EC8A4A848050B322 /* Rubik-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 480CF2744FA24AED98C1EB21 /* Rubik-Italic.ttf */; };
+		6E166DD524D1AD9800CAE9A5 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E166DD424D1AD9800CAE9A5 /* File.swift */; };
 		72BD4FCA772420E1A04A4779 /* libPods-edocs-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614D5030C018DECFDB2B2CC4 /* libPods-edocs-tvOSTests.a */; };
 		72FD8C4460094E49AC2E38A1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F4CB6DE1E9F49C8ABDBBE91 /* MaterialIcons.ttf */; };
 		7B33E15F637C4274B37205E5 /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8595E5EC17C94BFE89BC8A8E /* Rubik-Bold.ttf */; };
@@ -96,6 +97,8 @@
 		619CBCEEEB5846BC8B37C89A /* Rubik-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Black.ttf"; path = "../src/assets/fonts/Rubik-Black.ttf"; sourceTree = "<group>"; };
 		6940B5B439F9400E99738DC4 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		6D83C9D2AB8342BDB7111C5D /* Rubik-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Light.ttf"; path = "../src/assets/fonts/Rubik-Light.ttf"; sourceTree = "<group>"; };
+		6E166DD324D1AD9700CAE9A5 /* edocs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "edocs-Bridging-Header.h"; sourceTree = "<group>"; };
+		6E166DD424D1AD9800CAE9A5 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		7A2F5536BBE64AB1B558C82D /* Rubik-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Medium.ttf"; path = "../src/assets/fonts/Rubik-Medium.ttf"; sourceTree = "<group>"; };
 		82ADE380ABB54B3EBD60CEB2 /* Rubik-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-MediumItalic.ttf"; path = "../src/assets/fonts/Rubik-MediumItalic.ttf"; sourceTree = "<group>"; };
 		842ED0771F794DB289AB68B5 /* Rubik-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-LightItalic.ttf"; path = "../src/assets/fonts/Rubik-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				6E166DD424D1AD9800CAE9A5 /* File.swift */,
+				6E166DD324D1AD9700CAE9A5 /* edocs-Bridging-Header.h */,
 			);
 			name = edocs;
 			sourceTree = "<group>";
@@ -380,6 +385,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = HPB6QQ52WT;
+						LastSwiftMigration = 1150;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -693,6 +699,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				6E166DD524D1AD9800CAE9A5 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -746,6 +753,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA0C3D4D950E4A94EDC02F7B /* Pods-edocsTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -769,6 +777,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 456EF23D4BA9FF6633895D45 /* Pods-edocsTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = edocsTests/Info.plist;
@@ -790,6 +799,7 @@
 			baseConfigurationReference = 619B29812C9FF088341FF2D7 /* Pods-edocs.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = HPB6QQ52WT;
@@ -802,6 +812,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uz.edocs.app;
 				PRODUCT_NAME = edocs;
+				SWIFT_OBJC_BRIDGING_HEADER = "edocs-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -811,6 +824,7 @@
 			baseConfigurationReference = A10C5AF2AE441D73E1031836 /* Pods-edocs.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = HPB6QQ52WT;
 				INFOPLIST_FILE = edocs/Info.plist;
@@ -822,6 +836,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uz.edocs.app;
 				PRODUCT_NAME = edocs;
+				SWIFT_OBJC_BRIDGING_HEADER = "edocs-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

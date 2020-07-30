@@ -68,14 +68,17 @@ export let actGoodsAcceptanceFields = [
 		title: strings.seller,
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
-		}
+			keyboardType: "number-pad",
+			disabled: true
+		},
+		disabled: true
 	},
 	{
 		type: FieldType.INPUT,
 		placeholder: strings.name,
 		size: FieldSize.FULL,
-		name: "sellername"
+		name: "sellername",
+		disabled: true
 	},
 	{
 		type: FieldType.AUTOCOMPLETE,

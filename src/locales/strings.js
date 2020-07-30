@@ -139,7 +139,68 @@ let strings = new LocalizedStrings({
 		carrier: "Грузоотправитель",
 		deletedSuccessfully: "Успешно удален",
 		logout: "Выйти",
-		added: "успешно добавлено"
+		added: "успешно добавлено",
+		BAD_TOKEN: "Плохой токен",
+		WRONG_SIGN: "Неверная подпись",
+		WRONG_TYPE_KEY: "Неверный тип ключа",
+		WRONG_PASSWORD: "Неверный пароль",
+		ENTITY_NOT_SET: "Кабинет физического лица",
+		EIMZO_FATAL_ERROR:
+			"Для корректной работы системы необходимо установить модуль E-IMZO",
+		PASSWORD_ENTRY_CANCELED: "Ввод пароля отменен",
+		WRONG_TIN_ORG: "Неверный ИНН организации",
+		USER_DOES_NOT_EXIST:
+			"Пользователь не существует. Пожалуйста, зарегистрируйтесь.",
+		BLOCKED_USER:
+			"Слишком много неудачных попыток входа в систему, пользователь временно заблокирован",
+		SERVER_TIMEOUT_CONNECTION_ERROR:
+			"Сервер не отвечает, ошибка подключения",
+		"404": "404 Страница не найдена",
+		EMAIL_IS_NOT_VALID: "E-mail не верный",
+		ENTITY_TOO_LARGE: "Запрос слишком большой",
+		IS_EMPTY: "Пустое поле",
+		ERROR: "Ошибка",
+		ERROR_RECAPTCHA: "Ошибка Recaptcha",
+		ERROR_TYPE: "Неверный тип",
+		ERROR_FORMAT: "Неверный формат",
+		ERROR_BUILD_HTML: "Ошибка формирования HTML",
+		MISSING: "Недостающее поле",
+		REFRESH_IN_PROCESS:
+			"Обновление данных в процессе, пожалуйста подождите несколько минут.",
+		OWNER_TIN_WRONG: "ИНН отправителя неверный",
+		TARGET_TIN_WRONG: "ИНН получателя неверный",
+		WRONG_OPERATOR:
+			"Ошибка получения данных с Роуминга. Возможно не указан оператор E-DOCS в вашем профиле.",
+		NOT_FOUND_OR_ALREADY_ACTIVATED: "Не найден или уже активирован",
+		NOT_FOUND_OR_ALREADY_VERIFIED: "Не найден или уже подтвержден",
+		NOT_FOUND_OR_ALREADY_USED: "Не найден или уже использован",
+		NOT_FOUND: "Не найден",
+		URL_NOT_FOUND: "URL не найден",
+		NO_UPDATE_REQUIRED: "Обновление не требуется",
+		FILE_SIZE: "Размер файла должен быть меньше чем 1 MB!",
+		FILE_TYPE: "Тип файла должен быть картинка или pdf!",
+		UNAUTHORIZED: "Неавторизованный",
+		EMAIL_ALREADY_EXISTS: "E-mail уже существует",
+		USER_ALREADY_EXISTS: "Пользователь уже существует",
+		ID_MALFORMED: "ID ошибочный",
+		ERROR_WITH_FILTER: "Ошибка с фильтром",
+		DOCUMENT_DOES_NOT_EXIST: "Не найден документ в базе данных оператора",
+		WRONG_OWNER_DOC:
+			"Документ, над которым предпринимается действие вам не принадлежит",
+		NOT_ENOUGH_RIGHTS: "Недостаточно прав доступа",
+		WRONG_TYPE_DOC: "Неверный тип документа",
+		WRONG_STATUS_DOC:
+			"Статус документа не соответствует текущему. Возможно требуется обновить документ",
+		WRONG_ROUMING_STATUS: "Роуминг отклонил запрос на изменение документа",
+		WRONG_DATA_DOC:
+			"Данные документа отличаются от данных документа в базе данных оператора",
+		NOTES_NOT_SET: "Не указано пояснение к действию",
+		REGION_ALREADY_EXISTS: "Регион уже существует",
+		DISTRICT_ALREADY_EXISTS: "Район уже существует",
+		BANK_ALREADY_EXISTS: "Банк уже существует",
+		writeToStoragePermission:
+			"Приложению требуется разрешение на запись во внешнее хранилище для сохранения файла.",
+		allow: "Разрешать"
 	},
 	uz: {},
 	en: {}

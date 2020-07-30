@@ -55,13 +55,16 @@ export let actWorkPerformedFields = [
 		title: strings.seller,
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
-		}
+			keyboardType: "number-pad",
+			disabled: true
+		},
+		disabled: true
 	},
 	{
 		type: FieldType.INPUT,
 		placeholder: strings.name,
 		size: FieldSize.FULL,
+		disabled: true,
 		name: "sellername"
 	},
 	{

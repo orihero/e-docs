@@ -7,7 +7,7 @@ let fields = [];
 const ProductDetails = () => {
 	return (
 		<View style={styles.container}>
-			{/* <FieldsRenderer fields={} /> */}
+			<FieldsRenderer fields={fields} />
 		</View>
 	);
 };

@@ -88,18 +88,20 @@ export let empowermentFields = [
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "sellertin",
-		title: strings.seller,
+		title: strings.buyer,
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
-		}
+			keyboardType: "number-pad",
+			disabled: true
+		},
+		disabled: true
 	},
 	{
 		type: FieldType.AUTOCOMPLETE,
 		placeholder: strings.inn,
 		size: FieldSize.FULL,
 		name: "buyertin",
-		title: strings.buyer,
+		title: strings.seller,
 		componentProps: {
 			maxLength: 9,
 			keyboardType: "number-pad"

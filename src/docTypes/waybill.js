@@ -131,15 +131,75 @@ export let waybillFields = [
 		title: strings.carrier,
 		componentProps: {
 			maxLength: 9,
-			keyboardType: "number-pad"
+			keyboardType: "number-pad",
+			disabled: true
 		},
+		disabled: true,
 		fetch: requests.account.getProfileByTin
 	},
 	{
 		type: FieldType.INPUT,
 		placeholder: strings.name,
 		size: FieldSize.FULL,
+		disabled: true,
 		name: "carriername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "customertin",
+		title: strings.customer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin,
+		child: "customername"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "customername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "sellertin",
+		title: strings.seller,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin,
+		child: "sellername"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "sellername"
+	},
+	{
+		type: FieldType.AUTOCOMPLETE,
+		placeholder: strings.inn,
+		size: FieldSize.FULL,
+		name: "buyertin",
+		title: strings.buyer,
+		componentProps: {
+			maxLength: 9,
+			keyboardType: "number-pad"
+		},
+		fetch: requests.account.getProfileByTin,
+		child: "buyername"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.name,
+		size: FieldSize.FULL,
+		name: "buyername"
 	}
 ];
 
