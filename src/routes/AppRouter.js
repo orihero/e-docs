@@ -21,6 +21,7 @@ import Edit from "../screens/add/Edit";
 import Add from "../screens/add/Add";
 import Products from "../screens/add/Products";
 import { Platform } from "react-native";
+import PinCode from "../screens/auth/PinCode";
 
 const MainStack = createStackNavigator(
 	{

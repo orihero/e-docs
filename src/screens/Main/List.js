@@ -14,6 +14,7 @@ import {
 	showModal
 } from "../../redux/actions";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
+import _ from "lodash";
 
 const List = ({
 	navigation,
@@ -71,11 +72,12 @@ const List = ({
 				limit,
 				boxType,
 				status === "all" ? "" : status,
-				type ? type.toLowerCase() : "",
+				type ? type : "",
 				filter
 			);
 			let newRes = res.json();
 			setDocuments(newRes.docs);
+			console.log({ type, res: newRes });
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -104,10 +106,12 @@ const List = ({
 	}
 
 	let onRefresh = () => {
-		getDocuments();
+		getDocuments({ filter, type });
 	};
 
 	let onEndReached = async () => {
+		console.log("ON END REACHED BEGINS");
+		// await _.throttle(async () => {
 		let p = Math.ceil(documents.length / limit) + 1;
 		console.log("ON END REACHED", {
 			page,
@@ -121,12 +125,13 @@ const List = ({
 			limit,
 			boxType,
 			status === "all" ? "" : status,
-			type ? type.toLowerCase() : "",
+			type,
 			filter
 		);
 		let newRes = res.json();
 		console.log({ newRes });
 		setDocuments([...documents, ...newRes.docs]);
+		// }, 100);
 	};
 
 	let onSearch = (_, filter) => {
@@ -170,6 +175,7 @@ const List = ({
 					)}
 					keyExtractor={item => item.id && item.id.toString()}
 					onEndReached={onEndReached}
+					onEndReachedThreshold={0.9}
 				/>
 			</View>
 		</View>

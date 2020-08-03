@@ -347,6 +347,7 @@ const PdfView = ({
 			}
 			return (
 				<Pdf
+					key="universal"
 					source={{
 						uri: `data:${
 							documentContent.data.file.filetype
@@ -490,6 +491,7 @@ const PdfView = ({
 			<View style={{ flex: 1 }}>
 				<ScrollView>
 					<Pdf
+						key="data"
 						source={{
 							uri: `data:application/pdf;base64,${baseFile}`
 						}}

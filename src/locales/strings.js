@@ -200,7 +200,11 @@ let strings = new LocalizedStrings({
 		BANK_ALREADY_EXISTS: "Банк уже существует",
 		writeToStoragePermission:
 			"Приложению требуется разрешение на запись во внешнее хранилище для сохранения файла.",
-		allow: "Разрешать"
+		allow: "Разрешать",
+		setUpPin: "Установите ПИН",
+		repeatPin: "Повторите ПИН",
+		failedAttemps: "Неудачных попыток ввода {0}: ",
+		enterPinCode: "Введите ПИН"
 	},
 	uz: {},
 	en: {}

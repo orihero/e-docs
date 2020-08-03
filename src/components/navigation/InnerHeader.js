@@ -18,31 +18,31 @@ export let docTypes = [
 	},
 	{
 		label: strings.factura,
-		value: "FACTURA"
+		value: "factura"
 	},
 	{
 		label: strings.empowerment,
-		value: "EMPOWERMENT"
+		value: "empowerment"
 	},
 	{
 		label: strings.universal,
-		value: "UNIVERSAL"
+		value: "universal"
 	},
 	{
 		label: strings.actWorkPerformed,
-		value: "ACTWORKPERFORMED"
+		value: "actWorkPerformed"
 	},
 	{
 		label: strings.actGoodsAcceptance,
-		value: "ACTGOODSACCEPTANCE"
+		value: "actGoodsAcceptance"
 	},
 	{
 		label: strings.waybill,
-		value: "WAYBILL"
+		value: "waybill"
 	},
 	{
 		label: strings.customerOrder,
-		value: "CUSTOMERORDER"
+		value: "customerOrder"
 	}
 ];
 const InnerHeader = ({

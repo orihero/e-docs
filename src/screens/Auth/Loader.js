@@ -27,10 +27,11 @@ const Loader = ({
 	let bootstrap = async () => {
 		//TODO check if the user has logged in
 		showModal(strings.refreshToken);
+		let newCredentials = {};
 		try {
 			let credentials = await AsyncStorage.getItem("@credentials");
 			if (credentials) {
-				let newCredentials = JSON.parse(credentials);
+				newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
 				let res = await requests.auth.validateToken(
 					newCredentials.token
@@ -63,7 +64,9 @@ const Loader = ({
 			return;
 		}
 		hideModal();
-		navigation.navigate("Main");
+		navigation.navigate("PinCode", {
+			credentials: newCredentials
+		});
 	};
 	useEffect(() => {
 		bootstrap();

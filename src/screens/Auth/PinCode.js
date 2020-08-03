@@ -3,13 +3,21 @@ import { StyleSheet, Text, View } from "react-native";
 import TouchID from "react-native-touch-id";
 import CustomKeyboard from "../../components/common/CustomKeyboard";
 import PinCodeIndicator from "../../components/common/PinCodeIndicator";
-import { strings } from "../../locales/strings";
 import colors from "../../constants/colors";
+import AsyncStorage from "@react-native-community/async-storage";
+import strings from "../../locales/strings";
+
+let defaultPinState = {
+	code: "",
+	locked: false
+};
 
 const SetUpPinCode = ({ navigation }) => {
+	let credentials = navigation.getParam("credentials") || {};
 	const [pin, setPin] = useState("");
 	const [confirmPin, setConfirmPin] = useState("");
 	const [failedCount, setFailedCount] = useState(-1);
+	let { code, locked } = credentials;
 	/**
 	 * Check if touch id supported {@link react-native-touch-id}
 	 */
@@ -24,7 +32,7 @@ const SetUpPinCode = ({ navigation }) => {
 		}
 		try {
 			let res = await TouchID.authenticate(strings.authReason);
-			navigation.navigate(SCREENS.MAIN);
+			navigation.navigate("Main");
 		} catch (error) {
 			//* Cancelled or failed to authenticate
 			console.log(error);
@@ -33,8 +41,8 @@ const SetUpPinCode = ({ navigation }) => {
 	};
 
 	useEffect(() => {
-		if (!isSetup) checkTouchID();
-	}, [isSetup]);
+		if (!credentials.code) checkTouchID();
+	}, [credentials.code]);
 	let resetAll = () => {
 		setPin("");
 		setConfirmPin("");
@@ -42,11 +50,12 @@ const SetUpPinCode = ({ navigation }) => {
 	};
 	let onKeyPress = async key => {
 		let newPin = pin + key;
-		if (key === "back-delete" && pin.length > 0) {
+		console.log({ credentials });
+		if (key === "delete" && pin.length > 0) {
 			setPin(pin.substr(0, pin.length - 1));
 			return;
 		}
-		if (!isSetup && newPin.length === 4) {
+		if (!!credentials.code && newPin.length === 4) {
 			console.log({ newPin, code });
 			//* User already set up pin
 			if (newPin === code) {
@@ -67,11 +76,16 @@ const SetUpPinCode = ({ navigation }) => {
 					// 	lockType: LockType.PIN
 					// });
 					return;
+				} else {
+					console.log("FAILED. SETTING PIN TO ``");
+					// resetAll();
+					setPin("");
+					setFailedCount(newFails);
+					return;
 				}
-				return;
 			}
 		}
-		if (pin.length === 4 && isSetup) {
+		if (pin.length === 4) {
 			//* User has set up pin. Should ask for pin confirmation
 			let newValue = confirmPin + key;
 			//* Confirm pin also filled. Check if the match
@@ -83,9 +97,17 @@ const SetUpPinCode = ({ navigation }) => {
 					// 	token,
 					// 	pin
 					// );
-					setPinCode(pin);
+					// setPinCode(pin);
+					await AsyncStorage.setItem(
+						"@credentials",
+						JSON.stringify({
+							...credentials,
+							code: newValue,
+							locked: false
+						})
+					);
 					//* Everything is good. Proceed
-					navigation.navigate(SCREENS.SET_UP_TOUCH_ID);
+					navigation.navigate("Main");
 					return;
 				} else {
 					//* Incorrect pin confirmation. Show error
@@ -111,7 +133,7 @@ const SetUpPinCode = ({ navigation }) => {
 		<View style={styles.container}>
 			<View style={styles.top}>
 				<Text style={styles.boldText}>
-					{isSetup
+					{!credentials.code
 						? pin.length === 4
 							? strings.repeatPin
 							: strings.setUpPin
@@ -140,7 +162,7 @@ const SetUpPinCode = ({ navigation }) => {
 	);
 };
 
-export default connector(SetUpPinCode);
+export default SetUpPinCode;
 
 const styles = StyleSheet.create({
 	container: {

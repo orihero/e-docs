@@ -45,13 +45,13 @@ const styles = StyleSheet.create({
 		borderRadius: circleWidth,
 		margin: 10,
 		borderWidth: 1,
-		borderColor: colors.gray5
+		borderColor: colors.grayText
 	},
 	activeCircle: {
 		width: circleWidth,
 		height: circleWidth,
 		borderRadius: circleWidth,
-		backgroundColor: colors.blue,
+		backgroundColor: colors.blueish,
 		margin: 10
 	}
 });

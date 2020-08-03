@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { colors } from "../../constants";
 import Touchable from "./Touchable";
 import Icons from "react-native-vector-icons/Feather";
+import colors from "../../constants/colors";
 
 let keys = [
 	["1", "2", "3"],
