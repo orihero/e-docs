@@ -130,6 +130,12 @@ const Product = ({
 							item={item}
 							passive={!!cart[item._id]}
 							key={item.id}
+							onPress={() => {
+								console.log("NAvigating");
+								navigation.navigate("ProductDetails", {
+									item
+								});
+							}}
 						/>
 					)}
 					onRefresh={onRefresh}

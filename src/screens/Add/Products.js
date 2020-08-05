@@ -45,17 +45,37 @@ let calculatedFields = {
 		firstField: "fuelsum",
 		secondField: "deliverysumwithvat",
 		calculator: add
+	},
+	totalsum: {
+		firstField: "count",
+		secondField: "summa",
+		calculator: multipy
+	},
+	totalsumwithwat: {
+		firstField: "count",
+		secondField: "summa",
+		calculator: multipy
 	}
 };
 
 let reflectiveFields = {
 	count: {
-		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
+		results: [
+			"deliverysum",
+			"deliverysumwithvat",
+			"deliverysumwithfuel",
+			"totalsum"
+		],
 		secondField: "summa",
 		calculator: percent
 	},
 	summa: {
-		results: ["deliverysum", "deliverysumwithvat", "deliverysumwithfuel"],
+		results: [
+			"deliverysum",
+			"deliverysumwithvat",
+			"deliverysumwithfuel",
+			"totalsum"
+		],
 		secondField: "count",
 		calculator: percent
 	},

@@ -109,8 +109,15 @@ const List = ({
 		getDocuments({ filter, type });
 	};
 
-	let onEndReached = async () => {
-		console.log("ON END REACHED BEGINS");
+	let onEndReached = async params => {
+		// console.log("ON END REACHED BEGINS", params);
+		// let event = params.nativeEvent;
+		// let {
+		// 	contentOffset: { y },
+		// 	contentSize: { height }
+		// } = event;
+		// let threshold = height - y;
+		// console.log({ threshold, y, height });
 		// await _.throttle(async () => {
 		let p = Math.ceil(documents.length / limit) + 1;
 		console.log("ON END REACHED", {
@@ -175,7 +182,6 @@ const List = ({
 					)}
 					keyExtractor={item => item.id && item.id.toString()}
 					onEndReached={onEndReached}
-					onEndReachedThreshold={0.9}
 				/>
 			</View>
 		</View>

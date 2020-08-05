@@ -73,7 +73,13 @@ const MessageCard = ({ item, navigation, status, boxType }) => {
 						</View>
 						{!!item.docDate && (
 							<Text style={styles.date}>
-								{Moment(item.docDate).format("DD.MM.YYYY")}
+								{!!item.docNumber && `№ ${item.docNumber}`}
+								{item.docDate
+									? ` ― ${Moment(item.docDate).format(
+											"DD.MM.YYYY"
+									  )}`
+									: ""}
+								{/* {Moment(item.docDate).format("DD.MM.YYYY")} */}
 							</Text>
 						)}
 					</View>

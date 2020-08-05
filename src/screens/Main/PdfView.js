@@ -25,6 +25,19 @@ import {
 } from "../../redux/actions/appState";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
 import { append, attach, sign } from "../../utils/signProvider";
+import { Buffer } from "buffer";
+
+function joinBase64Strings(base64Str1, base64Str2) {
+	const bothData =
+		Buffer.from(base64Str1, "base64").toString("binary") +
+		Buffer.from(base64Str2, "base64").toString("binary");
+	const joinedBase64Result = Buffer.from(
+		bothData.toString(),
+		"binary"
+	).toString("base64");
+	console.log("joinedBase64Result", joinedBase64Result);
+	return joinedBase64Result;
+}
 
 const PdfView = ({
 	user,
@@ -34,9 +47,10 @@ const PdfView = ({
 	hideModal,
 	documents: { boxType, status, ...documents }
 }) => {
-	let [baseFile, setBaseFile] = useState({});
+	let [baseFile, setBaseFile] = useState("");
 	const [comment, setComment] = useState("");
 	const [documentContent, setDocumentContent] = useState({});
+	const [pages, setPages] = useState({ data: 1, universal: 1 });
 	let document = navigation.getParam("document") || {};
 	let { _id: docId, type } = document;
 	let { token } = user;
@@ -336,7 +350,7 @@ const PdfView = ({
 			if (documentContent.data.file.filetype.split("/")[0] === "image") {
 				return (
 					<Image
-						style={{ width, height }}
+						style={{ width, height, resizeMode: "center" }}
 						source={{
 							uri: `data:${
 								documentContent.data.file.filetype
@@ -353,12 +367,21 @@ const PdfView = ({
 							documentContent.data.file.filetype
 						};base64,${documentContent.data.file.filebase64}`
 					}}
+					onPageChanged={(page, pages) => {
+						console.log({ page, pages });
+					}}
 					onError={error => {}}
 					activityIndicator={e => {
 						return <View />;
 					}}
-					enablePaging
-					style={styles.pdf}
+					style={[styles.pdf, { height: height * pages.universal }]}
+					onLoadComplete={universal => {
+						console.log({ universal });
+						setPages({
+							...pages,
+							universal
+						});
+					}}
 				/>
 			);
 		}
@@ -490,19 +513,34 @@ const PdfView = ({
 			</View>
 			<View style={{ flex: 1 }}>
 				<ScrollView>
-					<Pdf
-						key="data"
-						source={{
-							uri: `data:application/pdf;base64,${baseFile}`
+					<View style={{ height: height * pages.data, width }}>
+						<Pdf
+							key="data"
+							source={{
+								uri: `data:application/pdf;base64,${baseFile}`
+							}}
+							onError={error => {}}
+							activityIndicator={e => {
+								return <View />;
+							}}
+							style={[
+								styles.pdf,
+								{ height: height * pages.data }
+							]}
+							onLoadComplete={data => {
+								console.log({ data });
+								setPages({ ...pages, data });
+							}}
+						/>
+					</View>
+					<View
+						style={{
+							height: height * pages.universal,
+							width
 						}}
-						onError={error => {}}
-						activityIndicator={e => {
-							return <View />;
-						}}
-						enablePaging
-						style={styles.pdf}
-					/>
-					{renderUniversal()}
+					>
+						{renderUniversal()}
+					</View>
 				</ScrollView>
 			</View>
 		</View>
@@ -519,7 +557,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "white",
 		width: Dimensions.get("window").width,
-		height: Dimensions.get("window").height
+		height: Dimensions.get("window").height,
+		...StyleSheet.absoluteFillObject
 	},
 	topPanel: {
 		paddingVertical: 5,

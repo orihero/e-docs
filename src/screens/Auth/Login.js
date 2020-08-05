@@ -53,7 +53,7 @@ const Login = ({
 				return;
 			}
 			userLoggedIn(data);
-			navigation.navigate("Main");
+			navigation.navigate("PinCode");
 			hideModal();
 		} catch (error) {
 			console.log(error);

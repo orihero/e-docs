@@ -12,6 +12,7 @@ import colors from "../../constants/colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { string } from "react-native-redash";
 import strings from "../../locales/strings";
+import Modal from "react-native-modal";
 
 const CustomPicker = ({
 	items: initialItems,
@@ -28,17 +29,17 @@ const CustomPicker = ({
 		setExpanded(!expanded);
 	};
 	let onItemPress = e => {
+		setExpanded(false);
 		onValueChange && onValueChange(e.value);
 		setParent("");
-		setExpanded(false);
 	};
 
 	let onParentPress = e => {
 		let childs = formulateChildren(e);
 		if (childs.length === 0) {
+			setExpanded(false);
 			onValueChange && onValueChange(e.value);
 			setParent("");
-			setExpanded(false);
 			return;
 		}
 		setParent(e);
@@ -90,7 +91,11 @@ const CustomPicker = ({
 					</View>
 				)}
 			</TouchableWithoutFeedback>
-			{expanded && actualItems.length !== 0 && (
+			<Modal
+				isVisible={expanded && actualItems.length !== 0}
+				onDismiss={() => setExpanded(false)}
+				onBackButtonPress={() => setExpanded(false)}
+			>
 				<View style={styles.items}>
 					{recursive && (
 						<TouchableOpacity onPress={() => onItemPress(parent)}>
@@ -139,7 +144,7 @@ const CustomPicker = ({
 						);
 					})}
 				</View>
-			)}
+			</Modal>
 		</View>
 	);
 };
@@ -147,7 +152,9 @@ const CustomPicker = ({
 export default CustomPicker;
 
 const styles = StyleSheet.create({
-	container: {},
+	container: {
+		zIndex: 999
+	},
 	value: {
 		color: colors.darkViolet,
 		fontWeight: "bold"
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
 			height: 5,
 			width: 0
 		},
-		zIndex: 1000
+		zIndex: -1000
 	},
 	icon: {
 		margin: 10

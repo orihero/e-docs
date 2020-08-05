@@ -12,7 +12,7 @@ import Text from "../common/Text";
 import strings from "../../locales/strings";
 import { TextInput } from "react-native";
 
-const ProductCard = ({ item, passive, addToCart }) => {
+const ProductCard = ({ item, passive, addToCart, onPress = () => {} }) => {
 	let name = `${item && item.name} ${item && item.description}`;
 	let subName = `${strings.article}: ${item && item.sellerTin}`;
 	let price = `${!!item.prices &&
@@ -23,59 +23,61 @@ const ProductCard = ({ item, passive, addToCart }) => {
 			: item.prices[0].price)} сум`;
 	const [count, setCount] = useState("");
 	return (
-		<View style={styles.container}>
-			<View style={styles.top}>
-				<View style={styles.nameWrapper}>
-					<Text style={styles.name}>{name}</Text>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between"
-						}}
-					>
-						<Text style={styles.subName}>{subName}</Text>
-						<Text style={styles.price}>{price}</Text>
+		<TouchableWithoutFeedback onPress={onPress}>
+			<View style={styles.container}>
+				<View style={styles.top}>
+					<View style={styles.nameWrapper}>
+						<Text style={styles.name}>{name}</Text>
+						<View
+							style={{
+								flexDirection: "row",
+								justifyContent: "space-between"
+							}}
+						>
+							<Text style={styles.subName}>{subName}</Text>
+							<Text style={styles.price}>{price}</Text>
+						</View>
+					</View>
+				</View>
+				<View style={styles.bottom}>
+					<View style={styles.firmWrapper}>
+						<SimpleLineIcons name="briefcase" size={21} />
+						<Text style={styles.firm}>
+							{item.seller && item.seller.name}
+						</Text>
+					</View>
+					<View style={styles.buttonWrapper}>
+						{passive ? (
+							<Text style={styles.quantity}>
+								{item.prices && item.count} штук
+							</Text>
+						) : (
+							<>
+								<TextInput
+									placeholder={"0"}
+									value={count}
+									style={styles.input}
+									onChangeText={text => {
+										setCount(text);
+									}}
+									keyboardType={"number-pad"}
+								/>
+								<TouchableOpacity
+									onPress={() => {
+										addToCart(count);
+									}}
+								>
+									<SmallButton
+										backColor={colors.dimGreen}
+										iconName="shoppingcart"
+									/>
+								</TouchableOpacity>
+							</>
+						)}
 					</View>
 				</View>
 			</View>
-			<View style={styles.bottom}>
-				<View style={styles.firmWrapper}>
-					<SimpleLineIcons name="briefcase" size={21} />
-					<Text style={styles.firm}>
-						{item.seller && item.seller.name}
-					</Text>
-				</View>
-				<View style={styles.buttonWrapper}>
-					{passive ? (
-						<Text style={styles.quantity}>
-							{item.prices && item.count} штук
-						</Text>
-					) : (
-						<>
-							<TextInput
-								placeholder={"0"}
-								value={count}
-								style={styles.input}
-								onChangeText={text => {
-									setCount(text);
-								}}
-								keyboardType={"number-pad"}
-							/>
-							<TouchableOpacity
-								onPress={() => {
-									addToCart(count);
-								}}
-							>
-								<SmallButton
-									backColor={colors.dimGreen}
-									iconName="shoppingcart"
-								/>
-							</TouchableOpacity>
-						</>
-					)}
-				</View>
-			</View>
-		</View>
+		</TouchableWithoutFeedback>
 	);
 };
 
@@ -136,7 +138,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		minWidth: 60,
 		textAlign: "center",
-		textAlignVertical: "center"
+		textAlignVertical: "center",
+		maxWidth: 60
 	}
 });
 
