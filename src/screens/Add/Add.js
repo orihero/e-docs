@@ -241,6 +241,7 @@ const Add = connect(
 				type: colors.killerRed,
 				message: strings.fillAllFields
 			});
+			console.warn(error);
 		}
 
 		try {

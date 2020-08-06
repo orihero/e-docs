@@ -30,7 +30,9 @@ const CustomPicker = ({
 	};
 	let onItemPress = e => {
 		setExpanded(false);
-		onValueChange && onValueChange(e.value);
+		setTimeout(() => {
+			onValueChange && onValueChange(e.value);
+		}, 1);
 		setParent("");
 	};
 
@@ -38,7 +40,9 @@ const CustomPicker = ({
 		let childs = formulateChildren(e);
 		if (childs.length === 0) {
 			setExpanded(false);
-			onValueChange && onValueChange(e.value);
+			setTimeout(() => {
+				onValueChange && onValueChange(e.value);
+			}, 1);
 			setParent("");
 			return;
 		}
@@ -58,8 +62,36 @@ const CustomPicker = ({
 		return [];
 	};
 
+	const buildTree = (ids, groups) => {
+		let tree = groups
+			.filter(group => {
+				return ids.indexOf(group._id) >= 0;
+			})
+			.map(group => {
+				let item = {
+					id: group._id,
+					label: group.nameRU
+				};
+				let children = buildTree(group.children, groups);
+				if (children.length) item.children = children;
+				return item;
+			});
+		return tree;
+	};
+
 	useEffect(() => {
-		setItems(recursive ? initialItems.filter(e => e.main) : initialItems);
+		if (recursive) {
+			let ids = initialItems
+				.filter(group => {
+					return group.main === true;
+				})
+				.map(item => {
+					return item._id;
+				});
+			buildTree(ids, initialItems);
+			return;
+		}
+		setItems(initialItems);
 	}, [initialItems]);
 
 	let actualItems = items;
@@ -95,6 +127,7 @@ const CustomPicker = ({
 				isVisible={expanded && actualItems.length !== 0}
 				onDismiss={() => setExpanded(false)}
 				onBackButtonPress={() => setExpanded(false)}
+				onBackdropPress={() => setExpanded(false)}
 			>
 				<View style={styles.items}>
 					{recursive && (

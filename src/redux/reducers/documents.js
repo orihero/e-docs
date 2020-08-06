@@ -3,7 +3,7 @@ import strings from "../../locales/strings";
 
 let initialState = {
 	boxType: -1,
-	status: { label: strings.all, value: "all" },
+	status: "all",
 	data: [],
 	count: {
 		in: {

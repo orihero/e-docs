@@ -549,16 +549,13 @@ const PdfView = ({
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: "flex-start",
-		alignItems: "center"
+		flex: 1
 	},
 	pdf: {
 		flex: 1,
 		backgroundColor: "white",
 		width: Dimensions.get("window").width,
-		height: Dimensions.get("window").height,
-		...StyleSheet.absoluteFillObject
+		height: Dimensions.get("window").height
 	},
 	topPanel: {
 		paddingVertical: 5,
@@ -571,7 +568,8 @@ const styles = StyleSheet.create({
 		shadowOffset: {
 			height: 5,
 			width: 0
-		}
+		},
+		marginTop: Platform.OS === "android" ? 0 : 140
 	},
 	panelContent: {
 		flexDirection: "row",

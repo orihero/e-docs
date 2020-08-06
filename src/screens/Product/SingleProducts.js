@@ -91,10 +91,7 @@ const SingleProducts = ({ item, navigation }) => {
 				<RectangleButton
 					onPress={() => navigation.goBack()}
 					text={strings.back}
-					backColor={colors.killerRed}
 					style={{
-						startColor: "red",
-						endColor: colors.killerRed,
 						marginVertical: 10
 					}}
 				/>

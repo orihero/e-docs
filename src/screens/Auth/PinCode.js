@@ -50,7 +50,7 @@ const SetUpPinCode = ({ navigation }) => {
 	};
 	let onKeyPress = async key => {
 		let newPin = pin + key;
-		console.log({ credentials });
+		console.log({ newPin });
 		if (key === "delete") {
 			if (pin.length > 0) {
 				setPin(pin.substr(0, pin.length - 1));
@@ -58,6 +58,9 @@ const SetUpPinCode = ({ navigation }) => {
 			} else {
 				return;
 			}
+		}
+		if (key === "check") {
+			return;
 		}
 		if (!!credentials.code && newPin.length === 4) {
 			console.log({ newPin, code });
@@ -104,6 +107,7 @@ const SetUpPinCode = ({ navigation }) => {
 					// 	pin
 					// );
 					// setPinCode(pin);
+					console.log({ credentials });
 					await AsyncStorage.setItem(
 						"@credentials",
 						JSON.stringify({

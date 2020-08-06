@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.white,
-		padding: 10
+		padding: 10,
+		paddingVertical: Platform.OS === "android" ? 10 : 40
 	},
 	cardWrapper: {
 		flex: 1

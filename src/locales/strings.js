@@ -200,7 +200,11 @@ let strings = new LocalizedStrings({
 		BANK_ALREADY_EXISTS: "Банк уже существует",
 		TOTALSUM: "Сумма",
 		VATRATE: "Процент НДС",
-		TOTALSUMWITHVAT: "",
+		TOTALSUMWITHVAT: "Сумма с НДС",
+		FUELRATE: "Ставка топливо",
+		VATSUM: "Сумма НДС",
+		FUELSUM: "Сумма топливо",
+		TOTALSUMWITHFUEL: "Сумма с Топливом",
 		writeToStoragePermission:
 			"Приложению требуется разрешение на запись во внешнее хранилище для сохранения файла.",
 		allow: "Разрешать",

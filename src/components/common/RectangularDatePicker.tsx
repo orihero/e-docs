@@ -3,7 +3,8 @@ import {
 	StyleSheet,
 	View,
 	TouchableWithoutFeedback,
-	Dimensions
+	Dimensions,
+	Platform
 } from "react-native";
 import Picker from "@react-native-community/datetimepicker";
 import Text from "./Text";
@@ -78,18 +79,19 @@ const styles = StyleSheet.create({
 	container: {
 		borderRadius: 4,
 		backgroundColor: colors.paperGray,
-		padding: 28,
+		padding: Platform.OS === "android" ? 28 : 21.5,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 		// elevation: 4,
-		paddingBottom: 16,
+		paddingBottom: Platform.OS === "android" ? 16 : 21.5,
 		borderBottomLeftRadius: 0,
 		borderBottomRightRadius: 0,
 		borderBottomWidth: 1,
 		borderColor: colors.lightGrayText,
-		marginTop: 3,
+		marginTop: Platform.OS === "android" ? 3 : 18,
 		marginHorizontal: 2
+		// paddingTop: Platform.OS === "android" ? 28 : 16
 	},
 	placeholder: {
 		color: colors.grayText
