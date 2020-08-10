@@ -38,7 +38,7 @@ const RectangularInput = ({
 const styles = StyleSheet.create({
 	container: {
 		borderRadius: 8,
-		backgroundColor: colors.white,
+		backgroundColor: colors.lightBlueBackground,
 		padding: Platform.select({ android: 3, ios: 20 }),
 		paddingBottom: 2,
 		justifyContent: "center"

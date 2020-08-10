@@ -50,6 +50,9 @@ const List = ({
 			value: docStatus.REJECTED
 		}
 	];
+	useEffect(() => {
+		getDocuments();
+	}, []);
 
 	useEffect(() => {
 		if (!!reload) {
@@ -57,21 +60,29 @@ const List = ({
 			navigation.setParams({ reload: false });
 		}
 	}, [reload]);
-	let setShowType = async e => {
-		documentsLoaded({ ...docs, data, boxType, status: e, page: 1 });
+	let setShowType = e => {
+		documentsLoaded({ ...docs, data, boxType, status: e, page: 1, type });
+		getDocuments({ status: e, boxType, type, page: 1 });
 	};
 
 	let [documents, setDocuments] = useState([]);
 	let getDocuments = async (filters = {}) => {
 		showModal(strings.gettingDocuments);
-		let { type, filter, page: pge = page } = filters;
+		let { type, filter, page: pge = page, status: innerStatus } = filters;
+		console.log({ type: `\n\n\n${type}\n\n\n\n` });
 		try {
 			let res = await requests.doc.getDocuments(
 				token,
 				pge,
 				limit,
 				boxType,
-				status === "all" ? "" : status,
+				innerStatus === "all"
+					? ""
+					: !!innerStatus
+					? innerStatus
+					: status === "all"
+					? ""
+					: status,
 				type ? type : "",
 				filter
 			);
@@ -85,13 +96,13 @@ const List = ({
 			showMessage({ type: colors.killerRed, message: error.message });
 		}
 	};
-	useEffect(() => {
-		setInfoList(documents);
-	}, [documents]);
+	// useEffect(() => {
+	// 	setInfoList(documents);
+	// }, [documents]);
 
-	useEffect(() => {
-		getDocuments();
-	}, [boxType, status]);
+	// useEffect(() => {
+	// 	getDocuments();
+	// }, [boxType, status]);
 
 	if (boxType === boxTypes.OUT) {
 		showTypes[1].label = strings.sent;
@@ -109,8 +120,15 @@ const List = ({
 		getDocuments({ filter, type });
 	};
 
-	let onEndReached = async () => {
-		console.log("ON END REACHED BEGINS");
+	let onEndReached = async params => {
+		// console.log("ON END REACHED BEGINS", params);
+		// let event = params.nativeEvent;
+		// let {
+		// 	contentOffset: { y },
+		// 	contentSize: { height }
+		// } = event;
+		// let threshold = height - y;
+		// console.log({ threshold, y, height });
 		// await _.throttle(async () => {
 		let p = Math.ceil(documents.length / limit) + 1;
 		console.log("ON END REACHED", {
@@ -135,8 +153,9 @@ const List = ({
 	};
 
 	let onSearch = (_, filter) => {
-		documentsLoaded({ ...docs, filter, page: 1 });
-		getDocuments({ filter, page: 1 });
+		console.log("SEARCHING");
+		documentsLoaded({ ...docs, filter: filter || "", page: 1, type });
+		getDocuments({ filter: filter, page: 1, type });
 	};
 
 	let onFilter = t => {
@@ -162,7 +181,7 @@ const List = ({
 						paddingTop: 10
 					}}
 					showsVerticalScrollIndicator={false}
-					data={infoList}
+					data={documents}
 					onRefresh={onRefresh}
 					refreshing={loading}
 					renderItem={({ item }) => (
@@ -175,7 +194,6 @@ const List = ({
 					)}
 					keyExtractor={item => item.id && item.id.toString()}
 					onEndReached={onEndReached}
-					onEndReachedThreshold={0.9}
 				/>
 			</View>
 		</View>

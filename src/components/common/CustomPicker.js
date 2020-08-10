@@ -12,6 +12,7 @@ import colors from "../../constants/colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { string } from "react-native-redash";
 import strings from "../../locales/strings";
+import Modal from "react-native-modal";
 
 const CustomPicker = ({
 	items: initialItems,
@@ -28,17 +29,22 @@ const CustomPicker = ({
 		setExpanded(!expanded);
 	};
 	let onItemPress = e => {
-		onValueChange && onValueChange(e.value);
-		setParent("");
+		console.log({ e });
 		setExpanded(false);
+		setTimeout(() => {
+			onValueChange && onValueChange(e.value);
+		}, 1);
+		setParent("");
 	};
 
-	let onParentPress = e => {
-		let childs = formulateChildren(e);
-		if (childs.length === 0) {
-			onValueChange && onValueChange(e.value);
-			setParent("");
+	let onParentPress = (e, i) => {
+		let childs = items[i].children;
+		if (!childs || childs.length === 0) {
 			setExpanded(false);
+			setTimeout(() => {
+				onValueChange && onValueChange(e.value);
+			}, 1);
+			setParent("");
 			return;
 		}
 		setParent(e);
@@ -57,15 +63,45 @@ const CustomPicker = ({
 		return [];
 	};
 
+	const buildTree = (ids, groups) => {
+		let tree = groups
+			.filter(group => {
+				return ids.indexOf(group._id) >= 0;
+			})
+			.map(group => {
+				let item = {
+					value: group._id,
+					label: group.nameRU
+				};
+				let children = buildTree(group.children, groups);
+				if (children.length) item.children = children;
+				return item;
+			});
+		return tree;
+	};
+
 	useEffect(() => {
-		setItems(recursive ? initialItems.filter(e => e.main) : initialItems);
+		if (recursive) {
+			let ids = initialItems
+				.filter(group => {
+					return group.main === true;
+				})
+				.map(item => {
+					return item._id;
+				});
+			let all = buildTree(ids, initialItems);
+			setItems(all);
+			console.log({ all });
+			return;
+		}
+		setItems(initialItems);
 	}, [initialItems]);
 
 	let actualItems = items;
 
 	let val = !!value ? value : placeholder;
 	if (!!value) {
-		let actualVal = items.find(e => e.value === value) || {};
+		let actualVal = initialItems.find(e => e.value === value) || {};
 		val = actualVal.label;
 	}
 	return (
@@ -90,7 +126,12 @@ const CustomPicker = ({
 					</View>
 				)}
 			</TouchableWithoutFeedback>
-			{expanded && actualItems.length !== 0 && (
+			<Modal
+				isVisible={expanded && actualItems.length !== 0}
+				onDismiss={() => setExpanded(false)}
+				onBackButtonPress={() => setExpanded(false)}
+				onBackdropPress={() => setExpanded(false)}
+			>
 				<View style={styles.items}>
 					{recursive && (
 						<TouchableOpacity onPress={() => onItemPress(parent)}>
@@ -106,12 +147,12 @@ const CustomPicker = ({
 							</Text>
 						</TouchableOpacity>
 					)}
-					{actualItems.map(e => {
+					{actualItems.map((e, i) => {
 						return (
 							<TouchableOpacity
 								onPress={() =>
 									recursive
-										? onParentPress(e)
+										? onParentPress(e, i)
 										: onItemPress(e)
 								}
 								style={[recursive && styles.item]}
@@ -139,7 +180,7 @@ const CustomPicker = ({
 						);
 					})}
 				</View>
-			)}
+			</Modal>
 		</View>
 	);
 };
@@ -147,7 +188,9 @@ const CustomPicker = ({
 export default CustomPicker;
 
 const styles = StyleSheet.create({
-	container: {},
+	container: {
+		zIndex: 999
+	},
 	value: {
 		color: colors.darkViolet,
 		fontWeight: "bold"
@@ -173,7 +216,7 @@ const styles = StyleSheet.create({
 			height: 5,
 			width: 0
 		},
-		zIndex: 1000
+		zIndex: -1000
 	},
 	icon: {
 		margin: 10

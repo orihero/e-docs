@@ -23,10 +23,8 @@ const SearchBar = ({ onSearch, value }) => {
 			/>
 			<EvilIcons
 				onPress={() => {
-					if (!!searchKey) {
-						onSearch("", searchKey);
-						setSearchKey("");
-					}
+					onSearch("", searchKey);
+					setSearchKey("");
 				}}
 				name="search"
 				size={32}

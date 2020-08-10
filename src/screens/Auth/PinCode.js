@@ -41,8 +41,8 @@ const SetUpPinCode = ({ navigation }) => {
 	};
 
 	useEffect(() => {
-		if (!credentials.code) checkTouchID();
-	}, [credentials.code]);
+		if (!!credentials.code) checkTouchID();
+	}, []);
 	let resetAll = () => {
 		setPin("");
 		setConfirmPin("");
@@ -50,9 +50,16 @@ const SetUpPinCode = ({ navigation }) => {
 	};
 	let onKeyPress = async key => {
 		let newPin = pin + key;
-		console.log({ credentials });
-		if (key === "delete" && pin.length > 0) {
-			setPin(pin.substr(0, pin.length - 1));
+		console.log({ newPin });
+		if (key === "delete") {
+			if (pin.length > 0) {
+				setPin(pin.substr(0, pin.length - 1));
+				return;
+			} else {
+				return;
+			}
+		}
+		if (key === "check") {
 			return;
 		}
 		if (!!credentials.code && newPin.length === 4) {
@@ -86,11 +93,13 @@ const SetUpPinCode = ({ navigation }) => {
 			}
 		}
 		if (pin.length === 4) {
+			console.log("SETTING PIN");
 			//* User has set up pin. Should ask for pin confirmation
 			let newValue = confirmPin + key;
 			//* Confirm pin also filled. Check if the match
 			if (newValue.length === 4) {
 				if (newValue === pin) {
+					console.log("PIN CONFIRMED");
 					//* Save the credentials
 					// await setInternetCredentials(
 					// 	deviceInfoModule.getBundleId(),
@@ -98,6 +107,7 @@ const SetUpPinCode = ({ navigation }) => {
 					// 	pin
 					// );
 					// setPinCode(pin);
+					console.log({ credentials });
 					await AsyncStorage.setItem(
 						"@credentials",
 						JSON.stringify({

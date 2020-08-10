@@ -27,7 +27,11 @@ export let requests = {
 			}),
 		getRegions: () => instance.fetch("GET", `${url}/regions/all`),
 		getDistricts: () => instance.fetch("GET", `${url}/districts/all`),
-		getBanks: () => instance.fetch("GET", `${url}/banks/all`)
+		getBanks: () => instance.fetch("GET", `${url}/banks/all`),
+		getSellerByTin: (token, tin) =>
+			instance.fetch("GET", `${url}/profile/seller/${tin}`, {
+				Authorization: `Bearer ${token}`
+			})
 	},
 	doc: {
 		getStats: token =>

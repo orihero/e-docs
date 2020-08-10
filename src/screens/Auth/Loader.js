@@ -30,13 +30,14 @@ const Loader = ({
 		let newCredentials = {};
 		try {
 			let credentials = await AsyncStorage.getItem("@credentials");
+			console.log({ credentials });
 			if (credentials) {
 				newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
 				let res = await requests.auth.validateToken(
 					newCredentials.token
 				);
-				userLoggedIn(res.json());
+				userLoggedIn({ ...newCredentials, ...res.json() });
 
 				if (!res.json()) {
 					hideModal();
@@ -49,21 +50,23 @@ const Loader = ({
 				return;
 			}
 		} catch (error) {
-			if (!!error) {
-				showMessage({
-					message: error.response,
-					type: colors.killerRed
-				});
-			}
-			showMessage({
-				message: error,
-				type: colors.killerRed
-			});
+			// if (!!error) {
+			// 	showMessage({
+			// 		message: error.response,
+			// 		type: colors.killerRed
+			// 	});
+			// }
+			// showMessage({
+			// 	message: error,
+			// 	type: colors.killerRed
+			// });
+			console.log({ error, response: error.response });
 			hideModal();
 			navigation.navigate("Login");
 			return;
 		}
 		hideModal();
+		console.log({ newCredentials });
 		navigation.navigate("PinCode", {
 			credentials: newCredentials
 		});

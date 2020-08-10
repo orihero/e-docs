@@ -107,6 +107,9 @@ const Product = ({
 		cartLoaded({ ...cart, products: [] });
 		setFilters({ ...filters, group: "", page: 1 });
 	};
+
+	let onSearch = () => {};
+
 	return (
 		<View style={styles.container}>
 			<InnerHeader
@@ -116,6 +119,8 @@ const Product = ({
 				setShowType={onCategoryChange}
 				showType={group}
 				recursive
+				hasFilter={false}
+				onSearch={onSearch}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
@@ -130,6 +135,12 @@ const Product = ({
 							item={item}
 							passive={!!cart[item._id]}
 							key={item.id}
+							onPress={() => {
+								console.log("NAvigating");
+								navigation.navigate("ProductDetails", {
+									item
+								});
+							}}
 						/>
 					)}
 					onRefresh={onRefresh}

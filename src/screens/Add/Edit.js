@@ -69,7 +69,7 @@ export let docTypes = [
 			fields: facturaFields,
 			productModel: facturaProduct,
 			doc: facturaDoc,
-			docType: "empowerment"
+			docType: "factura"
 		}
 	},
 	{

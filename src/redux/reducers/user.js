@@ -14,6 +14,7 @@ export default (state = initialState, { type, payload }) => {
 			return { ...state, ...payload };
 		case USER_LOGGED_IN:
 			let newState = { ...state, ...payload };
+			console.log({ newState });
 			AsyncStorage.setItem("@credentials", JSON.stringify(newState));
 			return newState;
 		case USER_LOGGED_OUT: {

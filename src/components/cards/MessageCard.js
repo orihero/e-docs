@@ -6,6 +6,7 @@ import Text from "../common/Text";
 import Moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { docStatus, boxTypes } from "../../redux/reducers/documents";
+import { normalizePrice } from "../../utils/object";
 
 export let docTypes = {
 	FACTURA: "Счет-фактура",
@@ -73,13 +74,22 @@ const MessageCard = ({ item, navigation, status, boxType }) => {
 						</View>
 						{!!item.docDate && (
 							<Text style={styles.date}>
-								{Moment(item.docDate).format("DD.MM.YYYY")}
+								{!!item.docNumber && `№ ${item.docNumber}`}
+								{item.docDate
+									? ` ― ${Moment(item.docDate).format(
+											"DD.MM.YYYY"
+									  )}`
+									: ""}
+								{/* {Moment(item.docDate).format("DD.MM.YYYY")} */}
 							</Text>
 						)}
 					</View>
 					<View style={styles.textWrapper}>
 						<Text style={[styles.text]}>
-							{strings.amount}: {item.totalSum}
+							{strings.amount}:{" "}
+							{normalizePrice(
+								item.totalSum ? item.totalSum.toString() : ""
+							)}
 						</Text>
 						<Text style={styles.text}>
 							{!!item.contractNumber &&

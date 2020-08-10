@@ -84,6 +84,13 @@ let fields = [
 		placeholder: strings.phone,
 		size: FieldSize.FULL,
 		disabled: true,
+		name: "mobile"
+	},
+	{
+		type: FieldType.INPUT,
+		placeholder: strings.workingPhone,
+		size: FieldSize.FULL,
+		disabled: true,
 		name: "phone"
 	},
 	{
@@ -187,7 +194,13 @@ const Profile = ({ user, dispatch, navigation }) => {
 	};
 	return (
 		<View style={styles.container}>
-			<ScrollView showsVerticalScrollIndicator={false}>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{
+					padding: 10,
+					paddingVertical: Platform.OS === "android" ? 10 : 40
+				}}
+			>
 				{!!user.tin && (
 					<FieldsRenderer fields={fields} initialValue={user} />
 				)}
@@ -208,8 +221,7 @@ const Profile = ({ user, dispatch, navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.white,
-		padding: 10
+		backgroundColor: colors.lightBlueBackground
 	},
 	cardWrapper: {
 		flex: 1

@@ -45,7 +45,7 @@ export let removeKeyFromObject = (obj, keyToFind) => {
  * normlaizePrice("1000000.00") = "1 000 000.00"
  */
 export let normalizePrice = (str: string, chunk: number = 3) => {
-	if (!str) {
+	if (!str || str == undefined) {
 		return "0";
 	}
 	//* Localization check

@@ -326,7 +326,11 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 								<RectangularInput
 									disabled={e.disabled}
 									onChange={val => updateState(e.name, val)}
-									value={state[e.name]}
+									value={
+										typeof state[e.name] === "number"
+											? state[e.name].toString()
+											: state[e.name]
+									}
 									placeholder={e.placeholder}
 									keyboardType={
 										e.validation?.float ||
@@ -352,7 +356,11 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 							<RectangularInput
 								disabled={e.disabled}
 								onChange={val => updateState(e.name, val)}
-								value={state[e.name]}
+								value={
+									typeof state[e.name] === "number"
+										? state[e.name].toString()
+										: state[e.name]
+								}
 								placeholder={e.placeholder}
 								keyboardType={
 									e.validation?.float || e.validation?.integer

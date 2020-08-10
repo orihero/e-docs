@@ -54,7 +54,8 @@ const InnerHeader = ({
 	onFilter,
 	showType,
 	recursive,
-	filter
+	filter,
+	hasFilter = true
 }) => {
 	let filterRef = useRef(null);
 
@@ -87,22 +88,24 @@ const InnerHeader = ({
 			</View>
 			<View style={styles.bottom}>
 				<SearchBar value={filter} onSearch={onSearch} />
-				<CustomPicker
-					items={docTypes}
-					onValueChange={value => {
-						onFilter(value);
-					}}
-				>
-					<View style={styles.iconWrapper}>
-						<AntDesign
-							name="filter"
-							size={23}
-							style={{
-								color: colors.lightGrayText
-							}}
-						/>
-					</View>
-				</CustomPicker>
+				{!!hasFilter && (
+					<CustomPicker
+						items={docTypes}
+						onValueChange={value => {
+							onFilter(value);
+						}}
+					>
+						<View style={styles.iconWrapper}>
+							<AntDesign
+								name="filter"
+								size={23}
+								style={{
+									color: colors.lightGrayText
+								}}
+							/>
+						</View>
+					</CustomPicker>
+				)}
 			</View>
 		</View>
 	);

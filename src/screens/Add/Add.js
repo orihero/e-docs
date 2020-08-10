@@ -59,6 +59,7 @@ import {
 	showMessage,
 	hideMessage
 } from "../../redux/actions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const mapStateToProps = ({ user }) => ({ user });
 
@@ -241,6 +242,7 @@ const Add = connect(
 				type: colors.killerRed,
 				message: strings.fillAllFields
 			});
+			console.warn(error);
 		}
 
 		try {
@@ -367,28 +369,30 @@ const Add = connect(
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ padding: 15 }}
 			>
-				<RectangularSelect
-					value={docType}
-					items={docTypes}
-					placeholder={strings.selectDocType}
-					onChange={e => {
-						if (!!e) setDocType(e);
-					}}
-				/>
-				{!!user.tin && (
-					<FieldsRenderer
-						initialValue={{
-							ownertin: user.tin,
-							ownername: user.name,
-							sellertin: user.tin,
-							sellername: user.name,
-							seller: user
+				<SafeAreaView>
+					<RectangularSelect
+						value={docType}
+						items={docTypes}
+						placeholder={strings.selectDocType}
+						onChange={e => {
+							if (!!e) setDocType(e);
 						}}
-						fields={fields}
-						footer={footer}
-						token={user.token}
 					/>
-				)}
+					{!!user.tin && (
+						<FieldsRenderer
+							initialValue={{
+								ownertin: user.tin,
+								ownername: user.name,
+								sellertin: user.tin,
+								sellername: user.name,
+								seller: user
+							}}
+							fields={fields}
+							footer={footer}
+							token={user.token}
+						/>
+					)}
+				</SafeAreaView>
 			</ScrollView>
 		</View>
 	);

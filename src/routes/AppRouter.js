@@ -22,6 +22,7 @@ import Add from "../screens/add/Add";
 import Products from "../screens/add/Products";
 import { Platform } from "react-native";
 import PinCode from "../screens/auth/PinCode";
+import ProductDetails from "../screens/product/ProductDetails";
 
 const MainStack = createStackNavigator(
 	{
@@ -53,6 +54,12 @@ const MainStack = createStackNavigator(
 			screen: Checkout,
 			navigationOptions: {
 				header: () => <Header />
+			}
+		},
+		ProductDetails: {
+			screen: ProductDetails,
+			navigationOptions: {
+				header: <Header />
 			}
 		}
 	},
