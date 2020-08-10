@@ -42,7 +42,7 @@ const SetUpPinCode = ({ navigation }) => {
 
 	useEffect(() => {
 		if (!!credentials.code) checkTouchID();
-	}, [credentials.code]);
+	}, []);
 	let resetAll = () => {
 		setPin("");
 		setConfirmPin("");

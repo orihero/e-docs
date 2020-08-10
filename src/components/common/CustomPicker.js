@@ -29,6 +29,7 @@ const CustomPicker = ({
 		setExpanded(!expanded);
 	};
 	let onItemPress = e => {
+		console.log({ e });
 		setExpanded(false);
 		setTimeout(() => {
 			onValueChange && onValueChange(e.value);
@@ -36,9 +37,9 @@ const CustomPicker = ({
 		setParent("");
 	};
 
-	let onParentPress = e => {
-		let childs = formulateChildren(e);
-		if (childs.length === 0) {
+	let onParentPress = (e, i) => {
+		let childs = items[i].children;
+		if (!childs || childs.length === 0) {
 			setExpanded(false);
 			setTimeout(() => {
 				onValueChange && onValueChange(e.value);
@@ -69,7 +70,7 @@ const CustomPicker = ({
 			})
 			.map(group => {
 				let item = {
-					id: group._id,
+					value: group._id,
 					label: group.nameRU
 				};
 				let children = buildTree(group.children, groups);
@@ -88,7 +89,9 @@ const CustomPicker = ({
 				.map(item => {
 					return item._id;
 				});
-			buildTree(ids, initialItems);
+			let all = buildTree(ids, initialItems);
+			setItems(all);
+			console.log({ all });
 			return;
 		}
 		setItems(initialItems);
@@ -98,7 +101,7 @@ const CustomPicker = ({
 
 	let val = !!value ? value : placeholder;
 	if (!!value) {
-		let actualVal = items.find(e => e.value === value) || {};
+		let actualVal = initialItems.find(e => e.value === value) || {};
 		val = actualVal.label;
 	}
 	return (
@@ -144,12 +147,12 @@ const CustomPicker = ({
 							</Text>
 						</TouchableOpacity>
 					)}
-					{actualItems.map(e => {
+					{actualItems.map((e, i) => {
 						return (
 							<TouchableOpacity
 								onPress={() =>
 									recursive
-										? onParentPress(e)
+										? onParentPress(e, i)
 										: onItemPress(e)
 								}
 								style={[recursive && styles.item]}

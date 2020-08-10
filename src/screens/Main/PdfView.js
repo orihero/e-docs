@@ -118,7 +118,11 @@ const PdfView = ({
 		showModal(strings.loadingPdf);
 		await requestCameraPermission();
 		try {
-			let filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/`;
+			let filePath = `${
+				Platform.OS === "android"
+					? RNFetchBlob.fs.dirs.DownloadDir
+					: RNFetchBlob.fs.dirs.DocumentDir
+			}/`;
 			let fileName = `${type}.${docId}.pdf`;
 			let res = await RNFetchBlob.fs.writeFile(
 				filePath + fileName,

@@ -29,7 +29,7 @@ const CustomInput = ({
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: colors.white,
+		backgroundColor: colors.lightBlueBackground,
 		padding: Platform.select({ android: 7, ios: 20 }),
 		borderRadius: 5,
 		marginBottom: 10,

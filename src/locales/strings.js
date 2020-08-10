@@ -222,7 +222,8 @@ let strings = new LocalizedStrings({
 		delivery: "Есть доставка",
 		sellerDescription: "Представление вашей компании",
 		termsPayment: "Условия оплаты",
-		termsDelivery: "Условия доставки"
+		termsDelivery: "Условия доставки",
+		workingPhone: "Рабочий телефон"
 	},
 	uz: {},
 	en: {}
