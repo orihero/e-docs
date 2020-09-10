@@ -74,7 +74,7 @@
 		0D676EEBBC604FDCBDD0E532 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		0D7C745E7992DA29AA28F6A5 /* libPods-edocsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-edocsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F4CB6DE1E9F49C8ABDBBE91 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* edocs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = edocs.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* EDOCS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EDOCS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = edocs/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = edocs/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -232,7 +232,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* edocs.app */,
+				13B07F961A680F5B00A75B9A /* EDOCS.app */,
 				00E356EE1AD99517003FC87E /* edocsTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* edocs-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* edocs-tvOSTests.xctest */,
@@ -328,7 +328,7 @@
 			);
 			name = edocs;
 			productName = edocs;
-			productReference = 13B07F961A680F5B00A75B9A /* edocs.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* EDOCS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* edocs-tvOS */ = {
@@ -768,7 +768,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 7;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = HPB6QQ52WT;
 				INFOPLIST_FILE = edocs/Info.plist;
@@ -779,7 +779,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uz.edocs.app;
-				PRODUCT_NAME = edocs;
+				PRODUCT_NAME = "E-DOCS";
 				SWIFT_OBJC_BRIDGING_HEADER = "edocs-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -793,7 +793,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = HPB6QQ52WT;
 				INFOPLIST_FILE = edocs/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -803,7 +803,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uz.edocs.app;
-				PRODUCT_NAME = edocs;
+				PRODUCT_NAME = "E-DOCS";
 				SWIFT_OBJC_BRIDGING_HEADER = "edocs-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

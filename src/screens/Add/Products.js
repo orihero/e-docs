@@ -28,22 +28,26 @@ let calculatedFields = {
 	},
 	vatsum: {
 		firstField: "vatrate",
-		secondField: "deliverysum",
+		secondField: "totalsum",
+		fallbackField: "deliverysum",
 		calculator: percent
 	},
 	deliverysumwithvat: {
 		firstField: "vatsum",
 		secondField: "deliverysum",
+		fallbackField: "totalsum",
 		calculator: add
 	},
 	fuelsum: {
 		firstField: "fuelrate",
 		secondField: "deliverysum",
+		fallbackField: "totalsum",
 		calculator: percent
 	},
 	deliverysumwithfuel: {
 		firstField: "fuelsum",
-		secondField: "deliverysumwithvat",
+		fallbackField: "totalsum",
+		secondField: "totalsumwithvat",
 		calculator: add
 	},
 	totalsum: {
@@ -82,7 +86,12 @@ let reflectiveFields = {
 		calculator: percent
 	},
 	vatrate: {
-		results: ["vatsum", "deliverysumwithvat", "deliverysumwithfuel"],
+		results: [
+			"vatsum",
+			"totalsumwithvat",
+			"deliverysumwithvat",
+			"deliverysumwithfuel"
+		],
 		secondField: "count",
 		calculator: percent
 	},
@@ -126,27 +135,33 @@ const Products = ({ navigation }) => {
 				temp[key] = tempValue.value;
 				let reflectiveField = reflectiveFields[key];
 				if (!!reflectiveField) {
-					console.log({
-						reflectiveField
-					});
 					reflectiveField.results.forEach(field => {
-						console.log("MODEL", model[field]);
 						if (model[field] === undefined || model[field] === null)
 							return;
 						let calculatedField = calculatedFields[field];
-						console.log(calculatedField);
 						let result =
 							calculatedField.calculator(
-								parseFloat(temp[calculatedField.firstField]),
-								parseFloat(temp[calculatedField.secondField])
+								!!parseFloat(temp[calculatedField.firstField])
+									? parseFloat(
+											temp[calculatedField.firstField]
+									  )
+									: parseFloat(
+											temp[calculatedField.fallbackField]
+									  ),
+								!!parseFloat(temp[calculatedField.secondField])
+									? parseFloat(
+											temp[calculatedField.secondField]
+									  )
+									: parseFloat(
+											temp[calculatedField.fallbackField]
+									  )
 							) || "";
 						temp[field] = result.toString();
 						console.log({
-							temp: temp,
 							result,
 							field,
-							firstField: temp[calculatedField.firstField],
-							calculatedField
+							1: calculatedField.firstField,
+							2: calculatedField.secondField
 						});
 					});
 				}

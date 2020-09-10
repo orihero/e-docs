@@ -3,7 +3,8 @@ import {
 	ScrollView,
 	StyleSheet,
 	TouchableWithoutFeedback,
-	View
+	View,
+	BackHandler
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { connect } from "react-redux";
@@ -149,7 +150,17 @@ const Edit = connect(
 		setDocType(
 			docTypes.find(e => e.value.docType === document.type).value || {}
 		);
+		let handeler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			handleBackButton
+		);
+		return () => handeler.remove();
 	}, []);
+
+	let handleBackButton = () => {
+		navigation.navigate("PdfView");
+		return true;
+	};
 
 	let spreadObjectProperties = obj => {
 		let r = Object.keys(obj).reduce((prev, current) => {

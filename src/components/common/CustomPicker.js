@@ -5,7 +5,8 @@ import {
 	View,
 	TouchableWithoutFeedback,
 	TouchableOpacity,
-	Dimensions
+	Dimensions,
+	ScrollView
 } from "react-native";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import colors from "../../constants/colors";
@@ -133,39 +134,11 @@ const CustomPicker = ({
 				onBackdropPress={() => setExpanded(false)}
 			>
 				<View style={styles.items}>
-					{recursive && (
-						<TouchableOpacity onPress={() => onItemPress(parent)}>
-							<Text
-								style={{
-									maxWidth: 240,
-									fontSize: 16,
-									fontWeight: "bold",
-									paddingVertical: 2
-								}}
-							>
-								{strings.all}
-							</Text>
-						</TouchableOpacity>
-					)}
-					{actualItems.map((e, i) => {
-						return (
+					<ScrollView>
+						{recursive && (
 							<TouchableOpacity
-								onPress={() =>
-									recursive
-										? onParentPress(e, i)
-										: onItemPress(e)
-								}
-								style={[recursive && styles.item]}
+								onPress={() => onItemPress(parent)}
 							>
-								{recursive && (
-									<AntDesign
-										name="right"
-										style={{
-											alignSelf: "center",
-											right: 0
-										}}
-									/>
-								)}
 								<Text
 									style={{
 										maxWidth: 240,
@@ -174,11 +147,43 @@ const CustomPicker = ({
 										paddingVertical: 2
 									}}
 								>
-									{e.label}
+									{strings.all}
 								</Text>
 							</TouchableOpacity>
-						);
-					})}
+						)}
+						{actualItems.map((e, i) => {
+							return (
+								<TouchableOpacity
+									onPress={() =>
+										recursive
+											? onParentPress(e, i)
+											: onItemPress(e)
+									}
+									style={[recursive && styles.item]}
+								>
+									{recursive && (
+										<AntDesign
+											name="right"
+											style={{
+												alignSelf: "center",
+												right: 0
+											}}
+										/>
+									)}
+									<Text
+										style={{
+											maxWidth: 240,
+											fontSize: 16,
+											fontWeight: "bold",
+											paddingVertical: 10
+										}}
+									>
+										{e.label}
+									</Text>
+								</TouchableOpacity>
+							);
+						})}
+					</ScrollView>
 				</View>
 			</Modal>
 		</View>
@@ -203,13 +208,13 @@ const styles = StyleSheet.create({
 	items: {
 		margin: 10,
 		padding: 20,
-		maxWidth: 400,
+		// maxWidth: 400,
 		maxHeight: Dimensions.get("window").height - 200,
 		elevation: 2,
 		backgroundColor: colors.white,
 		position: "absolute",
 		right: 0,
-		minWidth: 300,
+		// minWidth: 300,
 		shadowColor: colors.black,
 		shadowOpacity: 0.1,
 		shadowOffset: {
@@ -223,8 +228,8 @@ const styles = StyleSheet.create({
 	},
 	item: {
 		flexDirection: "row",
-		// justifyContent: "space-between",
 		alignItems: "center",
-		flexWrap: "wrap"
+		flexWrap: "wrap",
+		paddingVertical: 10
 	}
 });

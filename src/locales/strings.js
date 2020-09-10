@@ -64,7 +64,7 @@ let strings = new LocalizedStrings({
 		selectDocType: "Выберите тип документа",
 		number: "Номер",
 		actGoodsAcceptance: "Акт приема-передачи",
-		actWorkPerformed: "Акт выполненныих работ",
+		actWorkPerformed: "Акт выполненных работ",
 		contract: "Договор",
 		name: "Наименование",
 		buyer: "Покупатель",
@@ -223,7 +223,17 @@ let strings = new LocalizedStrings({
 		sellerDescription: "Представление вашей компании",
 		termsPayment: "Условия оплаты",
 		termsDelivery: "Условия доставки",
-		workingPhone: "Рабочий телефон"
+		workingPhone: "Рабочий телефон",
+		EXCISERATE: "Акциз (Ставка)",
+		EXCISESUM: "Акциз (Сумма)",
+		SERIAL: "Серии",
+		COMMITTENTNAME: "Комитент (ИНН)",
+		COMMITTENTTIN: "Комитент (Наименование)",
+		COMMITTENTVATREGCODE: "Комитент (Код)",
+		PROFITRATE: "Наценка",
+		BASESUMMA: "Базовая цена",
+		documentsWaiting: "Oжидают подписи",
+		newDocuments: "Новых документов"
 	},
 	uz: {},
 	en: {}

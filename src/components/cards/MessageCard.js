@@ -46,12 +46,11 @@ const MessageCard = ({ item, navigation, status, boxType }) => {
 	let name =
 		boxType === boxTypes.IN
 			? item.ownerName
-			: `${item.targetTins[0]?.name} ${
+			: `${item.targetTins[0]?.name || ""} ${
 					item.targetTins.length > 1
 						? `(+${item.targetTins.length - 1})`
 						: ""
 			  }`;
-
 	return (
 		<TouchableOpacity onPress={onPress}>
 			<View

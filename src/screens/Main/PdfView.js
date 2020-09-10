@@ -1,14 +1,15 @@
+import { Buffer } from "buffer";
 import React, { useEffect, useState } from "react";
 import {
 	Dimensions,
 	Image,
+	PermissionsAndroid,
+	Platform,
 	ScrollView,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
-	View,
-	PermissionsAndroid,
-	Platform
+	View
 } from "react-native";
 import Pdf from "react-native-pdf";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -25,7 +26,6 @@ import {
 } from "../../redux/actions/appState";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
 import { append, attach, sign } from "../../utils/signProvider";
-import { Buffer } from "buffer";
 
 function joinBase64Strings(base64Str1, base64Str2) {
 	const bothData =
@@ -129,6 +129,9 @@ const PdfView = ({
 				baseFile,
 				"base64"
 			);
+			if (Platform.OS === "ios") {
+				RNFetchBlob.ios.openDocument(filePath + fileName);
+			}
 			showMessage({
 				type: colors.green,
 				message: `${strings.downloadedSuccessfully}: ${fileName}`
@@ -242,7 +245,26 @@ const PdfView = ({
 	};
 	//Вот логика отклонения документа
 	const onDeletePress = async () => {
-		if (Platform.OS === "ios") {
+		if (
+			boxType === boxTypes.OUT &&
+			documentContent.status === docStatus.DRAFTS
+		) {
+			showModal(strings.loading);
+			let rejectResponse = (await requests.doc.delete(
+				token,
+				type,
+				docId,
+				{
+					pkcs7: ""
+				}
+			)).json();
+			console.warn({ rejectResponse });
+			hideModal();
+			navigation.navigate("List", { reload: true });
+			showMessage({
+				type: colors.green,
+				message: strings.deletedSuccessfully
+			});
 			return;
 		}
 		if (

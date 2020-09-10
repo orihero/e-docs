@@ -121,7 +121,8 @@ let fields = [
 		map: (e, index) => ({
 			label: e.nameRU,
 			value: e.regionId
-		})
+		}),
+		disabled: true
 	},
 	{
 		type: FieldType.SELECT,
@@ -133,7 +134,8 @@ let fields = [
 		map: (e, index) => ({
 			label: e.nameRU,
 			value: e.districtId
-		})
+		}),
+		disabled: true
 	},
 	{
 		type: FieldType.INPUT,

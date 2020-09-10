@@ -9,6 +9,7 @@ import { hideNotification } from "../../redux/actions";
 import requests from "../../api/requests";
 import strings from "../../locales/strings";
 import { SafeAreaView } from "react-navigation";
+import images from "../../assets/images";
 
 const Header = ({ appState, user }) => {
 	let [notification, setNotification] = useState("");
@@ -50,12 +51,7 @@ const Header = ({ appState, user }) => {
 						{!!user.tin && (
 							<Image
 								style={styles.image}
-								source={{
-									uri:
-										user.avatar && user.avatar
-											? user.avatar
-											: "https://cdn0.iconfinder.com/data/icons/user-pictures/100/unknown2-512.png"
-								}}
+								source={images.logoRound}
 							/>
 						)}
 					</View>

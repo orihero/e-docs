@@ -106,7 +106,10 @@ const Main = ({
 						</View>
 						<Text style={styles.name}>{strings.incoming}</Text>
 						<Text style={styles.info}>
-							{count.in.sended} {strings.document}
+							{strings.newDocuments}{" "}
+							<Text style={{ ...styles.info, fontWeight: "700" }}>
+								{count.in.sended}
+							</Text>
 						</Text>
 					</View>
 				</TouchableOpacity>
@@ -137,10 +140,10 @@ const Main = ({
 						</View>
 						<Text style={styles.name}>{strings.outgoing}</Text>
 						<Text style={styles.info}>
-							{count.out.sended +
-								count.out.deleted +
-								count.out.drafts}{" "}
-							{strings.documents}
+							{strings.documentsWaiting}{" "}
+							<Text style={{ ...styles.info, fontWeight: "700" }}>
+								{count.out.deleted + count.out.drafts}
+							</Text>
 						</Text>
 					</View>
 				</TouchableOpacity>
@@ -228,7 +231,8 @@ const styles = StyleSheet.create({
 	},
 	info: {
 		fontSize: 12,
-		color: colors.grayText
+		color: colors.grayText,
+		textAlign: "center"
 	}
 });
 

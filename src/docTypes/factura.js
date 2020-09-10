@@ -154,14 +154,14 @@ export let facturaProduct = {
 	vatsum: 0,
 	deliverysumwithvat: 0,
 	withoutvat: false,
-	committentname: "",
-	committenttin: "",
-	committentvatregcode: "",
 	exciserate: 0,
 	excisesum: 0,
 	serial: "",
 	basesumma: 0,
-	profitrate: 0
+	profitrate: 0,
+	committentname: "",
+	committenttin: "",
+	committentvatregcode: ""
 };
 
 export let facturaDoc = {

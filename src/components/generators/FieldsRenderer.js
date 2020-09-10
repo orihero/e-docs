@@ -3,15 +3,13 @@ import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import DocumentPicker from "react-native-document-picker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Icons from "react-native-vector-icons/SimpleLineIcons";
+import RNFetchBlob from "rn-fetch-blob";
 import colors from "../../constants/colors";
-import { reducer, SET, RESET } from "../../utils/state";
+import { reducer, RESET, SET } from "../../utils/state";
 import DefaultCheckbox from "../common/DefaultCheckbox";
 import RectangularDatePicker from "../common/RectangularDatePicker";
 import RectangularInput from "../common/RectangularInput";
 import RectangularSelect from "../common/RectangularSelect";
-import requests from "../../api/requests";
-import { connect } from "react-redux";
-import RNFetchBlob from "rn-fetch-blob";
 
 export let FieldSize = {
 	FULL: "full",

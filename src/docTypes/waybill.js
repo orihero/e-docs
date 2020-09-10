@@ -209,13 +209,13 @@ export let waybillProduct = {
 	measureid: "0",
 	count: 0,
 	summa: 0,
-	totalsum: 0,
-	roadhaulagecost: 0,
-	followdocuments: "",
-	methoddefineweight: "",
-	loadclass: "0",
-	weightbrutto: 0,
-	weightnetto: 0
+	totalsum: 0
+	// roadhaulagecost: 0,
+	// followdocuments: "",
+	// methoddefineweight: "",
+	// loadclass: "0",
+	// weightbrutto: 0,
+	// weightnetto: 0
 };
 
 export let pointDoc = {

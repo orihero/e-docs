@@ -59,10 +59,14 @@ const RectangularDatePicker = ({
 				</View>
 				{visible && (
 					<Picker
-						value={Date.now()}
+						value={new Date(value || Date.now())}
 						onChange={(e, selectedDate) => {
-							setVisible(false);
-							onChange(normalize(selectedDate || Date.now()));
+							if (Platform.OS === "android") {
+								setVisible(false);
+							}
+							console.log({ selectedDate });
+
+							onChange(normalize(selectedDate));
 						}}
 						style={{
 							width,

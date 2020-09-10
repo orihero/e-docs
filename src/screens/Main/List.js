@@ -15,6 +15,7 @@ import {
 } from "../../redux/actions";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
 import _ from "lodash";
+import lodash from "../../utils/lodash";
 
 const List = ({
 	navigation,
@@ -69,7 +70,6 @@ const List = ({
 	let getDocuments = async (filters = {}) => {
 		showModal(strings.gettingDocuments);
 		let { type, filter, page: pge = page, status: innerStatus } = filters;
-		console.log({ type: `\n\n\n${type}\n\n\n\n` });
 		try {
 			let res = await requests.doc.getDocuments(
 				token,
@@ -88,7 +88,6 @@ const List = ({
 			);
 			let newRes = res.json();
 			setDocuments(newRes.docs);
-			console.log({ type, res: newRes });
 			hideModal();
 		} catch (error) {
 			hideModal();
@@ -117,7 +116,7 @@ const List = ({
 	}
 
 	let onRefresh = () => {
-		getDocuments({ filter, type });
+		lodash.throttle(() => getDocuments({ filter, type }), 500);
 	};
 
 	let onEndReached = async params => {
@@ -147,7 +146,6 @@ const List = ({
 			filter
 		);
 		let newRes = res.json();
-		console.log({ newRes });
 		setDocuments([...documents, ...newRes.docs]);
 		// }, 100);
 	};
@@ -162,6 +160,10 @@ const List = ({
 		documentsLoaded({ ...docs, type: t, page: 1 });
 		getDocuments({ type: t, page: 1 });
 	};
+
+	useEffect(() => {
+		console.log("Changed");
+	});
 
 	return (
 		<View style={styles.container}>
@@ -194,6 +196,7 @@ const List = ({
 					)}
 					keyExtractor={item => item.id && item.id.toString()}
 					onEndReached={onEndReached}
+					removeClippedSubviews={true}
 				/>
 			</View>
 		</View>
