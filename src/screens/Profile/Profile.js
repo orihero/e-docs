@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, ScrollView } from "react-native";
+import { View, StyleSheet, FlatList, ScrollView, CheckBox } from "react-native";
 import MessageCard from "../../components/cards/MessageCard";
 import colors from "../../constants/colors";
 import InnerHeader from "../../components/navigation/InnerHeader";
@@ -11,8 +11,14 @@ import FieldsRenderer, {
 import { connect } from "react-redux";
 import requests from "../../api/requests";
 import RectangleButton from "../../components/common/RectangleButton";
-import { userLoggedOut } from "../../redux/actions";
-
+import {
+	userLoggedOut,
+	setSettingsValue,
+	showMessage
+} from "../../redux/actions";
+import Text from "../../components/common/Text";
+import CustomSwitch from "../../components/common/CustomSwitch";
+import AsyncStorage from "@react-native-community/async-storage";
 const messageList = [
 	// {
 	// 	id: 1,
@@ -189,11 +195,24 @@ let fields = [
 	}
 ];
 
-const Profile = ({ user, dispatch, navigation }) => {
+const Profile = ({
+	user,
+	dispatch,
+	navigation,
+	settings,
+	setSettingsValue,
+	showMessage
+}) => {
 	let logout = () => {
 		dispatch(userLoggedOut());
 		navigation.navigate("Login");
 	};
+
+	const save = () => {
+		AsyncStorage.setItem("@settings", JSON.stringify(settings));
+		showMessage({ type: colors.green, message: "saved" });
+	};
+
 	return (
 		<View style={styles.container}>
 			<ScrollView
@@ -206,6 +225,39 @@ const Profile = ({ user, dispatch, navigation }) => {
 				{!!user.tin && (
 					<FieldsRenderer fields={fields} initialValue={user} />
 				)}
+				<Text style={styles.title}>{strings.documentSettings}</Text>
+				{!!settings &&
+					Object.entries(settings).map((e, index) => {
+						return (
+							<View style={styles.switchWrapper}>
+								<Text style={styles.switchText}>
+									{e[1].text}
+								</Text>
+								<CustomSwitch
+									value={e[1].value}
+									onValueChange={() => {
+										let newItem = {
+											text: e[1].text,
+											value: !e[1].value
+										};
+										setSettingsValue({
+											index: index,
+											item: newItem
+										});
+									}}
+								/>
+							</View>
+						);
+					})}
+				<RectangleButton
+					backColor={colors.paleGreen}
+					text={strings.save}
+					onPress={save}
+					style={{
+						marginTop: 20,
+						marginHorizontal: 20
+					}}
+				/>
 				<RectangleButton
 					backColor={colors.jeansBlue}
 					text={strings.logout}
@@ -227,7 +279,29 @@ const styles = StyleSheet.create({
 	},
 	cardWrapper: {
 		flex: 1
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: "bold"
+	},
+	switchWrapper: {
+		flexDirection: "row",
+		alignItems: "center",
+		paddingVertical: 5
 	}
 });
 
-export default connect(({ user }) => ({ user }))(Profile);
+const mapStateToProps = ({ user, appState }) => ({
+	user,
+	settings: appState.settings
+});
+
+const mapDispatchToProps = {
+	setSettingsValue,
+	showMessage
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Profile);

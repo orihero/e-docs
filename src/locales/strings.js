@@ -2,6 +2,13 @@ import LocalizedStrings from "react-native-localization";
 
 let strings = new LocalizedStrings({
 	ru: {
+		hasvat: "НДС",
+		hasexcise: "Акциз",
+		hascommittent: "Комитент",
+		hasmedical: "Фарм",
+		hasdiscount: "Скидка",
+		hasfuel: "Топливо",
+		documentSettings: "Выберите показатели для учёта в документах",
 		customerOrder: "Заказ",
 		add: "Add",
 		main: "ГЛАВНАЯ",

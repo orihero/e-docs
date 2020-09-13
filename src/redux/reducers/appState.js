@@ -4,8 +4,11 @@ import {
 	SHOW_HEAD_UP,
 	HIDE_HEAD_UP,
 	SHOW_NOTIFICATION,
-	HIDE_NOTIFICATION
+	HIDE_NOTIFICATION,
+	SET_SETTINGS,
+	SET_SETTING_VALUE
 } from "../types";
+import strings from "../../locales/strings";
 
 const initialState = {
 	modalVisible: false,
@@ -14,7 +17,15 @@ const initialState = {
 	headUpType: "",
 	headUpKey: 0,
 	notification: false,
-	notificationData: {}
+	notificationData: {},
+	settings: [
+		{ value: false, text: strings.hasvat },
+		{ value: false, text: strings.hasexcise },
+		{ value: false, text: strings.hascommittent },
+		{ value: false, text: strings.hasmedical },
+		{ value: false, text: strings.hasdiscount },
+		{ value: false, text: strings.hasfuel }
+	]
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -40,6 +51,27 @@ export default (state = initialState, { type, payload }) => {
 			};
 		case HIDE_NOTIFICATION:
 			return { ...state, notification: false, notificationData: {} };
+
+		case SET_SETTINGS:
+			return {
+				...state,
+				settings: [...state.settings]
+			};
+
+		case SET_SETTING_VALUE:
+			let newSettings = state.settings.map((setting, index) => {
+				if (index == payload.index) {
+					console.log(payload.item, setting);
+					setting = payload.item;
+				}
+				return setting;
+			});
+
+			return {
+				...state,
+				settings: newSettings
+			};
+
 		default:
 			return state;
 	}

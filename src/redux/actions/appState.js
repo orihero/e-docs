@@ -4,8 +4,14 @@ import {
 	SHOW_HEAD_UP,
 	HIDE_HEAD_UP,
 	SHOW_NOTIFICATION,
-	HIDE_NOTIFICATION
+	HIDE_NOTIFICATION,
+	SET_SETTING_VALUE
 } from "../types";
+
+export const setSettings = payload => ({
+	type: SET_SETTINGS,
+	payload
+});
 
 export const showModal = payload => ({
 	type: SHOW_MODAL,
@@ -32,4 +38,9 @@ export const showNotification = payload => ({
 
 export const hideNotification = payload => ({
 	type: HIDE_NOTIFICATION
+});
+
+export const setSettingsValue = payload => ({
+	type: SET_SETTING_VALUE,
+	payload
 });
