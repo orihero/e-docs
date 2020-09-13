@@ -10,12 +10,84 @@ import requests from "../../api/requests";
 import strings from "../../locales/strings";
 import { SafeAreaView } from "react-navigation";
 import images from "../../assets/images";
+import Modal from "react-native-modal";
+import { TouchableWithoutFeedback } from "react-native";
+import { Dimensions } from "react-native";
+import { Linking } from "react-native";
+import FA from "react-native-vector-icons/FontAwesome";
+
+let socials = [
+	{
+		name: "facebook-f",
+		color: "white",
+		link: "http://facebook.com/edocs.uz",
+		size: 20,
+		style: {
+			marginHorizontal: 10
+		},
+		contentContainerStyle: {
+			borderRadius: 20,
+			backgroundColor: "black",
+			borderRadius: 30,
+			width: 40,
+			height: 40,
+			justifyContent: "center",
+			marginHorizontal: 10,
+			alignItems: "center"
+		}
+	},
+	{
+		name: "youtube-play",
+		link:
+			"https://www.youtube.com/playlist?list=PLgRiX5f7gPW8pIsb1A-baEVO0gVwFXFel",
+		size: 20,
+		color: "white",
+		style: { marginHorizontal: 10 },
+		contentContainerStyle: {
+			borderRadius: 20,
+			backgroundColor: "black",
+			borderRadius: 30,
+			width: 40,
+			height: 40,
+			justifyContent: "center",
+			marginHorizontal: 10,
+			alignItems: "center"
+		}
+	},
+	{
+		name: "instagram",
+		color: "white",
+		link: "http://instagram.com/edocs.uz/",
+		size: 20,
+		style: {},
+		contentContainerStyle: {
+			borderRadius: 20,
+			backgroundColor: "black",
+			borderRadius: 30,
+			width: 40,
+			height: 40,
+			justifyContent: "center",
+			alignItems: "center",
+			marginHorizontal: 10
+		}
+	},
+	{
+		name: "telegram",
+		link: "https://t.me/edocs_uz",
+		size: 40,
+		style: { marginHorizontal: 10 }
+	}
+];
 
 const Header = ({ appState, user }) => {
 	let [notification, setNotification] = useState("");
 	let [title, setTitle] = useState("");
 	let [inn, setInn] = useState("");
 	let [avatar, setAvatar] = useState("");
+
+	const [modalVisible, setModalVisible] = useState(false);
+
+	let toggleModal = () => setModalVisible(!modalVisible);
 
 	return (
 		<LinearGradient
@@ -48,12 +120,12 @@ const Header = ({ appState, user }) => {
 						)}
 					</View>
 					<View style={styles.imageWrapper}>
-						{!!user.tin && (
+						<TouchableWithoutFeedback onPress={toggleModal}>
 							<Image
 								style={styles.image}
 								source={images.logoRound}
 							/>
-						)}
+						</TouchableWithoutFeedback>
 					</View>
 				</View>
 				{appState.notification ? (
@@ -63,12 +135,66 @@ const Header = ({ appState, user }) => {
 				) : (
 					<></>
 				)}
+				<Modal
+					onBackButtonPress={toggleModal}
+					isVisible={modalVisible}
+					onBackdropPress={toggleModal}
+				>
+					<View style={styles.modalContainer}>
+						<Image
+							style={styles.modalImage}
+							source={images.appImage}
+						/>
+						<Text
+							onPress={() =>
+								Linking.openURL("tel://+998933815454")
+							}
+							style={styles.phone}
+						>
+							+998 (93) 381-54-54
+						</Text>
+						<View style={styles.row}>
+							{socials.map(e => (
+								<TouchableWithoutFeedback
+									onPress={() => Linking.openURL(e.link)}
+								>
+									<View style={e.contentContainerStyle}>
+										<FA {...e} />
+									</View>
+								</TouchableWithoutFeedback>
+							))}
+						</View>
+					</View>
+				</Modal>
 			</SafeAreaView>
 		</LinearGradient>
 	);
 };
 
 const styles = StyleSheet.create({
+	row: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center"
+	},
+	modalTitle: {
+		fontSize: 17
+	},
+	phone: {
+		fontWeight: "bold",
+		fontSize: 20,
+		textAlign: "center",
+		paddingVertical: 30
+	},
+	modalImage: {
+		width: Dimensions.get("window").width - 100,
+		height: (Dimensions.get("window").width - 100) / 2.97
+	},
+	modalContainer: {
+		backgroundColor: colors.white,
+		padding: 15,
+		borderRadius: 8
+	},
 	container: {
 		paddingVertical: 15,
 		paddingHorizontal: 20

@@ -4,7 +4,7 @@ const images = {
 	downloadIcon: require("./downloadIcon.png"),
 	uploadIcon: require("./uploadIcon.png"),
 	tagIcon: require("./tagIcon.png"),
-	appImage: require("./logo.png"),
+	appImage: require("./logoColored.jpg"),
 	shoppingCart: require("./shoppingCartIcon.png"),
 	logoRound: require("./logo-round.png")
 };
