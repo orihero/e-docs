@@ -172,12 +172,13 @@ const Products = ({ navigation }) => {
 	};
 	let renderProduct = (productModel, index) => {
 		return (
-			<View style={styles.productContainer}>
-				{Object.keys(productModel).map(key => {
+			<View style={styles.productContainer} key={index}>
+				{Object.keys(productModel).map((key, i) => {
 					let type = typeof model[key];
+					console.log({ key, index: i });
 					if (key === "ordno") {
 						return (
-							<Text style={styles.title}>
+							<Text key={i} style={styles.title}>
 								{strings.product} № {index + 1}
 							</Text>
 						);
@@ -186,6 +187,7 @@ const Products = ({ navigation }) => {
 					if (isAutCalculated) {
 						return (
 							<RectangularInput
+								key={i}
 								placeholder={strings[key.toUpperCase()] || key}
 								containerStyle={{
 									marginVertical: 5
@@ -200,6 +202,7 @@ const Products = ({ navigation }) => {
 							if (!withoutVat) return null;
 							return (
 								<DefaultCheckbox
+									key={i}
 									style={{
 										margin: 10,
 										marginHorizontal: 0
@@ -224,6 +227,7 @@ const Products = ({ navigation }) => {
 								let val = productModel[key] || "";
 								return (
 									<RectangularSelect
+										key={i}
 										placeholder={strings.measure}
 										value={val}
 										items={list}
@@ -248,6 +252,7 @@ const Products = ({ navigation }) => {
 							let val = productModel[key] || "";
 							return (
 								<RectangularInput
+									key={i}
 									placeholder={
 										strings[key.toUpperCase()] || key
 									}

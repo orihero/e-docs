@@ -146,7 +146,7 @@ export let factureEntity = {
 export let facturaProduct = {
 	ordno: 0,
 	name: "",
-	measureid: "0",
+	measureid: -1,
 	count: 0,
 	summa: 0,
 	deliverysum: 0,
