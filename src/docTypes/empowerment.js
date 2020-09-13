@@ -128,7 +128,7 @@ export let empowermentEntity = {
 export let empowermentProduct = {
 	ordno: 0,
 	name: "",
-	measureid: "-1",
+	measureid: -1,
 	count: 0
 };
 

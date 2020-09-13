@@ -158,6 +158,7 @@ const Edit = connect(
 	}, []);
 
 	let handleBackButton = () => {
+		navigation.navigate("Add");
 		navigation.navigate("PdfView");
 		return true;
 	};

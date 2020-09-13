@@ -99,7 +99,7 @@ export let customerOrderEntity = {
 export let customerOrderProduct = {
 	ordno: 0,
 	name: "",
-	measureid: "0",
+	measureid: -1,
 	count: 0,
 	summa: 0,
 	totalsum: 0,

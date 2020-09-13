@@ -372,7 +372,7 @@ const PdfView = ({
 			documentContent.status === docStatus.DRAFTS);
 	let { width, height } = Dimensions.get("window");
 	let renderUniversal = () => {
-		if (documentContent.type === "universal") {
+		if (documentContent.type === "universal" && documentContent.data.file) {
 			if (documentContent.data.file.filetype.split("/")[0] === "image") {
 				return (
 					<Image

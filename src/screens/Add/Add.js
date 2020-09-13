@@ -60,73 +60,81 @@ import {
 	hideMessage
 } from "../../redux/actions";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CustomPicker from "../../components/common/CustomPicker";
 
 const mapStateToProps = ({ user }) => ({ user });
 
 export let docTypes = [
 	{
 		label: "Счет-фактура",
-		value: {
+		data: {
 			fields: facturaFields,
 			productModel: facturaProduct,
 			doc: facturaDoc,
 			docType: "factura"
-		}
+		},
+		value: 0
 	},
 	{
 		label: "Доверенность",
-		value: {
+		data: {
 			fields: empowermentFields,
 			productModel: empowermentProduct,
 			doc: empowermentDoc,
 			docType: "empowerment",
 			reverse: true
-		}
+		},
+		value: 1
 	},
 	{
 		label: "Акт выполненных работ",
-		value: {
+		data: {
 			fields: actWorkPerformedFields,
 			productModel: actWorkPerformedProduct,
 			doc: actWorkPerformedDoc,
 			docType: "actWorkPerformed"
-		}
+		},
+		value: 2
 	},
 	{
 		label: "Акт приема-передачи",
-		value: {
+		data: {
 			fields: actGoodsAcceptanceFields,
 			productModel: actGoodsAcceptanceProduct,
 			doc: actGoodsAcceptanceDoc,
 			docType: "actGoodsAcceptance"
-		}
+		},
+		value: 3
 	},
 	{
 		label: "Товарно транспортная накладная",
-		value: {
+		data: {
 			fields: waybillFields,
 			productModel: waybillProduct,
 			doc: waybillDoc,
 			docType: "waybill"
-		}
+		},
+		value: 4
 	},
 	{
 		label: "Заказ",
-		value: {
+		data: {
 			fields: customerOrderFields,
 			productModel: customerOrderProduct,
 			doc: customerOrderDoc,
 			docType: "customerOrder",
 			reverse: true
-		}
+		},
+		value: 5
 	},
 	{
 		label: "Универсальный документ ",
-		value: {
+		data: {
 			fields: universalFields,
 			doc: universalDoc,
 			docType: "universal"
-		}
+		},
+		value: 6
 	}
 ];
 
@@ -138,9 +146,10 @@ const Add = connect(
 	const [docType, setDocType] = useState(-1);
 	let productList = navigation.getParam("productList") || { products: [] };
 	let document = navigation.getParam("document") || {};
+	let currentDocType = docType == -1 ? {} : docTypes[docType].data;
 	useEffect(() => {
-		if (docType.fields) {
-			setFields(docType.fields);
+		if (currentDocType.fields) {
+			setFields(currentDocType.fields);
 		} else {
 			setFields([]);
 		}
@@ -160,15 +169,15 @@ const Add = connect(
 		//TODO start loading
 		showModal();
 		//* Model for the product
-		let productModel = docType.productModel;
+		let productModel = currentDocType.productModel;
 		//* Model for the document
-		let doc = docType.doc;
+		let doc = currentDocType.doc;
 		let parsedProducts = [];
 		let temp = { ...data };
 		let submitData = {};
 		//? Universal document has no product
 		try {
-			if (docType.docType !== "universal") {
+			if (currentDocType.docType !== "universal") {
 				//? Validation
 				//* Since React-native input generate only string we have to parse all the string to corresponding data type
 				parsedProducts =
@@ -196,7 +205,7 @@ const Add = connect(
 					file: { filebase64, filename, filetype }
 				};
 				let dataProductList = temp.productList || {};
-				let docProductList = docType.doc.productlist || {};
+				let docProductList = currentDocType.doc.productlist || {};
 				console.log({ dataProductList, docProductList });
 
 				let parsedProduct = Object.keys(dataProductList).reduce(
@@ -247,7 +256,7 @@ const Add = connect(
 
 		try {
 			//TODO Empoverment fill agent passport manually
-			if (docType.docType === "empowerment") {
+			if (currentDocType.docType === "empowerment") {
 				let { passport } = data || {};
 				submitData.agent = {
 					...submitData.agent,
@@ -259,7 +268,7 @@ const Add = connect(
 					data.buyer?.name
 				);
 			}
-			if (docType.reverse) {
+			if (currentDocType.reverse) {
 				let tObj = submitData.buyername;
 				let tTin = submitData.buyertin;
 				let t = submitData.buyer;
@@ -273,7 +282,7 @@ const Add = connect(
 			console.log("SENDING REQUEST TO CREATE", { submitData });
 			let res = await requests.doc.create(
 				user.token,
-				docType.docType,
+				currentDocType.docType,
 				submitData
 			);
 			console.warn({ json: res.json(), submitData });
@@ -316,7 +325,7 @@ const Add = connect(
 	let footer = ({ getSubmitData, resetData }) => {
 		return (
 			<View>
-				{!!docType && !!docType.productModel && (
+				{docType !== -1 && !!currentDocType.productModel && (
 					<View style={styles.productsWrapper}>
 						<View style={styles.productsContainer}>
 							<Text style={styles.inputTitle}>
@@ -331,7 +340,7 @@ const Add = connect(
 						<TouchableWithoutFeedback
 							onPress={() => {
 								navigation.navigate("Products", {
-									model: docType.productModel || {}
+									model: currentDocType.productModel || {}
 								});
 							}}
 						>
@@ -348,7 +357,7 @@ const Add = connect(
 						</TouchableWithoutFeedback>
 					</View>
 				)}
-				{!!docType.fields && (
+				{!!currentDocType.fields && (
 					<RectangleButton
 						backColor={colors.white}
 						text={strings.create}
@@ -375,7 +384,7 @@ const Add = connect(
 						items={docTypes}
 						placeholder={strings.selectDocType}
 						onChange={e => {
-							if (!!e) setDocType(e);
+							setDocType(e);
 						}}
 					/>
 					{!!user.tin && (
