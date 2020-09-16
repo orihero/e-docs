@@ -19,12 +19,12 @@ const initialState = {
 	notification: false,
 	notificationData: {},
 	settings: [
-		{ value: false, text: strings.hasvat },
-		{ value: false, text: strings.hasexcise },
-		{ value: false, text: strings.hascommittent },
-		{ value: false, text: strings.hasmedical },
-		{ value: false, text: strings.hasdiscount },
-		{ value: false, text: strings.hasfuel }
+		{ value: false, text: strings.hasvat, key: "hasvat" },
+		{ value: false, text: strings.hasexcise, key: "hasexcise" },
+		{ value: false, text: strings.hascommittent, key: "hascommittent" },
+		{ value: false, text: strings.hasmedical, key: "hasmedical" },
+		{ value: false, text: strings.hasdiscount, key: "hasdiscount" },
+		{ value: false, text: strings.hasfuel, key: "hasfuel" }
 	]
 };
 
@@ -55,7 +55,7 @@ export default (state = initialState, { type, payload }) => {
 		case SET_SETTINGS:
 			return {
 				...state,
-				settings: [...state.settings]
+				settings: payload
 			};
 
 		case SET_SETTING_VALUE:

@@ -11,7 +11,10 @@ import requests from "../../api/requests";
 import RectangleButton from "../../components/common/RectangleButton";
 import RectangularSelect from "../../components/common/RectangularSelect";
 import Text from "../../components/common/Text";
-import FieldsRenderer from "../../components/generators/FieldsRenderer";
+import FieldsRenderer, {
+	FieldSize,
+	FieldType
+} from "../../components/generators/FieldsRenderer";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import { convertToTypeOf } from "../../utils/object";
@@ -61,6 +64,8 @@ import {
 } from "../../redux/actions";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomPicker from "../../components/common/CustomPicker";
+import RectangularInput from "../../components/common/RectangularInput";
+import RectangularDatePicker from "../../components/common/RectangularDatePicker";
 
 const mapStateToProps = ({ user }) => ({ user });
 
@@ -138,22 +143,90 @@ export let docTypes = [
 	}
 ];
 
+let facturaTypes = [
+	{ value: 0, label: strings.standart },
+	{ label: strings.additional, value: 1 },
+	{ label: strings.expenditure, value: 2 },
+	{ label: strings.noPayment, value: 3 },
+	{ label: strings.corrected, value: 4 }
+];
+
+let directions = [
+	{ value: 0, label: strings.toLLC },
+	{ label: strings.toPhysical, value: 1 },
+	{ label: strings.toExport, value: 2 },
+	{ label: strings.toImport, value: 3 },
+	{ label: strings.realization, value: 4 },
+	{ label: strings.financialServices, value: 5 }
+];
+
+let facturaVisibleFields = {
+	0: { edit: false, user: true },
+	1: { edit: true, user: false },
+	2: { edit: false, user: false },
+	3: { edit: false, user: true },
+	4: { edit: true, user: false },
+	5: { edit: false, user: false }
+};
+
 const Add = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
 )(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
+	const [facturaType, setFacturaType] = useState(-1);
+	const [direction, setDirection] = useState(-1);
+	const [state, setState] = useState({});
+
 	let productList = navigation.getParam("productList") || { products: [] };
 	let document = navigation.getParam("document") || {};
 	let currentDocType = docType == -1 ? {} : docTypes[docType].data;
-	useEffect(() => {
+	let onDocChange = () => {
 		if (currentDocType.fields) {
+			console.log({
+				direction,
+				l: facturaVisibleFields[direction]?.user,
+				val:
+					docType === 0 &&
+					direction !== -1 &&
+					facturaVisibleFields[direction]?.user
+			});
+			if (
+				docType === 0 &&
+				direction !== -1 &&
+				facturaVisibleFields[direction]?.user
+			) {
+				console.log("Changing doc type");
+				setFields([
+					...currentDocType.fields,
+					{
+						type: FieldType.AUTOCOMPLETE,
+						placeholder: strings.inn,
+						size: FieldSize.FULL,
+						name: "buyertin",
+						title: strings.buyer,
+						componentProps: {
+							maxLength: 9,
+							keyboardType: "number-pad"
+						},
+						fetch: requests.account.getProfileByTin
+					}
+				]);
+				return;
+			}
 			setFields(currentDocType.fields);
 		} else {
 			setFields([]);
 		}
+	};
+	useEffect(() => {
+		onDocChange();
 	}, [docType]);
+
+	useEffect(() => {
+		onDocChange();
+	}, [direction]);
 
 	// useEffect(() => {
 	// 	console.log("THE DOCUMENT LOADED");
@@ -243,6 +316,14 @@ const Add = connect(
 			submitData.seller.workphone = submitData.seller.mobile || "";
 			submitData.buyer.mobile = submitData.buyer.mobile || "";
 			submitData.buyer.workphone = submitData.buyer.workphone || "";
+			if (docType === 0) {
+				submitData = {
+					...submitData,
+					...state,
+					facturatype: facturaType,
+					singlesidedtype: direction
+				};
+			}
 			console.log("DSA", submitData);
 		} catch (error) {
 			//* Error in formulating submit data!
@@ -387,6 +468,57 @@ const Add = connect(
 							setDocType(e);
 						}}
 					/>
+					{docType === 0 && (
+						<View style={{ paddingVertical: 20 }}>
+							<RectangularSelect
+								value={facturaType}
+								items={facturaTypes}
+								placeholder={strings.facturaType}
+								onChange={e => {
+									setFacturaType(e);
+								}}
+							/>
+						</View>
+					)}
+					{docType === 0 && (
+						<View style={{ paddingBottom: 20 }}>
+							<RectangularSelect
+								value={direction}
+								items={directions}
+								placeholder={strings.direction}
+								onChange={e => {
+									setDirection(e);
+								}}
+							/>
+						</View>
+					)}
+					{!!facturaVisibleFields[facturaType] &&
+						facturaVisibleFields[facturaType].edit && (
+							<View>
+								<RectangularInput
+									value={state.facturaid}
+									placeholder={strings.identifier}
+									onChange={facturaid =>
+										setState({ ...state, facturaid })
+									}
+								/>
+								<RectangularInput
+									value={state.facturano}
+									placeholder={strings.number}
+									onChange={facturano =>
+										setState({ ...state, facturano })
+									}
+								/>
+								<RectangularDatePicker
+									value={state.facturadate}
+									placeholder={strings.selectDate}
+									onChange={facturadate =>
+										setState({ ...state, facturadate })
+									}
+									containerStyle={{ marginHorizontal: 18 }}
+								/>
+							</View>
+						)}
 					{!!user.tin && (
 						<FieldsRenderer
 							initialValue={{

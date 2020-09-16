@@ -208,9 +208,14 @@ const Profile = ({
 		navigation.navigate("Login");
 	};
 
-	const save = () => {
-		AsyncStorage.setItem("@settings", JSON.stringify(settings));
-		showMessage({ type: colors.green, message: "saved" });
+	const save = async () => {
+		try {
+			await AsyncStorage.setItem("@settings", JSON.stringify(settings));
+			showMessage({
+				type: colors.green,
+				message: strings.savedSuccessfully
+			});
+		} catch (error) {}
 	};
 
 	return (
@@ -225,30 +230,32 @@ const Profile = ({
 				{!!user.tin && (
 					<FieldsRenderer fields={fields} initialValue={user} />
 				)}
-				<Text style={styles.title}>{strings.documentSettings}</Text>
-				{!!settings &&
-					Object.entries(settings).map((e, index) => {
-						return (
-							<View style={styles.switchWrapper}>
-								<Text style={styles.switchText}>
-									{e[1].text}
-								</Text>
-								<CustomSwitch
-									value={e[1].value}
-									onValueChange={() => {
-										let newItem = {
-											text: e[1].text,
-											value: !e[1].value
-										};
-										setSettingsValue({
-											index: index,
-											item: newItem
-										});
-									}}
-								/>
-							</View>
-						);
-					})}
+				<View style={styles.settings}>
+					<Text style={styles.title}>{strings.documentSettings}</Text>
+					{!!settings &&
+						Object.entries(settings).map((e, index) => {
+							return (
+								<View style={styles.switchWrapper}>
+									<Text style={styles.switchText}>
+										{e[1].text}
+									</Text>
+									<CustomSwitch
+										value={e[1].value}
+										onValueChange={() => {
+											let newItem = {
+												text: e[1].text,
+												value: !e[1].value
+											};
+											setSettingsValue({
+												index: index,
+												item: newItem
+											});
+										}}
+									/>
+								</View>
+							);
+						})}
+				</View>
 				<RectangleButton
 					backColor={colors.paleGreen}
 					text={strings.save}
@@ -273,6 +280,7 @@ const Profile = ({
 };
 
 const styles = StyleSheet.create({
+	settings: { padding: 20 },
 	container: {
 		flex: 1,
 		backgroundColor: colors.lightBlueBackground

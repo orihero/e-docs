@@ -8,7 +8,8 @@ import {
 	userLoggedIn,
 	showMessage,
 	showModal,
-	hideModal
+	hideModal,
+	setSettings
 } from "../../redux/actions";
 import LoadingModal from "../../components/containers/LoadingModal";
 import strings from "../../locales/strings";
@@ -22,7 +23,8 @@ const Loader = ({
 	showMessage,
 	showModal,
 	hideModal,
-	userLoggedIn
+	userLoggedIn,
+	setSettings
 }) => {
 	let bootstrap = async () => {
 		//TODO check if the user has logged in
@@ -30,7 +32,9 @@ const Loader = ({
 		let newCredentials = {};
 		try {
 			let credentials = await AsyncStorage.getItem("@credentials");
-			console.log({ credentials });
+			let settings = await AsyncStorage.getItem("@settings");
+			console.log({ settings });
+			setSettings(JSON.parse(settings));
 			if (credentials) {
 				newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
@@ -97,7 +101,8 @@ const mapDispatchToProps = {
 	userLoggedIn,
 	showMessage,
 	showModal,
-	hideModal
+	hideModal,
+	setSettings
 };
 
 export default connect(

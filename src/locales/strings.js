@@ -2,6 +2,21 @@ import LocalizedStrings from "react-native-localization";
 
 let strings = new LocalizedStrings({
 	ru: {
+		identifier: "Идентификатор",
+		toLLC: "На юридическое лицо",
+		toPhysical: "На физическое лицо",
+		toExport: "На экспорт",
+		toImport: "На импорт",
+		realization: "Реализация (Гос. секрет)",
+		financialServices: "Финансовые услуги",
+		direction: "Направление",
+		standart: "Стандартный",
+		additional: "Дополнительный",
+		expenditure: "Возмещение расходов",
+		noPayment: "Без оплаты",
+		corrected: "Исправленный",
+		facturaType: "Тип счет-фактури",
+		savedSuccessfully: "Успешно сохранено",
 		hasvat: "НДС",
 		hasexcise: "Акциз",
 		hascommittent: "Комитент",

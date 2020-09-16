@@ -112,18 +112,6 @@ export let facturaFields = [
 			disabled: true
 		},
 		disabled: true
-	},
-	{
-		type: FieldType.AUTOCOMPLETE,
-		placeholder: strings.inn,
-		size: FieldSize.FULL,
-		name: "buyertin",
-		title: strings.buyer,
-		componentProps: {
-			maxLength: 9,
-			keyboardType: "number-pad"
-		},
-		fetch: requests.account.getProfileByTin
 	}
 ];
 

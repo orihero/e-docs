@@ -5,7 +5,8 @@ import {
 	HIDE_HEAD_UP,
 	SHOW_NOTIFICATION,
 	HIDE_NOTIFICATION,
-	SET_SETTING_VALUE
+	SET_SETTING_VALUE,
+	SET_SETTINGS
 } from "../types";
 
 export const setSettings = payload => ({

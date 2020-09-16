@@ -19,23 +19,41 @@ export let docTypes = {
 	CUSTOMERORDER: "Заказ"
 };
 
+class DocumentCard extends React.PureComponent {}
+
 const MessageCard = ({ item, navigation, status, boxType }) => {
-	let [backgroundColor, setBackgroundColor] = useState("transparent");
-	useEffect(() => {
-		switch (item.status) {
-			case docStatus.SIGNED:
-				setBackgroundColor(colors.green);
-				break;
-			case docStatus.SENT:
-				setBackgroundColor(colors.gold);
-				break;
-			case docStatus.REJECTED:
-				setBackgroundColor(colors.darkPink);
-				break;
-			default:
-				setBackgroundColor(colors.white);
-		}
-	}, [item]);
+	// let [backgroundColor, setBackgroundColor] = useState("transparent");
+	// useEffect(() => {
+	// 	switch (item.status) {
+	// 		case docStatus.SIGNED:
+	// 			setBackgroundColor(colors.green);
+	// 			break;
+	// 		case docStatus.SENT:
+	// 			setBackgroundColor(colors.gold);
+	// 			break;
+	// 		case docStatus.REJECTED:
+	// 			setBackgroundColor(colors.darkPink);
+	// 			break;
+	// 		default:
+	// 			setBackgroundColor(colors.white);
+	// 	}
+	// }, [item]);
+
+	let backgroundColor = colors.white;
+
+	switch (item.status) {
+		case docStatus.SIGNED:
+			backgroundColor = colors.green;
+			break;
+		case docStatus.SENT:
+			backgroundColor = colors.gold;
+			break;
+		case docStatus.REJECTED:
+			backgroundColor = colors.darkPink;
+			break;
+		default:
+			backgroundColor = colors.white;
+	}
 
 	const onPress = () => {
 		navigation.navigate("PdfView", {
