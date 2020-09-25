@@ -18,14 +18,14 @@ const initialState = {
 	headUpKey: 0,
 	notification: false,
 	notificationData: {},
-	settings: [
-		{ value: false, text: strings.hasvat, key: "hasvat" },
-		{ value: false, text: strings.hasexcise, key: "hasexcise" },
-		{ value: false, text: strings.hascommittent, key: "hascommittent" },
-		{ value: false, text: strings.hasmedical, key: "hasmedical" },
-		{ value: false, text: strings.hasdiscount, key: "hasdiscount" },
-		{ value: false, text: strings.hasfuel, key: "hasfuel" }
-	]
+	settings: {
+		hasvat: { value: false, text: strings.hasvat },
+		hasexcise: { value: false, text: strings.hasexcise },
+		hascommittent: { value: false, text: strings.hascommittent },
+		hasmedical: { value: false, text: strings.hasmedical },
+		hasdiscount: { value: false, text: strings.hasdiscount },
+		hasfuel: { value: false, text: strings.hasfuel }
+	}
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -59,17 +59,22 @@ export default (state = initialState, { type, payload }) => {
 			};
 
 		case SET_SETTING_VALUE:
-			let newSettings = state.settings.map((setting, index) => {
-				if (index == payload.index) {
-					console.log(payload.item, setting);
-					setting = payload.item;
-				}
-				return setting;
-			});
+			// let newSettings = state.settings.map((setting, index) => {
+			// 	if (index == payload.index) {
+			// 		console.log(payload.item, setting);
+			// 		setting = payload.item;
+			// 	}
+			// 	return setting;
+			// });
 
+			// return {
+			// 	...state,
+			// 	settings: newSettings
+			// };
+			let settings = { ...state.settings, [payload.key]: payload.value };
 			return {
 				...state,
-				settings: newSettings
+				settings
 			};
 
 		default:

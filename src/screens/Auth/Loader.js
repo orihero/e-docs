@@ -24,7 +24,8 @@ const Loader = ({
 	showModal,
 	hideModal,
 	userLoggedIn,
-	setSettings
+	setSettings,
+	docSettings
 }) => {
 	let bootstrap = async () => {
 		//TODO check if the user has logged in
@@ -34,7 +35,11 @@ const Loader = ({
 			let credentials = await AsyncStorage.getItem("@credentials");
 			let settings = await AsyncStorage.getItem("@settings");
 			console.log({ settings });
-			setSettings(JSON.parse(settings));
+			if (!settings) {
+				setSettings(docSettings);
+			} else {
+				setSettings(JSON.parse(settings));
+			}
 			if (credentials) {
 				newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
@@ -92,8 +97,9 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = ({ user }) => ({
-	user
+const mapStateToProps = ({ user, appState: { settings: docSettings } }) => ({
+	user,
+	docSettings
 });
 
 const mapDispatchToProps = {

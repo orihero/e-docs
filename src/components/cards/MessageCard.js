@@ -19,7 +19,96 @@ export let docTypes = {
 	CUSTOMERORDER: "Заказ"
 };
 
-class DocumentCard extends React.PureComponent {}
+export default class DocumentCard extends React.PureComponent {
+	render() {
+		let { item, navigation, status, boxType } = this.props;
+		let backgroundColor = colors.white;
+
+		switch (item.status) {
+			case docStatus.SIGNED:
+				backgroundColor = colors.green;
+				break;
+			case docStatus.SENT:
+				backgroundColor = colors.gold;
+				break;
+			case docStatus.REJECTED:
+				backgroundColor = colors.darkPink;
+				break;
+			default:
+				backgroundColor = colors.white;
+		}
+
+		const onPress = () => {
+			navigation.navigate("PdfView", {
+				document: item
+			});
+		};
+
+		let name =
+			boxType === boxTypes.IN
+				? item.ownerName
+				: `${item.targetTins[0]?.name || ""} ${
+						item.targetTins.length > 1
+							? `(+${item.targetTins.length - 1})`
+							: ""
+				  }`;
+		return (
+			<TouchableOpacity onPress={onPress}>
+				<View
+					style={[
+						styles.container,
+						{
+							backgroundColor
+						}
+					]}
+				>
+					<View style={styles.content}>
+						<Text style={styles.title}>
+							{docTypes[item.type.toUpperCase()] || ""}
+						</Text>
+						<View style={styles.textWrapper}>
+							<View style={{ flex: 1 }}>
+								<Text style={styles.name} numberOfLines={2}>
+									{name}
+								</Text>
+							</View>
+							{!!item.docDate && (
+								<Text style={styles.date}>
+									{!!item.docNumber && `№ ${item.docNumber}`}
+									{item.docDate
+										? ` ― ${Moment(item.docDate).format(
+												"DD.MM.YYYY"
+										  )}`
+										: ""}
+									{/* {Moment(item.docDate).format("DD.MM.YYYY")} */}
+								</Text>
+							)}
+						</View>
+						<View style={styles.textWrapper}>
+							<Text style={[styles.text]}>
+								{strings.amount}:{" "}
+								{normalizePrice(
+									item.totalSum
+										? item.totalSum.toString()
+										: ""
+								)}
+							</Text>
+							<Text style={styles.text}>
+								{!!item.contractNumber &&
+									`№ ${item.contractNumber}`}
+								{item.contractDate
+									? ` ― ${Moment(item.contractDate).format(
+											"DD.MM.YYYY"
+									  )}`
+									: ""}
+							</Text>
+						</View>
+					</View>
+				</View>
+			</TouchableOpacity>
+		);
+	}
+}
 
 const MessageCard = ({ item, navigation, status, boxType }) => {
 	// let [backgroundColor, setBackgroundColor] = useState("transparent");
@@ -169,5 +258,3 @@ const styles = StyleSheet.create({
 		fontWeight: "bold"
 	}
 });
-
-export default MessageCard;

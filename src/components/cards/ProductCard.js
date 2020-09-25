@@ -27,7 +27,9 @@ const ProductCard = ({ item, passive, addToCart, onPress = () => {} }) => {
 			<View style={styles.container}>
 				<View style={styles.top}>
 					<View style={styles.nameWrapper}>
-						<Text style={styles.name}>{name}</Text>
+						<Text numberOfLines={3} style={styles.name}>
+							{name}
+						</Text>
 						<View
 							style={{
 								flexDirection: "row",
@@ -123,7 +125,8 @@ const styles = StyleSheet.create({
 	firm: {
 		color: colors.darkGrayBorder,
 		fontSize: 14,
-		marginHorizontal: 10
+		marginHorizontal: 10,
+		flex: 1
 	},
 	quantity: {
 		fontFamily: "Rubik-Medium",

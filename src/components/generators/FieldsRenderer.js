@@ -161,6 +161,7 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 			let onSubmitEditing = async ({ nativeEvent: { text } }) => {
 				console.log("SUBMITING");
 				let res = (await e.fetch(token, text)).json();
+				console.log({ res });
 				updateState(e.parent || "buyer", res);
 				updateState(e.child || "buyername", res.name);
 			};
@@ -173,7 +174,14 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 							)}
 							<RectangularInput
 								disabled={e.disabled}
-								onChange={val => updateState(e.name, val)}
+								onChange={val => {
+									updateState(e.name, val);
+									if (val && val.length === 9) {
+										onSubmitEditing({
+											nativeEvent: { text: val }
+										});
+									}
+								}}
 								value={state[e.name]}
 								placeholder={e.placeholder}
 								keyboardType={
@@ -182,9 +190,6 @@ const FieldsRenderer = ({ fields, footer: Footer, initialValue, token }) => {
 										: null
 								}
 								{...componentProps}
-								{...{
-									onSubmitEditing
-								}}
 							/>
 						</View>
 					);

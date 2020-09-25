@@ -192,7 +192,7 @@ const Products = ({ navigation }) => {
 								containerStyle={{
 									marginVertical: 5
 								}}
-								value={productModel[key]}
+								value={productModel[key]?.toString()}
 								editable={false}
 							/>
 						);

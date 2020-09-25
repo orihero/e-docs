@@ -12,7 +12,10 @@ import requests from "../../api/requests";
 import RectangleButton from "../../components/common/RectangleButton";
 import RectangularSelect from "../../components/common/RectangularSelect";
 import Text from "../../components/common/Text";
-import FieldsRenderer from "../../components/generators/FieldsRenderer";
+import FieldsRenderer, {
+	FieldSize,
+	FieldType
+} from "../../components/generators/FieldsRenderer";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
 import { convertToTypeOf } from "../../utils/object";
@@ -66,67 +69,102 @@ const mapStateToProps = ({ user }) => ({ user });
 export let docTypes = [
 	{
 		label: "Счет-фактура",
-		value: {
+		data: {
 			fields: facturaFields,
 			productModel: facturaProduct,
 			doc: facturaDoc,
 			docType: "factura"
-		}
+		},
+		value: 0
 	},
 	{
 		label: "Доверенность",
-		value: {
+		data: {
 			fields: empowermentFields,
 			productModel: empowermentProduct,
 			doc: empowermentDoc,
-			docType: "empowerment"
-		}
+			docType: "empowerment",
+			reverse: true
+		},
+		value: 1
 	},
 	{
 		label: "Акт выполненных работ",
-		value: {
+		data: {
 			fields: actWorkPerformedFields,
 			productModel: actWorkPerformedProduct,
 			doc: actWorkPerformedDoc,
 			docType: "actWorkPerformed"
-		}
+		},
+		value: 2
 	},
 	{
 		label: "Акт приема-передачи",
-		value: {
+		data: {
 			fields: actGoodsAcceptanceFields,
 			productModel: actGoodsAcceptanceProduct,
 			doc: actGoodsAcceptanceDoc,
 			docType: "actGoodsAcceptance"
-		}
+		},
+		value: 3
 	},
 	{
 		label: "Товарно транспортная накладная",
-		value: {
+		data: {
 			fields: waybillFields,
 			productModel: waybillProduct,
 			doc: waybillDoc,
 			docType: "waybill"
-		}
+		},
+		value: 4
 	},
 	{
 		label: "Заказ",
-		value: {
+		data: {
 			fields: customerOrderFields,
 			productModel: customerOrderProduct,
 			doc: customerOrderDoc,
-			docType: "customerOrder"
-		}
+			docType: "customerOrder",
+			reverse: true
+		},
+		value: 5
 	},
 	{
 		label: "Универсальный документ ",
-		value: {
+		data: {
 			fields: universalFields,
 			doc: universalDoc,
 			docType: "universal"
-		}
+		},
+		value: 6
 	}
 ];
+
+let facturaTypes = [
+	{ value: 0, label: strings.standart },
+	{ label: strings.additional, value: 1 },
+	{ label: strings.expenditure, value: 2 },
+	{ label: strings.noPayment, value: 3 },
+	{ label: strings.corrected, value: 4 }
+];
+
+let directions = [
+	{ value: 0, label: strings.toLLC },
+	{ label: strings.toPhysical, value: 1 },
+	{ label: strings.toExport, value: 2 },
+	{ label: strings.toImport, value: 3 },
+	{ label: strings.realization, value: 4 },
+	{ label: strings.financialServices, value: 5 }
+];
+
+let facturaVisibleFields = {
+	0: { edit: false, user: true },
+	1: { edit: true, user: false },
+	2: { edit: false, user: false },
+	3: { edit: false, user: true },
+	4: { edit: true, user: false },
+	5: { edit: false, user: false }
+};
 
 const Edit = connect(
 	mapStateToProps,
@@ -136,20 +174,70 @@ const Edit = connect(
 	let isCopy = !!navigation.getParam("isCopy");
 	const [fields, setFields] = useState([]);
 	const [docType, setDocType] = useState(-1);
+	const [facturaType, setFacturaType] = useState(-1);
+	const [direction, setDirection] = useState(-1);
+	const [state, setState] = useState({});
+
+	let currentDocType = docType === -1 ? {} : docTypes[docType].data;
 	let productList = document.data.productlist || [];
 	console.log({ document, productList: document.data.productlist.products });
-	useEffect(() => {
-		if (docType.fields) {
-			setFields(docType.fields);
+	let onDocChange = () => {
+		if (currentDocType.fields) {
+			console.log({
+				direction,
+				l: facturaVisibleFields[direction]?.user,
+				val:
+					docType === 0 &&
+					direction !== -1 &&
+					facturaVisibleFields[direction]?.user
+			});
+			if (
+				docType === 0 &&
+				direction !== -1 &&
+				facturaVisibleFields[direction]?.user
+			) {
+				console.log("Changing doc type");
+				setFields([
+					...currentDocType.fields,
+					{
+						type: FieldType.AUTOCOMPLETE,
+						placeholder: strings.inn,
+						size: FieldSize.FULL,
+						name: "buyertin",
+						title: strings.buyer,
+						componentProps: {
+							maxLength: 9,
+							keyboardType: "number-pad"
+						},
+						fetch: requests.account.getProfileByTin
+					}
+				]);
+				return;
+			}
+			setFields(currentDocType.fields);
 		} else {
 			setFields([]);
 		}
+	};
+
+	useEffect(() => {
+		onDocChange();
 	}, [docType]);
 
 	useEffect(() => {
-		setDocType(
-			docTypes.find(e => e.value.docType === document.type).value || {}
-		);
+		onDocChange();
+	}, [direction]);
+
+	useEffect(() => {
+		console.log({
+			data: docTypes.find(e => e.data.docType === document.type).value,
+			type: document.type
+		});
+		setDocType(docTypes.find(e => e.data.docType === document.type).value);
+		if (document.type === docTypes[0].data.docType) {
+			setDirection(document.extension.singlesidedtype);
+			setFacturaType(document.extension.facturatype);
+		}
 		let handeler = BackHandler.addEventListener(
 			"hardwareBackPress",
 			handleBackButton
@@ -172,7 +260,7 @@ const Edit = connect(
 				current.toLowerCase() !== "productlist"
 			) {
 				let res = {};
-				Object.keys(tmp).forEach(e => {
+				Object.keys(tmp || {}).forEach(e => {
 					res[`${current}.${e}`] = tmp[e];
 				});
 				return { ...prev, ...res };
@@ -192,7 +280,7 @@ const Edit = connect(
 		//* Model for the product
 		let productModel = docType.productModel;
 		//* Model for the document
-		let doc = docType.doc;
+		let doc = currentDocType.doc;
 		let parsedProducts = [];
 		let temp = { ...data };
 		let submitData = {};
@@ -267,6 +355,18 @@ const Edit = connect(
 			submitData = Object.keys(doc).reduce((prev, key) => {
 				return { ...prev, [key]: temp[key] };
 			}, {});
+			submitData.seller.mobile = submitData.seller.mobile || "";
+			submitData.seller.workphone = submitData.seller.mobile || "";
+			submitData.buyer.mobile = submitData.buyer.mobile || "";
+			submitData.buyer.workphone = submitData.buyer.workphone || "";
+			if (docType === 0) {
+				submitData = {
+					...submitData,
+					...state,
+					facturatype: facturaType,
+					singlesidedtype: direction
+				};
+			}
 		} catch (error) {
 			//* Error in formulating submit data!
 			hideModal();
@@ -302,15 +402,23 @@ const Edit = connect(
 			} else {
 				let res = await requests.doc.edit(
 					user.token,
-					docType.docType,
+					currentDocType.docType,
 					document._id,
 					submitData
 				);
-				console.warn(res.json());
+				let json = res.json();
+				console.warn(json);
+				if (res.respInfo.status !== 200) {
+					showMessage({
+						type: colors.killerRed,
+						message: error.message
+					});
+					return;
+				}
 			}
 			showMessage({
 				type: colors.green,
-				message: strings.createdSuccessfully
+				message: strings.savedSuccessfully
 			});
 			setDocType(-1);
 			navigation.navigate("Main");
@@ -327,9 +435,10 @@ const Edit = connect(
 	};
 
 	let footer = ({ getSubmitData, resetData }) => {
+		console.log({ bol: currentDocType });
 		return (
 			<View>
-				{!!docType && !!docType.productModel && (
+				{!!currentDocType && !!currentDocType.productModel && (
 					<View style={styles.productsWrapper}>
 						<View style={styles.productsContainer}>
 							<Text style={styles.inputTitle}>
@@ -362,7 +471,7 @@ const Edit = connect(
 						</TouchableWithoutFeedback>
 					</View>
 				)}
-				{!!docType.fields && (
+				{!!currentDocType.fields && (
 					<RectangleButton
 						backColor={colors.white}
 						text={isCopy ? strings.create : strings.save}
@@ -390,6 +499,57 @@ const Edit = connect(
 					onChange={e => setDocType(e)}
 					disabled={true}
 				/>
+				{docType === 0 && (
+					<View style={{ paddingVertical: 20 }}>
+						<RectangularSelect
+							value={facturaType}
+							items={facturaTypes}
+							placeholder={strings.facturaType}
+							onChange={e => {
+								setFacturaType(e);
+							}}
+						/>
+					</View>
+				)}
+				{docType === 0 && (
+					<View style={{ paddingBottom: 20 }}>
+						<RectangularSelect
+							value={direction}
+							items={directions}
+							placeholder={strings.direction}
+							onChange={e => {
+								setDirection(e);
+							}}
+						/>
+					</View>
+				)}
+				{!!facturaVisibleFields[facturaType] &&
+					facturaVisibleFields[facturaType].edit && (
+						<View>
+							<RectangularInput
+								value={state.facturaid}
+								placeholder={strings.identifier}
+								onChange={facturaid =>
+									setState({ ...state, facturaid })
+								}
+							/>
+							<RectangularInput
+								value={state.facturano}
+								placeholder={strings.number}
+								onChange={facturano =>
+									setState({ ...state, facturano })
+								}
+							/>
+							<RectangularDatePicker
+								value={state.facturadate}
+								placeholder={strings.selectDate}
+								onChange={facturadate =>
+									setState({ ...state, facturadate })
+								}
+								containerStyle={{ marginHorizontal: 18 }}
+							/>
+						</View>
+					)}
 				{!!user.tin && (
 					<FieldsRenderer
 						initialValue={{

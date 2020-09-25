@@ -28,11 +28,21 @@ const List = ({
 	documentsLoaded,
 	loading
 }) => {
-	let { data, boxType, status, page, limit, filter, type } = docs;
-	let [infoList, setInfoList] = useState(documents);
+	// let { data, boxType, status, page, limit, filter, type } = docs;
+	let { boxType } = docs;
 	let title = navigation.getParam("title");
 	let reload = navigation.getParam("reload");
-
+	let defaultFilter = {
+		type: "",
+		status: "",
+		page: "",
+		filter: ""
+	};
+	const [filters, setFilters] = useState(defaultFilter);
+	const [refreshing, setRefreshing] = useState({
+		loading: false,
+		nextPage: 2
+	});
 	let showTypes = [
 		{
 			label: strings.all,
@@ -53,7 +63,7 @@ const List = ({
 	];
 	useEffect(() => {
 		getDocuments();
-	}, []);
+	}, [filters]);
 
 	useEffect(() => {
 		if (!!reload) {
@@ -62,27 +72,19 @@ const List = ({
 		}
 	}, [reload]);
 	let setShowType = e => {
-		documentsLoaded({ ...docs, data, boxType, status: e, page: 1, type });
-		getDocuments({ status: e, boxType, type, page: 1 });
+		setFilters({ ...filters, status: e, page: 1 });
 	};
-
 	let [documents, setDocuments] = useState([]);
-	let getDocuments = async (filters = {}) => {
+	let getDocuments = async () => {
 		showModal(strings.gettingDocuments);
 		let { type, filter, page: pge = page, status: innerStatus } = filters;
 		try {
 			let res = await requests.doc.getDocuments(
 				token,
 				pge,
-				limit,
+				20,
 				boxType,
-				innerStatus === "all"
-					? ""
-					: !!innerStatus
-					? innerStatus
-					: status === "all"
-					? ""
-					: status,
+				innerStatus,
 				type ? type : "",
 				filter
 			);
@@ -116,54 +118,46 @@ const List = ({
 	}
 
 	let onRefresh = () => {
-		lodash.throttle(() => getDocuments({ filter, type }), 500);
+		getDocuments();
 	};
 
 	let onEndReached = async params => {
-		// console.log("ON END REACHED BEGINS", params);
-		// let event = params.nativeEvent;
-		// let {
-		// 	contentOffset: { y },
-		// 	contentSize: { height }
-		// } = event;
-		// let threshold = height - y;
-		// console.log({ threshold, y, height });
-		// await _.throttle(async () => {
-		let p = Math.ceil(documents.length / limit) + 1;
-		console.log("ON END REACHED", {
-			page,
-			p,
-			res: data.length
-		});
-		if (page === p) return;
-		let res = await requests.doc.getDocuments(
-			token,
-			p,
-			limit,
-			boxType,
-			status === "all" ? "" : status,
-			type,
-			filter
-		);
+		let { status, page, type, filter } = filters;
+		console.log({ page, refreshing });
+		if (refreshing.loading || refreshing.nextPage <= page) return;
+		setRefreshing({ ...refreshing, loading: true });
+		let res;
+		try {
+			res = await requests.doc.getDocuments(
+				token,
+				refreshing.nextPage,
+				20,
+				boxType,
+				status === "all" ? "" : status,
+				type,
+				filter
+			);
+		} catch (error) {
+			console.warn(error);
+			setRefreshing({ nextPage: 2, loading: false });
+		}
 		let newRes = res.json();
+		console.log({ newRes });
 		setDocuments([...documents, ...newRes.docs]);
-		// }, 100);
+		setRefreshing({ loading: false, nextPage: newRes.nextPage });
 	};
 
 	let onSearch = (_, filter) => {
 		console.log("SEARCHING");
-		documentsLoaded({ ...docs, filter: filter || "", page: 1, type });
-		getDocuments({ filter: filter, page: 1, type });
+		setFilters({ ...filters, filter, page: 1 });
+		// getDocuments();
 	};
 
 	let onFilter = t => {
-		documentsLoaded({ ...docs, type: t, page: 1 });
-		getDocuments({ type: t, page: 1 });
+		setFilters({ ...filters, type: t, page: 1 });
+		// getDocuments();
 	};
-
-	useEffect(() => {
-		console.log("Changed");
-	});
+	console.log("Changed");
 
 	return (
 		<View style={styles.container}>
@@ -174,8 +168,8 @@ const List = ({
 				setShowType={setShowType}
 				onSearch={onSearch}
 				onFilter={onFilter}
-				showType={status}
-				filter={filter}
+				showType={filters.status}
+				filter={filters.filter}
 			/>
 			<View style={styles.cardWrapper}>
 				<FlatList
@@ -189,19 +183,19 @@ const List = ({
 					renderItem={({ item }) => (
 						<MessageCard
 							item={item}
-							key={item.id && item.id.toString()}
+							key={item.id}
 							navigation={navigation}
-							{...{ status, boxType }}
+							{...{ status: filters.status, boxType }}
 						/>
 					)}
-					keyExtractor={item => item.id && item.id.toString()}
+					keyExtractor={item => item.id}
 					onEndReached={onEndReached}
 					// Performance settings
-					removeClippedSubviews={true} // Unmount components when outside of window
-					initialNumToRender={2} // Reduce initial render amount
-					maxToRenderPerBatch={1} // Reduce number in each render batch
-					updateCellsBatchingPeriod={100} // Increase time between renders
-					windowSize={7} // Reduce the window size
+					removeClippedSubviews={false} // Unmount components when outside of window
+					// initialNumToRender={2} // Reduce initial render amount
+					// maxToRenderPerBatch={1} // Reduce number in each render batch
+					// updateCellsBatchingPeriod={100} // Increase time between renders
+					// windowSize={7} // Reduce the window size
 				/>
 			</View>
 		</View>

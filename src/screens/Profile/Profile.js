@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, ScrollView, CheckBox } from "react-native";
-import MessageCard from "../../components/cards/MessageCard";
-import colors from "../../constants/colors";
-import InnerHeader from "../../components/navigation/InnerHeader";
-import strings from "../../locales/strings";
-import FieldsRenderer, {
-	FieldType,
-	FieldSize
-} from "../../components/generators/FieldsRenderer";
+import AsyncStorage from "@react-native-community/async-storage";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import requests from "../../api/requests";
-import RectangleButton from "../../components/common/RectangleButton";
-import {
-	userLoggedOut,
-	setSettingsValue,
-	showMessage
-} from "../../redux/actions";
-import Text from "../../components/common/Text";
 import CustomSwitch from "../../components/common/CustomSwitch";
-import AsyncStorage from "@react-native-community/async-storage";
+import RectangleButton from "../../components/common/RectangleButton";
+import Text from "../../components/common/Text";
+import FieldsRenderer, {
+	FieldSize,
+	FieldType
+} from "../../components/generators/FieldsRenderer";
+import colors from "../../constants/colors";
+import strings from "../../locales/strings";
+import {
+	setSettingsValue,
+	showMessage,
+	userLoggedOut
+} from "../../redux/actions";
 const messageList = [
 	// {
 	// 	id: 1,
@@ -201,10 +199,11 @@ const Profile = ({
 	navigation,
 	settings,
 	setSettingsValue,
-	showMessage
+	showMessage,
+	userLoggedOut
 }) => {
 	let logout = () => {
-		dispatch(userLoggedOut());
+		userLoggedOut();
 		navigation.navigate("Login");
 	};
 
@@ -217,6 +216,12 @@ const Profile = ({
 			});
 		} catch (error) {}
 	};
+
+	console.log(
+		`\n\n\n*********************\n*************`,
+		{ settings },
+		`******************\n***********\n\n`
+	);
 
 	return (
 		<View style={styles.container}>
@@ -235,20 +240,20 @@ const Profile = ({
 					{!!settings &&
 						Object.entries(settings).map((e, index) => {
 							return (
-								<View style={styles.switchWrapper}>
+								<View style={styles.switchWrapper} key={e[0]}>
 									<Text style={styles.switchText}>
 										{e[1].text}
 									</Text>
 									<CustomSwitch
 										value={e[1].value}
 										onValueChange={() => {
-											let newItem = {
+											let value = {
 												text: e[1].text,
 												value: !e[1].value
 											};
 											setSettingsValue({
-												index: index,
-												item: newItem
+												key: e[0],
+												value
 											});
 										}}
 									/>
@@ -306,7 +311,8 @@ const mapStateToProps = ({ user, appState }) => ({
 
 const mapDispatchToProps = {
 	setSettingsValue,
-	showMessage
+	showMessage,
+	userLoggedOut
 };
 
 export default connect(

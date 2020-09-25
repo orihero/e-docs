@@ -67,7 +67,10 @@ import CustomPicker from "../../components/common/CustomPicker";
 import RectangularInput from "../../components/common/RectangularInput";
 import RectangularDatePicker from "../../components/common/RectangularDatePicker";
 
-const mapStateToProps = ({ user }) => ({ user });
+const mapStateToProps = ({ user, appState: { settings } }) => ({
+	user,
+	settings
+});
 
 export let docTypes = [
 	{
@@ -172,372 +175,401 @@ let facturaVisibleFields = {
 const Add = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
-)(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
-	const [fields, setFields] = useState([]);
-	const [docType, setDocType] = useState(-1);
-	const [facturaType, setFacturaType] = useState(-1);
-	const [direction, setDirection] = useState(-1);
-	const [state, setState] = useState({});
-
-	let productList = navigation.getParam("productList") || { products: [] };
-	let document = navigation.getParam("document") || {};
-	let currentDocType = docType == -1 ? {} : docTypes[docType].data;
-	let onDocChange = () => {
-		if (currentDocType.fields) {
-			console.log({
-				direction,
-				l: facturaVisibleFields[direction]?.user,
-				val:
+)(
+	({
+		navigation,
+		user,
+		showModal,
+		hideModal,
+		showMessage,
+		hideMessage,
+		settings
+	}) => {
+		const [fields, setFields] = useState([]);
+		const [docType, setDocType] = useState(-1);
+		const [facturaType, setFacturaType] = useState(-1);
+		const [direction, setDirection] = useState(-1);
+		const [state, setState] = useState({});
+		console.log({ settings });
+		let productList = navigation.getParam("productList") || {
+			products: []
+		};
+		let document = navigation.getParam("document") || {};
+		let currentDocType = docType == -1 ? {} : docTypes[docType].data;
+		let onDocChange = () => {
+			if (currentDocType.fields) {
+				console.log({
+					direction,
+					l: facturaVisibleFields[direction]?.user,
+					val:
+						docType === 0 &&
+						direction !== -1 &&
+						facturaVisibleFields[direction]?.user
+				});
+				if (
 					docType === 0 &&
 					direction !== -1 &&
 					facturaVisibleFields[direction]?.user
-			});
-			if (
-				docType === 0 &&
-				direction !== -1 &&
-				facturaVisibleFields[direction]?.user
-			) {
-				console.log("Changing doc type");
-				setFields([
-					...currentDocType.fields,
-					{
-						type: FieldType.AUTOCOMPLETE,
-						placeholder: strings.inn,
-						size: FieldSize.FULL,
-						name: "buyertin",
-						title: strings.buyer,
-						componentProps: {
-							maxLength: 9,
-							keyboardType: "number-pad"
-						},
-						fetch: requests.account.getProfileByTin
-					}
-				]);
-				return;
-			}
-			setFields(currentDocType.fields);
-		} else {
-			setFields([]);
-		}
-	};
-	useEffect(() => {
-		onDocChange();
-	}, [docType]);
-
-	useEffect(() => {
-		onDocChange();
-	}, [direction]);
-
-	// useEffect(() => {
-	// 	console.log("THE DOCUMENT LOADED");
-	// 	let doc = docTypes.find(e => e.value.docType === document.type) || {};
-	// 	setDocType(doc);
-	// }, [document]);
-
-	/**
-	 ** Creation of document
-	 * @param {any} data Gathered after the completion of form
-	 */
-	let onCreate = async (data, resetData) => {
-		//TODO start loading
-		showModal();
-		//* Model for the product
-		let productModel = currentDocType.productModel;
-		//* Model for the document
-		let doc = currentDocType.doc;
-		let parsedProducts = [];
-		let temp = { ...data };
-		let submitData = {};
-		//? Universal document has no product
-		try {
-			if (currentDocType.docType !== "universal") {
-				//? Validation
-				//* Since React-native input generate only string we have to parse all the string to corresponding data type
-				parsedProducts =
-					productList.products.map(product => {
-						let parsedProduct = Object.keys(product).reduce(
-							(prev, key) => {
-								return {
-									...prev,
-									[key]: convertToTypeOf(
-										productModel[key],
-										product[key]
-									)
-								};
+				) {
+					console.log("Changing doc type");
+					setFields([
+						...currentDocType.fields,
+						{
+							type: FieldType.AUTOCOMPLETE,
+							placeholder: strings.inn,
+							size: FieldSize.FULL,
+							name: "buyertin",
+							title: strings.buyer,
+							componentProps: {
+								maxLength: 9,
+								keyboardType: "number-pad"
 							},
-							{}
-						);
-						return parsedProduct;
-					}) || doc.productlist;
+							fetch: requests.account.getProfileByTin
+						}
+					]);
+					return;
+				}
+				setFields(currentDocType.fields);
 			} else {
-				//* Document is universal
-				let { base64: filebase64, type: filetype, name: filename } =
-					data.file || {};
+				setFields([]);
+			}
+		};
+		useEffect(() => {
+			onDocChange();
+		}, [docType]);
+
+		useEffect(() => {
+			onDocChange();
+		}, [direction]);
+
+		// useEffect(() => {
+		// 	console.log("THE DOCUMENT LOADED");
+		// 	let doc = docTypes.find(e => e.value.docType === document.type) || {};
+		// 	setDocType(doc);
+		// }, [document]);
+
+		/**
+		 ** Creation of document
+		 * @param {any} data Gathered after the completion of form
+		 */
+		let onCreate = async (data, resetData) => {
+			//TODO start loading
+			showModal();
+			//* Model for the product
+			let productModel = currentDocType.productModel;
+			//* Model for the document
+			let doc = currentDocType.doc;
+			let parsedProducts = [];
+			let temp = { ...data };
+			let submitData = {};
+			//? Universal document has no product
+			try {
+				if (currentDocType.docType !== "universal") {
+					//? Validation
+					//* Since React-native input generate only string we have to parse all the string to corresponding data type
+					parsedProducts =
+						productList.products.map(product => {
+							let parsedProduct = Object.keys(product).reduce(
+								(prev, key) => {
+									return {
+										...prev,
+										[key]: convertToTypeOf(
+											productModel[key],
+											product[key]
+										)
+									};
+								},
+								{}
+							);
+							return parsedProduct;
+						}) || doc.productlist;
+				} else {
+					//* Document is universal
+					let { base64: filebase64, type: filetype, name: filename } =
+						data.file || {};
+					temp = {
+						...temp,
+						file: { filebase64, filename, filetype }
+					};
+					let dataProductList = temp.productList || {};
+					let docProductList = currentDocType.doc.productlist || {};
+					console.log({ dataProductList, docProductList });
+
+					let parsedProduct = Object.keys(dataProductList).reduce(
+						(prev, key) => {
+							return {
+								...prev,
+								[key]: convertToTypeOf(
+									docProductList[key],
+									dataProductList[key]
+								)
+							};
+						},
+						{}
+					);
+					productList = {
+						...docProductList,
+						...parsedProduct
+					};
+				}
+				console.log(
+					`\n\n\n*********************\n*************`,
+					{ settings },
+					`******************\n***********\n\n`
+				);
+				let productCredentials = Object.keys(
+					currentDocType.doc.productlist
+				).reduce((prev, current) => {
+					return { ...prev, [current]: settings[current]?.value };
+				}, {});
+				//* Temporary submit data
 				temp = {
 					...temp,
-					file: { filebase64, filename, filetype }
+					productlist: {
+						...productList,
+						...productCredentials,
+						products: parsedProducts
+					}
 				};
-				let dataProductList = temp.productList || {};
-				let docProductList = currentDocType.doc.productlist || {};
-				console.log({ dataProductList, docProductList });
-
-				let parsedProduct = Object.keys(dataProductList).reduce(
-					(prev, key) => {
-						return {
-							...prev,
-							[key]: convertToTypeOf(
-								docProductList[key],
-								dataProductList[key]
-							)
-						};
-					},
-					{}
+				console.log(
+					`\n\n\n*********************\n*************`,
+					{ temp },
+					`******************\n***********\n\n`
 				);
-				productList = {
-					...docProductList,
-					...parsedProduct
-				};
-			}
-			//* Temporary submit data
-			temp = {
-				...temp,
-				productlist: {
-					...productList,
-					products: parsedProducts
+				//* Make sure that submit data is similar to document model
+				submitData = Object.keys(doc).reduce((prev, key) => {
+					console.log({ docKey: doc[key] });
+					return { ...prev, [key]: temp[key] || doc[key] };
+				}, {});
+				submitData.seller.mobile = submitData.seller.mobile || "";
+				submitData.seller.workphone = submitData.seller.mobile || "";
+				submitData.buyer.mobile = submitData.buyer.mobile || "";
+				submitData.buyer.workphone = submitData.buyer.workphone || "";
+				if (docType === 0) {
+					submitData = {
+						...submitData,
+						...state,
+						facturatype: facturaType,
+						singlesidedtype: direction
+					};
 				}
-			};
-			console.log({ parsedProducts });
-			//* Make sure that submit data is similar to document model
-			submitData = Object.keys(doc).reduce((prev, key) => {
-				console.log({ docKey: doc[key] });
-				return { ...prev, [key]: temp[key] || doc[key] };
-			}, {});
-			submitData.seller.mobile = submitData.seller.mobile || "";
-			submitData.seller.workphone = submitData.seller.mobile || "";
-			submitData.buyer.mobile = submitData.buyer.mobile || "";
-			submitData.buyer.workphone = submitData.buyer.workphone || "";
-			if (docType === 0) {
-				submitData = {
-					...submitData,
-					...state,
-					facturatype: facturaType,
-					singlesidedtype: direction
-				};
-			}
-			console.log("DSA", submitData);
-		} catch (error) {
-			//* Error in formulating submit data!
-			hideModal();
-			showMessage({
-				type: colors.killerRed,
-				message: strings.fillAllFields
-			});
-			console.warn(error);
-		}
-
-		try {
-			//TODO Empoverment fill agent passport manually
-			if (currentDocType.docType === "empowerment") {
-				let { passport } = data || {};
-				submitData.agent = {
-					...submitData.agent,
-					passport
-				};
-				submitData.acttext = strings.formatString(
-					strings.actText,
-					data.sellername,
-					data.buyer?.name
-				);
-			}
-			if (currentDocType.reverse) {
-				let tObj = submitData.buyername;
-				let tTin = submitData.buyertin;
-				let t = submitData.buyer;
-				submitData.buyertin = submitData.sellertin;
-				submitData.buyername = submitData.sellername;
-				submitData.sellertin = tTin;
-				submitData.sellername = tObj;
-			}
-			console.log("SENDING FILE:", { file: data.file });
-
-			console.log("SENDING REQUEST TO CREATE", { submitData });
-			let res = await requests.doc.create(
-				user.token,
-				currentDocType.docType,
-				submitData
-			);
-			console.warn({ json: res.json(), submitData });
-			let r = res.json();
-			if (r.success === false) {
+				console.log("DSA", submitData);
+			} catch (error) {
+				//* Error in formulating submit data!
 				hideModal();
-				let { errors } = r || {};
-				let errorMsg = errors.msg.reduce((prev, current) => {
-					return (
-						prev +
-						`${strings[current.msg] || current.msg} ${
-							current.param
-						}  `
-					);
-				}, "");
-				return showMessage({
+				showMessage({
 					type: colors.killerRed,
-					message: errorMsg
+					message: strings.fillAllFields
 				});
+				console.warn(error);
 			}
-			showMessage({
-				type: colors.green,
-				message: strings.createdSuccessfully
-			});
-			setDocType(-1);
-			resetData && resetData();
-			navigation.navigate("Main");
-		} catch (error) {
-			//TODO show error message
-			console.warn(error);
-			showMessage({ type: colors.killerRed, message: error.message });
-		}
-		console.log("SEND COMPLETE");
-		//TODO stop loading
-		//TODO show success message
-		// let sign = await signProvider.sign(JSON.stringify(submitData));
-		hideModal();
-	};
 
-	let footer = ({ getSubmitData, resetData }) => {
-		return (
-			<View>
-				{docType !== -1 && !!currentDocType.productModel && (
-					<View style={styles.productsWrapper}>
-						<View style={styles.productsContainer}>
-							<Text style={styles.inputTitle}>
-								{strings.products}
-							</Text>
-							<Text style={styles.inputTitle}>
-								{productList.products
-									? productList.products.length
-									: 0}
-							</Text>
-						</View>
-						<TouchableWithoutFeedback
-							onPress={() => {
-								navigation.navigate("Products", {
-									model: currentDocType.productModel || {}
-								});
-							}}
-						>
-							<View style={styles.button}>
+			try {
+				//TODO Empoverment fill agent passport manually
+				if (currentDocType.docType === "empowerment") {
+					let { passport } = data || {};
+					submitData.agent = {
+						...submitData.agent,
+						passport
+					};
+					submitData.acttext = strings.formatString(
+						strings.actText,
+						data.sellername,
+						data.buyer?.name
+					);
+				}
+				if (currentDocType.reverse) {
+					let tObj = submitData.buyername;
+					let tTin = submitData.buyertin;
+					let t = submitData.buyer;
+					submitData.buyertin = submitData.sellertin;
+					submitData.buyername = submitData.sellername;
+					submitData.sellertin = tTin;
+					submitData.sellername = tObj;
+				}
+				console.log("SENDING FILE:", { file: data.file });
+
+				console.log("SENDING REQUEST TO CREATE", { submitData });
+				let res = await requests.doc.create(
+					user.token,
+					currentDocType.docType,
+					submitData
+				);
+				console.warn({ json: res.json(), submitData });
+				let r = res.json();
+				if (r.success === false) {
+					hideModal();
+					let { errors } = r || {};
+					let errorMsg = errors.msg.reduce((prev, current) => {
+						return (
+							prev +
+							`${strings[current.msg] || current.msg} ${
+								current.param
+							}  `
+						);
+					}, "");
+					return showMessage({
+						type: colors.killerRed,
+						message: errorMsg
+					});
+				}
+				showMessage({
+					type: colors.green,
+					message: strings.createdSuccessfully
+				});
+				setDocType(-1);
+				resetData && resetData();
+				navigation.navigate("Main");
+			} catch (error) {
+				//TODO show error message
+				console.warn(error);
+				showMessage({ type: colors.killerRed, message: error.message });
+			}
+			console.log("SEND COMPLETE");
+			//TODO stop loading
+			//TODO show success message
+			// let sign = await signProvider.sign(JSON.stringify(submitData));
+			hideModal();
+		};
+
+		let footer = ({ getSubmitData, resetData }) => {
+			return (
+				<View>
+					{docType !== -1 && !!currentDocType.productModel && (
+						<View style={styles.productsWrapper}>
+							<View style={styles.productsContainer}>
 								<Text style={styles.inputTitle}>
-									{strings.edit || "Edit   "}
+									{strings.products}
 								</Text>
-								<AntDesign
-									name={"edit"}
-									size={20}
-									color={colors.green}
-								/>
+								<Text style={styles.inputTitle}>
+									{productList.products
+										? productList.products.length
+										: 0}
+								</Text>
 							</View>
-						</TouchableWithoutFeedback>
-					</View>
-				)}
-				{!!currentDocType.fields && (
-					<RectangleButton
-						backColor={colors.white}
-						text={strings.create}
-						onPress={() => onCreate(getSubmitData(), resetData)}
-						style={{
-							marginTop: 20,
-							marginHorizontal: 20
-						}}
-					/>
-				)}
-			</View>
-		);
-	};
+							<TouchableWithoutFeedback
+								onPress={() => {
+									navigation.navigate("Products", {
+										model: currentDocType.productModel || {}
+									});
+								}}
+							>
+								<View style={styles.button}>
+									<Text style={styles.inputTitle}>
+										{strings.edit || "Edit   "}
+									</Text>
+									<AntDesign
+										name={"edit"}
+										size={20}
+										color={colors.green}
+									/>
+								</View>
+							</TouchableWithoutFeedback>
+						</View>
+					)}
+					{!!currentDocType.fields && (
+						<RectangleButton
+							backColor={colors.white}
+							text={strings.create}
+							onPress={() => onCreate(getSubmitData(), resetData)}
+							style={{
+								marginTop: 20,
+								marginHorizontal: 20
+							}}
+						/>
+					)}
+				</View>
+			);
+		};
 
-	return (
-		<View style={styles.container}>
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ padding: 15 }}
-			>
-				<SafeAreaView>
-					<RectangularSelect
-						value={docType}
-						items={docTypes}
-						placeholder={strings.selectDocType}
-						onChange={e => {
-							setDocType(e);
-						}}
-					/>
-					{docType === 0 && (
-						<View style={{ paddingVertical: 20 }}>
-							<RectangularSelect
-								value={facturaType}
-								items={facturaTypes}
-								placeholder={strings.facturaType}
-								onChange={e => {
-									setFacturaType(e);
-								}}
-							/>
-						</View>
-					)}
-					{docType === 0 && (
-						<View style={{ paddingBottom: 20 }}>
-							<RectangularSelect
-								value={direction}
-								items={directions}
-								placeholder={strings.direction}
-								onChange={e => {
-									setDirection(e);
-								}}
-							/>
-						</View>
-					)}
-					{!!facturaVisibleFields[facturaType] &&
-						facturaVisibleFields[facturaType].edit && (
-							<View>
-								<RectangularInput
-									value={state.facturaid}
-									placeholder={strings.identifier}
-									onChange={facturaid =>
-										setState({ ...state, facturaid })
-									}
-								/>
-								<RectangularInput
-									value={state.facturano}
-									placeholder={strings.number}
-									onChange={facturano =>
-										setState({ ...state, facturano })
-									}
-								/>
-								<RectangularDatePicker
-									value={state.facturadate}
-									placeholder={strings.selectDate}
-									onChange={facturadate =>
-										setState({ ...state, facturadate })
-									}
-									containerStyle={{ marginHorizontal: 18 }}
+		return (
+			<View style={styles.container}>
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={{ padding: 15 }}
+				>
+					<SafeAreaView>
+						<RectangularSelect
+							value={docType}
+							items={docTypes}
+							placeholder={strings.selectDocType}
+							onChange={e => {
+								setDocType(e);
+							}}
+						/>
+						{docType === 0 && (
+							<View style={{ paddingVertical: 20 }}>
+								<RectangularSelect
+									value={facturaType}
+									items={facturaTypes}
+									placeholder={strings.facturaType}
+									onChange={e => {
+										setFacturaType(e);
+									}}
 								/>
 							</View>
 						)}
-					{!!user.tin && (
-						<FieldsRenderer
-							initialValue={{
-								ownertin: user.tin,
-								ownername: user.name,
-								sellertin: user.tin,
-								sellername: user.name,
-								seller: user
-							}}
-							fields={fields}
-							footer={footer}
-							token={user.token}
-						/>
-					)}
-				</SafeAreaView>
-			</ScrollView>
-		</View>
-	);
-});
+						{docType === 0 && (
+							<View style={{ paddingBottom: 20 }}>
+								<RectangularSelect
+									value={direction}
+									items={directions}
+									placeholder={strings.direction}
+									onChange={e => {
+										setDirection(e);
+									}}
+								/>
+							</View>
+						)}
+						{!!facturaVisibleFields[facturaType] &&
+							facturaVisibleFields[facturaType].edit && (
+								<View>
+									<RectangularInput
+										value={state.facturaid}
+										placeholder={strings.identifier}
+										onChange={facturaid =>
+											setState({ ...state, facturaid })
+										}
+									/>
+									<RectangularInput
+										value={state.facturano}
+										placeholder={strings.number}
+										onChange={facturano =>
+											setState({ ...state, facturano })
+										}
+									/>
+									<RectangularDatePicker
+										value={state.facturadate}
+										placeholder={strings.selectDate}
+										onChange={facturadate =>
+											setState({ ...state, facturadate })
+										}
+										containerStyle={{
+											marginHorizontal: 18
+										}}
+									/>
+								</View>
+							)}
+						{!!user.tin && (
+							<FieldsRenderer
+								initialValue={{
+									ownertin: user.tin,
+									ownername: user.name,
+									sellertin: user.tin,
+									sellername: user.name,
+									seller: user
+								}}
+								fields={fields}
+								footer={footer}
+								token={user.token}
+							/>
+						)}
+					</SafeAreaView>
+				</ScrollView>
+			</View>
+		);
+	}
+);
 
 const styles = StyleSheet.create({
 	container: {
