@@ -17,6 +17,7 @@ import requests from "../../api/requests";
 import Axios from "axios";
 import { url } from "../../api/configs";
 import CustomPicker from "../../components/common/CustomPicker";
+import Bugsnag from "@bugsnag/react-native";
 
 const Loader = ({
 	navigation,
@@ -32,6 +33,7 @@ const Loader = ({
 		showModal(strings.refreshToken);
 		let newCredentials = {};
 		try {
+			Bugsnag.notify(new Error("Test error"));
 			let credentials = await AsyncStorage.getItem("@credentials");
 			let settings = await AsyncStorage.getItem("@settings");
 			console.log({ settings });

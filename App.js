@@ -10,6 +10,9 @@ import HeadUpMessage from "./src/components/common/HeadUpMessage";
 import { configureAxios } from "./src/api/configs";
 import NavigationService from "./src/routes/NavigationService";
 import Text from "./src/components/common/Text";
+import Bugsnag from "@bugsnag/react-native";
+
+Bugsnag.start();
 
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {

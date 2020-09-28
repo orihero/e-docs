@@ -59,6 +59,11 @@ let calculatedFields = {
 		firstField: "totalsum",
 		secondField: "vatsum",
 		calculator: multipy
+	},
+	excisesum: {
+		firstField: "deliverysum",
+		secondField: "exciserate",
+		calculator: percent
 	}
 };
 
@@ -69,7 +74,8 @@ let reflectiveFields = {
 			"deliverysumwithvat",
 			"deliverysumwithfuel",
 			"totalsum",
-			"totalsumwithvat"
+			"totalsumwithvat",
+			"excisesum"
 		],
 		secondField: "summa",
 		calculator: percent
@@ -80,7 +86,8 @@ let reflectiveFields = {
 			"deliverysumwithvat",
 			"deliverysumwithfuel",
 			"totalsum",
-			"totalsumwithvat"
+			"totalsumwithvat",
+			"excisesum"
 		],
 		secondField: "count",
 		calculator: percent
@@ -91,6 +98,18 @@ let reflectiveFields = {
 			"totalsumwithvat",
 			"deliverysumwithvat",
 			"deliverysumwithfuel"
+		],
+		secondField: "count",
+		calculator: percent
+	},
+	exciserate: {
+		results: [
+			"deliverysum",
+			"deliverysumwithvat",
+			"deliverysumwithfuel",
+			"totalsum",
+			"totalsumwithvat",
+			"excisesum"
 		],
 		secondField: "count",
 		calculator: percent

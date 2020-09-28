@@ -770,6 +770,7 @@
 			baseConfigurationReference = 619B29812C9FF088341FF2D7 /* Pods-edocs.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 11;
 				DEAD_CODE_STRIPPING = NO;
@@ -795,6 +796,7 @@
 			baseConfigurationReference = A10C5AF2AE441D73E1031836 /* Pods-edocs.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = HPB6QQ52WT;
