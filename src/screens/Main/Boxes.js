@@ -9,6 +9,7 @@ import {
 	View
 } from "react-native";
 import { connect } from "react-redux";
+import { prodUrl } from "../../api/configs";
 import requests from "../../api/requests";
 import images from "../../assets/images";
 import Text from "../../components/common/Text";
@@ -36,12 +37,16 @@ const Main = ({
 	hideModal,
 	showModal,
 	userLoaded,
-	documentsLoaded
+	documentsLoaded,
+	settings
 }) => {
 	let getStats = async () => {
 		showModal(strings.loading);
 		try {
-			let res = await requests.doc.getStats(user.token);
+			let res = await requests.doc.getStats(
+				user.token,
+				settings.url.value ? url : prodUrl
+			);
 			documentsCountLoaded(res.json());
 			hideModal();
 		} catch (error) {
@@ -54,7 +59,10 @@ const Main = ({
 	const getProfile = async () => {
 		showModal(strings.loadingProfile);
 		try {
-			let res = await requests.account.getProfile(user.token);
+			let res = await requests.account.getProfile(
+				user.token,
+				settings.url.value ? url : prodUrl
+			);
 			let newRes = res.json();
 			userLoaded(newRes);
 			hideModal();
@@ -240,7 +248,8 @@ const mapStateToProps = state => {
 	return {
 		user: state.user,
 		doc: state.documents,
-		count: state.documents.count
+		count: state.documents.count,
+		settings: state.appState.settings
 	};
 };
 

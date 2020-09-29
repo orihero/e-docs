@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { withNavigation } from "react-navigation";
 import { connect } from "react-redux";
+import { prodUrl } from "../../api/configs";
 import requests from "../../api/requests";
 import ProductCard from "../../components/cards/ProductCard";
 import RectangleButton from "../../components/common/RectangleButton";
@@ -16,12 +17,16 @@ const Checkout = ({
 	showMessage,
 	showModal,
 	hideModal,
-	modalVisible
+	modalVisible,
+	settings
 }) => {
 	const [orders, setOrders] = useState([]);
 	const onOrderPress = async () => {
 		showModal();
-		let res = await requests.product.cardOrder(token);
+		let res = await requests.product.cardOrder(
+			token,
+			settings.url.value ? url : prodUrl
+		);
 		console.warn(res);
 		await effect();
 		showMessage({
@@ -34,7 +39,10 @@ const Checkout = ({
 	let effect = async () => {
 		showModal(strings.loading);
 		try {
-			let res = await requests.product.getCart(token);
+			let res = await requests.product.getCart(
+				token,
+				settings.url.value ? url : prodUrl
+			);
 			let data = res.json();
 			setOrders(data.docs);
 		} catch (error) {}
@@ -47,7 +55,10 @@ const Checkout = ({
 
 	let onClearPress = async () => {
 		showModal();
-		await requests.product.clearCart(token);
+		await requests.product.clearCart(
+			token,
+			settings.url.value ? url : prodUrl
+		);
 		showMessage({
 			type: colors.green,
 			message: strings.deletedSuccessfully
@@ -135,11 +146,16 @@ const styles = StyleSheet.create({
 	buttonWrapper: { flex: 1, paddingHorizontal: 40, paddingTop: 20 }
 });
 
-let mapStateToProps = ({ user, cart, appState: { modalVisible } }) => {
+let mapStateToProps = ({
+	user,
+	cart,
+	appState: { modalVisible, settings }
+}) => {
 	return {
 		token: user.token,
 		cart,
-		modalVisible
+		modalVisible,
+		settings
 	};
 };
 const mapDispatchToProps = {

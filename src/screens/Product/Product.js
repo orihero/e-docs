@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 import requests from "../../api/requests";
 import { normalizeFilters } from "../../utils/object";
 import { cartLoaded } from "../../redux/actions/cart";
+import { prodUrl } from "../../api/configs";
 
 const Product = ({
 	navigation,
@@ -32,7 +33,8 @@ const Product = ({
 	token,
 	cart,
 	cartLoaded,
-	modalVisible
+	modalVisible,
+	settings
 }) => {
 	let [filters, setFilters] = useState({ page: 1, limit: 20, group: "" });
 	let [groups, setGroups] = useState([]);
@@ -43,7 +45,11 @@ const Product = ({
 		try {
 			let f = normalizeFilters(filters);
 			console.warn({ f, products });
-			let res = await requests.product.getProducts(token, f);
+			let res = await requests.product.getProducts(
+				token,
+				f,
+				settings.url.value ? url : prodUrl
+			);
 			cartLoaded({
 				...cart,
 				products: res.json().docs
@@ -54,7 +60,9 @@ const Product = ({
 			console.warn(error.message);
 		}
 		try {
-			let res = await requests.product.getTypes();
+			let res = await requests.product.getTypes(
+				settings.url.value ? url : prodUrl
+			);
 			let results = res.json().map(e => ({
 				label: e.nameRU,
 				value: e._id,
@@ -85,7 +93,11 @@ const Product = ({
 			itemId: item._id,
 			count: count
 		};
-		let res = await requests.product.addToCart(token, data);
+		let res = await requests.product.addToCart(
+			token,
+			data,
+			settings.url.value ? url : prodUrl
+		);
 		showMessage({
 			type: colors.green,
 			message: `${item.name} ${strings.added}`
@@ -193,11 +205,16 @@ const styles = StyleSheet.create({
 	}
 });
 
-let mapStateToProps = ({ user, cart, appState: { modalVisible } }) => {
+let mapStateToProps = ({
+	user,
+	cart,
+	appState: { modalVisible, settings }
+}) => {
 	return {
 		token: user.token,
 		cart,
-		modalVisible
+		modalVisible,
+		settings
 	};
 };
 let mapDispatchToProps = {

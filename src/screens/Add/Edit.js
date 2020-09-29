@@ -64,7 +64,10 @@ import {
 	hideMessage
 } from "../../redux/actions";
 
-const mapStateToProps = ({ user }) => ({ user });
+const mapStateToProps = ({ user, appState: { settings } }) => ({
+	user,
+	settings
+});
 
 export let docTypes = [
 	{
@@ -169,406 +172,424 @@ let facturaVisibleFields = {
 const Edit = connect(
 	mapStateToProps,
 	{ showModal, hideModal, showMessage, hideMessage }
-)(({ navigation, user, showModal, hideModal, showMessage, hideMessage }) => {
-	let document = navigation.getParam("document") || {};
-	let isCopy = !!navigation.getParam("isCopy");
-	const [fields, setFields] = useState([]);
-	const [docType, setDocType] = useState(-1);
-	const [facturaType, setFacturaType] = useState(-1);
-	const [direction, setDirection] = useState(-1);
-	const [state, setState] = useState({});
+)(
+	({
+		navigation,
+		user,
+		showModal,
+		hideModal,
+		showMessage,
+		hideMessage,
+		settings
+	}) => {
+		let document = navigation.getParam("document") || {};
+		let isCopy = !!navigation.getParam("isCopy");
+		const [fields, setFields] = useState([]);
+		const [docType, setDocType] = useState(-1);
+		const [facturaType, setFacturaType] = useState(-1);
+		const [direction, setDirection] = useState(-1);
+		const [state, setState] = useState({});
 
-	let currentDocType = docType === -1 ? {} : docTypes[docType].data;
-	let productList = document.data.productlist || [];
-	console.log({ document, productList: document.data.productlist.products });
-	let onDocChange = () => {
-		if (currentDocType.fields) {
-			console.log({
-				direction,
-				l: facturaVisibleFields[direction]?.user,
-				val:
+		let currentDocType = docType === -1 ? {} : docTypes[docType].data;
+		let productList = document.data.productlist || [];
+		console.log({
+			document,
+			productList: document.data.productlist.products
+		});
+		let onDocChange = () => {
+			if (currentDocType.fields) {
+				console.log({
+					direction,
+					l: facturaVisibleFields[direction]?.user,
+					val:
+						docType === 0 &&
+						direction !== -1 &&
+						facturaVisibleFields[direction]?.user
+				});
+				if (
 					docType === 0 &&
 					direction !== -1 &&
 					facturaVisibleFields[direction]?.user
+				) {
+					console.log("Changing doc type");
+					setFields([
+						...currentDocType.fields,
+						{
+							type: FieldType.AUTOCOMPLETE,
+							placeholder: strings.inn,
+							size: FieldSize.FULL,
+							name: "buyertin",
+							title: strings.buyer,
+							componentProps: {
+								maxLength: 9,
+								keyboardType: "number-pad"
+							},
+							fetch: requests.account.getProfileByTin
+						}
+					]);
+					return;
+				}
+				setFields(currentDocType.fields);
+			} else {
+				setFields([]);
+			}
+		};
+
+		useEffect(() => {
+			onDocChange();
+		}, [docType]);
+
+		useEffect(() => {
+			onDocChange();
+		}, [direction]);
+
+		useEffect(() => {
+			console.log({
+				data: docTypes.find(e => e.data.docType === document.type)
+					.value,
+				type: document.type
 			});
-			if (
-				docType === 0 &&
-				direction !== -1 &&
-				facturaVisibleFields[direction]?.user
-			) {
-				console.log("Changing doc type");
-				setFields([
-					...currentDocType.fields,
-					{
-						type: FieldType.AUTOCOMPLETE,
-						placeholder: strings.inn,
-						size: FieldSize.FULL,
-						name: "buyertin",
-						title: strings.buyer,
-						componentProps: {
-							maxLength: 9,
-							keyboardType: "number-pad"
-						},
-						fetch: requests.account.getProfileByTin
+			setDocType(
+				docTypes.find(e => e.data.docType === document.type).value
+			);
+			if (document.type === docTypes[0].data.docType) {
+				setDirection(document.extension.singlesidedtype);
+				setFacturaType(document.extension.facturatype);
+			}
+			let handeler = BackHandler.addEventListener(
+				"hardwareBackPress",
+				handleBackButton
+			);
+			return () => handeler.remove();
+		}, []);
+
+		let handleBackButton = () => {
+			navigation.navigate("Add");
+			navigation.navigate("PdfView");
+			return true;
+		};
+
+		let spreadObjectProperties = obj => {
+			let r = Object.keys(obj).reduce((prev, current) => {
+				let tmp = obj[current];
+				if (
+					typeof tmp === "object" &&
+					!Array.isArray(tmp) &&
+					current.toLowerCase() !== "productlist"
+				) {
+					let res = {};
+					Object.keys(tmp || {}).forEach(e => {
+						res[`${current}.${e}`] = tmp[e];
+					});
+					return { ...prev, ...res };
+				}
+				return { ...prev, [current]: tmp };
+			}, {});
+			return r;
+		};
+		let spreadDocument = spreadObjectProperties(document.data);
+		/**
+		 ** Creation of document
+		 * @param {any} data Gathered after the completion of form
+		 */
+		let onSave = async (data, resetData) => {
+			//TODO start loading
+			showModal();
+			//* Model for the product
+			let productModel = docType.productModel;
+			//* Model for the document
+			let doc = currentDocType.doc;
+			let parsedProducts = [];
+			let temp = { ...data };
+			let submitData = {};
+			//? Universal document has no product
+			try {
+				if (docType.docType !== "universal") {
+					//? Validation
+					//* Since React-native input generate only string we have to parse all the string to corresponding data type
+					parsedProducts = productList.products.map(product => {
+						let parsedProduct = Object.keys(product).reduce(
+							(prev, key) => {
+								return {
+									...prev,
+									[key]: convertToTypeOf(
+										productModel[key],
+										product[key]
+									)
+								};
+							},
+							{}
+						);
+						return parsedProduct;
+					});
+				} else {
+					//* Document is universal
+					let { base64: filebase64, type: filetype, name: filename } =
+						data.file || {};
+					temp = {
+						...temp,
+						file: {
+							filebase64: filebase64 || data.file.filebase64,
+							filename: filename || data.file.filename,
+							filetype: filetype || data.file.filetype
+						}
+					};
+					console.log({ file: data.file });
+					if (!data.file) {
+						temp = {
+							...temp,
+							file: document.data.file
+						};
 					}
-				]);
-				return;
-			}
-			setFields(currentDocType.fields);
-		} else {
-			setFields([]);
-		}
-	};
-
-	useEffect(() => {
-		onDocChange();
-	}, [docType]);
-
-	useEffect(() => {
-		onDocChange();
-	}, [direction]);
-
-	useEffect(() => {
-		console.log({
-			data: docTypes.find(e => e.data.docType === document.type).value,
-			type: document.type
-		});
-		setDocType(docTypes.find(e => e.data.docType === document.type).value);
-		if (document.type === docTypes[0].data.docType) {
-			setDirection(document.extension.singlesidedtype);
-			setFacturaType(document.extension.facturatype);
-		}
-		let handeler = BackHandler.addEventListener(
-			"hardwareBackPress",
-			handleBackButton
-		);
-		return () => handeler.remove();
-	}, []);
-
-	let handleBackButton = () => {
-		navigation.navigate("Add");
-		navigation.navigate("PdfView");
-		return true;
-	};
-
-	let spreadObjectProperties = obj => {
-		let r = Object.keys(obj).reduce((prev, current) => {
-			let tmp = obj[current];
-			if (
-				typeof tmp === "object" &&
-				!Array.isArray(tmp) &&
-				current.toLowerCase() !== "productlist"
-			) {
-				let res = {};
-				Object.keys(tmp || {}).forEach(e => {
-					res[`${current}.${e}`] = tmp[e];
-				});
-				return { ...prev, ...res };
-			}
-			return { ...prev, [current]: tmp };
-		}, {});
-		return r;
-	};
-	let spreadDocument = spreadObjectProperties(document.data);
-	/**
-	 ** Creation of document
-	 * @param {any} data Gathered after the completion of form
-	 */
-	let onSave = async (data, resetData) => {
-		//TODO start loading
-		showModal();
-		//* Model for the product
-		let productModel = docType.productModel;
-		//* Model for the document
-		let doc = currentDocType.doc;
-		let parsedProducts = [];
-		let temp = { ...data };
-		let submitData = {};
-		//? Universal document has no product
-		try {
-			if (docType.docType !== "universal") {
-				//? Validation
-				//* Since React-native input generate only string we have to parse all the string to corresponding data type
-				parsedProducts = productList.products.map(product => {
-					let parsedProduct = Object.keys(product).reduce(
+					let dataProductList = temp.productList || {};
+					let docProductList = docType.doc.productlist || {};
+					let parsedProduct = Object.keys(dataProductList).reduce(
 						(prev, key) => {
 							return {
 								...prev,
 								[key]: convertToTypeOf(
-									productModel[key],
-									product[key]
+									docProductList[key],
+									dataProductList[key]
 								)
 							};
 						},
 						{}
 					);
-					return parsedProduct;
-				});
-			} else {
-				//* Document is universal
-				let { base64: filebase64, type: filetype, name: filename } =
-					data.file || {};
-				temp = {
-					...temp,
-					file: {
-						filebase64: filebase64 || data.file.filebase64,
-						filename: filename || data.file.filename,
-						filetype: filetype || data.file.filetype
-					}
-				};
-				console.log({ file: data.file });
-				if (!data.file) {
-					temp = {
-						...temp,
-						file: document.data.file
+					productList = {
+						...docProductList,
+						...parsedProduct
 					};
 				}
-				let dataProductList = temp.productList || {};
-				let docProductList = docType.doc.productlist || {};
-				let parsedProduct = Object.keys(dataProductList).reduce(
-					(prev, key) => {
-						return {
-							...prev,
-							[key]: convertToTypeOf(
-								docProductList[key],
-								dataProductList[key]
-							)
-						};
-					},
-					{}
-				);
-				productList = {
-					...docProductList,
-					...parsedProduct
+				//* Temporary submit data
+				temp = {
+					...temp,
+					productlist: {
+						...productList,
+						products: parsedProducts
+					}
 				};
-			}
-			//* Temporary submit data
-			temp = {
-				...temp,
-				productlist: {
-					...productList,
-					products: parsedProducts
+				console.log({ parsedProducts });
+				//* Make sure that submit data is similar to document model
+				submitData = Object.keys(doc).reduce((prev, key) => {
+					return { ...prev, [key]: temp[key] };
+				}, {});
+				submitData.seller.mobile = submitData.seller.mobile || "";
+				submitData.seller.workphone = submitData.seller.mobile || "";
+				submitData.buyer.mobile = submitData.buyer.mobile || "";
+				submitData.buyer.workphone = submitData.buyer.workphone || "";
+				if (docType === 0) {
+					submitData = {
+						...submitData,
+						...state,
+						facturatype: facturaType,
+						singlesidedtype: direction
+					};
 				}
-			};
-			console.log({ parsedProducts });
-			//* Make sure that submit data is similar to document model
-			submitData = Object.keys(doc).reduce((prev, key) => {
-				return { ...prev, [key]: temp[key] };
-			}, {});
-			submitData.seller.mobile = submitData.seller.mobile || "";
-			submitData.seller.workphone = submitData.seller.mobile || "";
-			submitData.buyer.mobile = submitData.buyer.mobile || "";
-			submitData.buyer.workphone = submitData.buyer.workphone || "";
-			if (docType === 0) {
-				submitData = {
-					...submitData,
-					...state,
-					facturatype: facturaType,
-					singlesidedtype: direction
-				};
+			} catch (error) {
+				//* Error in formulating submit data!
+				hideModal();
+				showMessage({
+					type: colors.killerRed,
+					message: strings.fillAllFields
+				});
 			}
-		} catch (error) {
-			//* Error in formulating submit data!
+
+			try {
+				//TODO Empoverment fill agent passport manually
+				if (docType.docType === "empowerment") {
+					let { passport } = data || {};
+					submitData.agent = {
+						...submitData.agent,
+						passport
+					};
+					submitData.acttext = strings.formatString(
+						strings.actText,
+						data.sellername,
+						data.buyer?.name
+					);
+				}
+				console.log("SENDING FILE:", { file: data.file });
+
+				console.log("SENDING REQUEST TO CREATE", { submitData });
+				if (isCopy) {
+					let res = await requests.doc.create(
+						user.token,
+						docType.docType,
+						submitData,
+						settings.url.value ? url : prodUrl
+					);
+				} else {
+					let res = await requests.doc.edit(
+						user.token,
+						currentDocType.docType,
+						document._id,
+						submitData,
+						settings.url.value ? url : prodUrl
+					);
+					let json = res.json();
+					console.warn(json);
+					if (res.respInfo.status !== 200) {
+						showMessage({
+							type: colors.killerRed,
+							message: error.message
+						});
+						return;
+					}
+				}
+				showMessage({
+					type: colors.green,
+					message: strings.savedSuccessfully
+				});
+				setDocType(-1);
+				navigation.navigate("Main");
+			} catch (error) {
+				//TODO show error message
+				console.warn(error);
+				showMessage({ type: colors.killerRed, message: error.message });
+			}
+			console.log("SEND COMPLETE");
+			//TODO stop loading
+			//TODO show success message
+			// let sign = await signProvider.sign(JSON.stringify(submitData));
 			hideModal();
-			showMessage({
-				type: colors.killerRed,
-				message: strings.fillAllFields
-			});
-		}
+		};
 
-		try {
-			//TODO Empoverment fill agent passport manually
-			if (docType.docType === "empowerment") {
-				let { passport } = data || {};
-				submitData.agent = {
-					...submitData.agent,
-					passport
-				};
-				submitData.acttext = strings.formatString(
-					strings.actText,
-					data.sellername,
-					data.buyer?.name
-				);
-			}
-			console.log("SENDING FILE:", { file: data.file });
-
-			console.log("SENDING REQUEST TO CREATE", { submitData });
-			if (isCopy) {
-				let res = await requests.doc.create(
-					user.token,
-					docType.docType,
-					submitData
-				);
-			} else {
-				let res = await requests.doc.edit(
-					user.token,
-					currentDocType.docType,
-					document._id,
-					submitData
-				);
-				let json = res.json();
-				console.warn(json);
-				if (res.respInfo.status !== 200) {
-					showMessage({
-						type: colors.killerRed,
-						message: error.message
-					});
-					return;
-				}
-			}
-			showMessage({
-				type: colors.green,
-				message: strings.savedSuccessfully
-			});
-			setDocType(-1);
-			navigation.navigate("Main");
-		} catch (error) {
-			//TODO show error message
-			console.warn(error);
-			showMessage({ type: colors.killerRed, message: error.message });
-		}
-		console.log("SEND COMPLETE");
-		//TODO stop loading
-		//TODO show success message
-		// let sign = await signProvider.sign(JSON.stringify(submitData));
-		hideModal();
-	};
-
-	let footer = ({ getSubmitData, resetData }) => {
-		console.log({ bol: currentDocType });
-		return (
-			<View>
-				{!!currentDocType && !!currentDocType.productModel && (
-					<View style={styles.productsWrapper}>
-						<View style={styles.productsContainer}>
-							<Text style={styles.inputTitle}>
-								{strings.products}
-							</Text>
-							<Text style={styles.inputTitle}>
-								{productList.products
-									? productList.products.length
-									: 0}
-							</Text>
-						</View>
-						<TouchableWithoutFeedback
-							onPress={() => {
-								navigation.navigate("Products", {
-									model: docType.productModel || {},
-									products: productList.products
-								});
-							}}
-						>
-							<View style={styles.button}>
+		let footer = ({ getSubmitData, resetData }) => {
+			console.log({ bol: currentDocType });
+			return (
+				<View>
+					{!!currentDocType && !!currentDocType.productModel && (
+						<View style={styles.productsWrapper}>
+							<View style={styles.productsContainer}>
 								<Text style={styles.inputTitle}>
-									{strings.edit || "Edit   "}
+									{strings.products}
 								</Text>
-								<AntDesign
-									name={"edit"}
-									size={20}
-									color={colors.green}
-								/>
+								<Text style={styles.inputTitle}>
+									{productList.products
+										? productList.products.length
+										: 0}
+								</Text>
 							</View>
-						</TouchableWithoutFeedback>
-					</View>
-				)}
-				{!!currentDocType.fields && (
-					<RectangleButton
-						backColor={colors.white}
-						text={isCopy ? strings.create : strings.save}
-						onPress={() => onSave(getSubmitData(), resetData)}
-						style={{
-							marginTop: 20,
-							marginHorizontal: 20
-						}}
-					/>
-				)}
-			</View>
-		);
-	};
+							<TouchableWithoutFeedback
+								onPress={() => {
+									navigation.navigate("Products", {
+										model: docType.productModel || {},
+										products: productList.products
+									});
+								}}
+							>
+								<View style={styles.button}>
+									<Text style={styles.inputTitle}>
+										{strings.edit || "Edit   "}
+									</Text>
+									<AntDesign
+										name={"edit"}
+										size={20}
+										color={colors.green}
+									/>
+								</View>
+							</TouchableWithoutFeedback>
+						</View>
+					)}
+					{!!currentDocType.fields && (
+						<RectangleButton
+							backColor={colors.white}
+							text={isCopy ? strings.create : strings.save}
+							onPress={() => onSave(getSubmitData(), resetData)}
+							style={{
+								marginTop: 20,
+								marginHorizontal: 20
+							}}
+						/>
+					)}
+				</View>
+			);
+		};
 
-	return (
-		<View style={styles.container}>
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ padding: 15 }}
-			>
-				<RectangularSelect
-					value={docType}
-					items={docTypes}
-					placeholder={strings.selectDocType}
-					onChange={e => setDocType(e)}
-					disabled={true}
-				/>
-				{docType === 0 && (
-					<View style={{ paddingVertical: 20 }}>
-						<RectangularSelect
-							value={facturaType}
-							items={facturaTypes}
-							placeholder={strings.facturaType}
-							onChange={e => {
-								setFacturaType(e);
-							}}
-						/>
-					</View>
-				)}
-				{docType === 0 && (
-					<View style={{ paddingBottom: 20 }}>
-						<RectangularSelect
-							value={direction}
-							items={directions}
-							placeholder={strings.direction}
-							onChange={e => {
-								setDirection(e);
-							}}
-						/>
-					</View>
-				)}
-				{!!facturaVisibleFields[facturaType] &&
-					facturaVisibleFields[facturaType].edit && (
-						<View>
-							<RectangularInput
-								value={state.facturaid}
-								placeholder={strings.identifier}
-								onChange={facturaid =>
-									setState({ ...state, facturaid })
-								}
-							/>
-							<RectangularInput
-								value={state.facturano}
-								placeholder={strings.number}
-								onChange={facturano =>
-									setState({ ...state, facturano })
-								}
-							/>
-							<RectangularDatePicker
-								value={state.facturadate}
-								placeholder={strings.selectDate}
-								onChange={facturadate =>
-									setState({ ...state, facturadate })
-								}
-								containerStyle={{ marginHorizontal: 18 }}
+		return (
+			<View style={styles.container}>
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={{ padding: 15 }}
+				>
+					<RectangularSelect
+						value={docType}
+						items={docTypes}
+						placeholder={strings.selectDocType}
+						onChange={e => setDocType(e)}
+						disabled={true}
+					/>
+					{docType === 0 && (
+						<View style={{ paddingVertical: 20 }}>
+							<RectangularSelect
+								value={facturaType}
+								items={facturaTypes}
+								placeholder={strings.facturaType}
+								onChange={e => {
+									setFacturaType(e);
+								}}
 							/>
 						</View>
 					)}
-				{!!user.tin && (
-					<FieldsRenderer
-						initialValue={{
-							ownertin: user.tin,
-							ownername: user.name,
-							sellertin: user.tin,
-							sellername: user.name,
-							seller: user,
-							...spreadDocument
-						}}
-						fields={fields}
-						footer={footer}
-						token={user.token}
-					/>
-				)}
-			</ScrollView>
-		</View>
-	);
-});
+					{docType === 0 && (
+						<View style={{ paddingBottom: 20 }}>
+							<RectangularSelect
+								value={direction}
+								items={directions}
+								placeholder={strings.direction}
+								onChange={e => {
+									setDirection(e);
+								}}
+							/>
+						</View>
+					)}
+					{!!facturaVisibleFields[facturaType] &&
+						facturaVisibleFields[facturaType].edit && (
+							<View>
+								<RectangularInput
+									value={state.facturaid}
+									placeholder={strings.identifier}
+									onChange={facturaid =>
+										setState({ ...state, facturaid })
+									}
+								/>
+								<RectangularInput
+									value={state.facturano}
+									placeholder={strings.number}
+									onChange={facturano =>
+										setState({ ...state, facturano })
+									}
+								/>
+								<RectangularDatePicker
+									value={state.facturadate}
+									placeholder={strings.selectDate}
+									onChange={facturadate =>
+										setState({ ...state, facturadate })
+									}
+									containerStyle={{ marginHorizontal: 18 }}
+								/>
+							</View>
+						)}
+					{!!user.tin && (
+						<FieldsRenderer
+							initialValue={{
+								ownertin: user.tin,
+								ownername: user.name,
+								sellertin: user.tin,
+								sellername: user.name,
+								seller: user,
+								...spreadDocument
+							}}
+							fields={fields}
+							footer={footer}
+							token={user.token}
+						/>
+					)}
+				</ScrollView>
+			</View>
+		);
+	}
+);
 
 const styles = StyleSheet.create({
 	container: {

@@ -1,14 +1,14 @@
+import strings from "../../locales/strings";
 import {
-	HIDE_MODAL,
-	SHOW_MODAL,
-	SHOW_HEAD_UP,
 	HIDE_HEAD_UP,
-	SHOW_NOTIFICATION,
+	HIDE_MODAL,
 	HIDE_NOTIFICATION,
 	SET_SETTINGS,
-	SET_SETTING_VALUE
+	SET_SETTING_VALUE,
+	SHOW_HEAD_UP,
+	SHOW_MODAL,
+	SHOW_NOTIFICATION
 } from "../types";
-import strings from "../../locales/strings";
 
 const initialState = {
 	modalVisible: false,
@@ -24,7 +24,8 @@ const initialState = {
 		hascommittent: { value: false, text: strings.hascommittent },
 		hasmedical: { value: false, text: strings.hasmedical },
 		hasdiscount: { value: false, text: strings.hasdiscount },
-		hasfuel: { value: false, text: strings.hasfuel }
+		hasfuel: { value: false, text: strings.hasfuel },
+		url: { value: false, text: strings.production }
 	}
 };
 

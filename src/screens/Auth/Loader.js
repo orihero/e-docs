@@ -15,7 +15,7 @@ import LoadingModal from "../../components/containers/LoadingModal";
 import strings from "../../locales/strings";
 import requests from "../../api/requests";
 import Axios from "axios";
-import { url } from "../../api/configs";
+import { prodUrl, url } from "../../api/configs";
 import CustomPicker from "../../components/common/CustomPicker";
 import Bugsnag from "@bugsnag/react-native";
 
@@ -46,7 +46,8 @@ const Loader = ({
 				newCredentials = JSON.parse(credentials);
 				showModal(strings.validating);
 				let res = await requests.auth.validateToken(
-					newCredentials.token
+					newCredentials.token,
+					docSettings.url.value ? url : prodUrl
 				);
 				userLoggedIn({ ...newCredentials, ...res.json() });
 

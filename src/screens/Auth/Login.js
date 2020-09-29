@@ -24,7 +24,7 @@ import {
 } from "../../redux/actions";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Axios from "axios";
-import { url } from "../../api/configs";
+import { prodUrl, url } from "../../api/configs";
 
 const Login = ({
 	navigation,
@@ -32,17 +32,21 @@ const Login = ({
 	hideModal,
 	showMessage,
 	hideMessage,
-	userLoggedIn
+	userLoggedIn,
+	settings
 }) => {
 	const [login, setLogin] = useState("");
 	const [password, setPassword] = useState("");
 	let requestLogin = async () => {
 		showModal(strings.authorization);
 		try {
-			let res = await requests.auth.login({
-				login,
-				password
-			});
+			let res = await requests.auth.login(
+				{
+					login,
+					password
+				},
+				settings.url.value ? url : prodUrl
+			);
 			let data = res.json();
 			if (data.success === false) {
 				showMessage({
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({ appState: { settings } }) => ({ settings });
 
 const mapDispatchToProps = {
 	showModal,

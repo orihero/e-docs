@@ -17,6 +17,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import uz.sicnt.horcrux.Horcrux;
+import com.bugsnag.android.Bugsnag;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 

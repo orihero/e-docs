@@ -8,6 +8,7 @@ import RectangularInput from "../../components/common/RectangularInput";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import RectangleButton from "../../components/common/RectangleButton";
+import { prodUrl } from "../../api/configs";
 
 const Seller = ({ sellerTin, token, navigation }) => {
 	const [seller, setSeller] = useState({});
@@ -15,10 +16,16 @@ const Seller = ({ sellerTin, token, navigation }) => {
 	let effect = async () => {
 		try {
 			console.log({ sellerTin, token });
-			let res = await requests.account.getSellerByTin(token, sellerTin);
+			let res = await requests.account.getSellerByTin(
+				token,
+				sellerTin,
+				settings.url.value ? url : prodUrl
+			);
 			console.log({ seller: res.json() });
 			setSeller(res.json());
-			let regs = requests.account.getRegions();
+			let regs = requests.account.getRegions(
+				settings.url.value ? url : prodUrl
+			);
 		} catch (error) {
 			console.warn(error);
 		}
@@ -81,9 +88,10 @@ const Seller = ({ sellerTin, token, navigation }) => {
 	);
 };
 
-export default connect(({ user }) => ({ token: user.token }))(
-	withNavigation(Seller)
-);
+export default connect(({ user, appState: { settings } }) => ({
+	token: user.token,
+	settings
+}))(withNavigation(Seller));
 
 const styles = StyleSheet.create({
 	container: {

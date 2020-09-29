@@ -2,6 +2,7 @@ import axios from "axios";
 import requests from "./requests";
 
 export let url = "https://test.edocs.uz/v1.0.1";
+export let prodUrl = "https://api.edocs.uz/v1.0.1";
 
 export let configureAxios = store => {
 	axios.interceptors.request.use(res => {
@@ -20,7 +21,7 @@ export let configureAxios = store => {
 	// 			return Promise.reject(error);
 	// 		}
 	// 		axios.interceptors.response.eject(interceptor);
-	// 		return requests.auth
+	// 		return requestsauth
 	// 			.refreshToken({
 	// 				refreshToken: store.getState().user.refreshToken
 	// 			})

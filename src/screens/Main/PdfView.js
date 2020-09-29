@@ -16,6 +16,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import { connect } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
+import { prodUrl } from "../../api/configs";
 import requests from "../../api/requests";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
@@ -45,7 +46,8 @@ const PdfView = ({
 	navigation,
 	showMessage,
 	hideModal,
-	documents: { boxType, status, ...documents }
+	documents: { boxType, status, ...documents },
+	settings
 }) => {
 	let [baseFile, setBaseFile] = useState("");
 	const [comment, setComment] = useState("");
@@ -57,7 +59,12 @@ const PdfView = ({
 	useEffect(() => {
 		loadFile();
 		requests.doc
-			.getContent(document.type, docId, token)
+			.getContent(
+				document.type,
+				docId,
+				token,
+				settings.url.value ? url : prodUrl
+			)
 			.then(res => {
 				setDocumentContent(res.json());
 			})
@@ -67,7 +74,12 @@ const PdfView = ({
 	const loadFile = async () => {
 		showModal(strings.loadingPdf);
 		try {
-			let res = await requests.pdf.loadFile(token, docId, type);
+			let res = await requests.pdf.loadFile(
+				token,
+				docId,
+				type,
+				settings.url.value ? url : prodUrl
+			);
 			let newRes = res.json();
 			setBaseFile(newRes.base64);
 			hideModal();
@@ -184,7 +196,8 @@ const PdfView = ({
 				let sign = await requests.doc.getSignedFile(
 					"empowerment",
 					docId,
-					user.tin == agent.tin ? "agent" : "seller"
+					user.tin == agent.tin ? "agent" : "seller",
+					settings.url.value ? url : prodUrl
 				);
 				if (!sign) return;
 				signResult = await append(sign);
@@ -204,9 +217,12 @@ const PdfView = ({
 			if (signResult) {
 				console.log("GOT SIGN");
 				//Fetching timestamp from the server
-				let timestampResponse = await requests.doc.getTimestamp({
-					signatureHex: signResult.signature
-				});
+				let timestampResponse = await requests.doc.getTimestamp(
+					{
+						signatureHex: signResult.signature
+					},
+					settings.url.value ? url : prodUrl
+				);
 				//Attaching timestamp
 				let attachedSign = await attach(
 					timestampResponse.json().timestamp_token_64
@@ -218,7 +234,8 @@ const PdfView = ({
 					docId,
 					{
 						pkcs7: attachedSign.pkcs7
-					}
+					},
+					settings.url.value ? url : prodUrl
 				)).json();
 
 				//TODO implement getStats
@@ -256,7 +273,8 @@ const PdfView = ({
 				docId,
 				{
 					pkcs7: ""
-				}
+				},
+				settings.url.value ? url : prodUrl
 			)).json();
 			console.warn({ rejectResponse });
 			hideModal();
@@ -299,9 +317,12 @@ const PdfView = ({
 				signedData[nameData] = documentContent.data; // это та же структура которая создается при отправке документа, указана в файлах
 				const signResult = await sign(JSON.stringify(signedData)); // подписываем
 				if (signResult) {
-					let timestampResponse = await requests.doc.getTimestamp({
-						signatureHex: signResult.signature
-					});
+					let timestampResponse = await requests.doc.getTimestamp(
+						{
+							signatureHex: signResult.signature
+						},
+						settings.url.value ? url : prodUrl
+					);
 					//Attaching timestamp
 					let attachedSign = await attach(
 						timestampResponse.json().timestamp_token_64
@@ -313,7 +334,8 @@ const PdfView = ({
 						docId,
 						{
 							pkcs7: attachedSign.pkcs7
-						}
+						},
+						settings.url.value ? url : prodUrl
 					)).json();
 					if (rejectResponse.errors) {
 						console.log(rejectResponse.errors.msg);
@@ -338,7 +360,8 @@ const PdfView = ({
 					token,
 					documentContent.type,
 					documentContent._id,
-					{ pkcs7: signResult.pkcs7 }
+					{ pkcs7: signResult.pkcs7 },
+					settings.url.value ? url : prodUrl
 				)).json();
 				console.warn(delRes);
 				if (!delRes.success) {
@@ -622,7 +645,11 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = ({ user, documents }) => ({ user, documents });
+const mapStateToProps = ({ user, documents, appState: { settings } }) => ({
+	user,
+	documents,
+	settings
+});
 
 const mapDispatchTopProps = {
 	showModal,

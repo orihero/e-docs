@@ -66,6 +66,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomPicker from "../../components/common/CustomPicker";
 import RectangularInput from "../../components/common/RectangularInput";
 import RectangularDatePicker from "../../components/common/RectangularDatePicker";
+import { prodUrl, url } from "../../api/configs";
 
 const mapStateToProps = ({ user, appState: { settings } }) => ({
 	user,
@@ -393,7 +394,8 @@ const Add = connect(
 				let res = await requests.doc.create(
 					user.token,
 					currentDocType.docType,
-					submitData
+					submitData,
+					settings.url.value ? url : prodUrl
 				);
 				console.warn({ json: res.json(), submitData });
 				let r = res.json();

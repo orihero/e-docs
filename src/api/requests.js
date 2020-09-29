@@ -1,5 +1,5 @@
 import axios from "axios";
-import { url } from "./configs";
+import { prodUrl, url } from "./configs";
 import RNFetchBlob from "rn-fetch-blob";
 
 export const instance = RNFetchBlob.config({
@@ -17,24 +17,26 @@ export let requests = {
 		// refreshToken: () => axios.get(`${url}/refresh`)
 	},
 	account: {
-		getProfile: token =>
+		getProfile: (token, url = prodUrl) =>
 			instance.fetch("GET", `${url}/profile`, {
 				Authorization: `Bearer ${token}`
 			}),
-		getProfileByTin: (token, tin) =>
+		getProfileByTin: (token, tin, url = prodUrl) =>
 			instance.fetch("GET", `${url}/profile/${tin}`, {
 				Authorization: `Bearer ${token}`
 			}),
-		getRegions: () => instance.fetch("GET", `${url}/regions/all`),
-		getDistricts: () => instance.fetch("GET", `${url}/districts/all`),
-		getBanks: () => instance.fetch("GET", `${url}/banks/all`),
-		getSellerByTin: (token, tin) =>
+		getRegions: (url = prodUrl) =>
+			instance.fetch("GET", `${url}/regions/all`),
+		getDistricts: (url = prodUrl) =>
+			instance.fetch("GET", `${url}/districts/all`),
+		getBanks: (url = prodUrl) => instance.fetch("GET", `${url}/banks/all`),
+		getSellerByTin: (token, tin, url = prodUrl) =>
 			instance.fetch("GET", `${url}/profile/seller/${tin}`, {
 				Authorization: `Bearer ${token}`
 			})
 	},
 	doc: {
-		getStats: token =>
+		getStats: (token, url = prodUrl) =>
 			instance.fetch("get", `${url}/documents/all/get/stats`, {
 				Authorization: `Bearer ${token}`
 			}),
@@ -45,7 +47,8 @@ export let requests = {
 			io = "",
 			status = "",
 			type = "",
-			filter = ""
+			filter = "",
+			url = prodUrl
 		) => {
 			let u = `${url}/documents?page=${page}&limit=${limit}&io=${io}&status=${status}&type=${type}&filter=${filter}`;
 			console.log({ url: u });
@@ -57,11 +60,11 @@ export let requests = {
 				}
 			);
 		},
-		getContent: (type, id, token) =>
+		getContent: (type, id, token, url = prodUrl) =>
 			instance.fetch("GET", `${url}/documents/${type}/${id}`, {
 				Authorization: `Bearer ${token}`
 			}),
-		rejectDocument: (token, type, id, credentials) =>
+		rejectDocument: (token, type, id, credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/documents/${type}/${id}/reject`,
@@ -71,7 +74,7 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		signDocument: (token, type, id, credentials) =>
+		signDocument: (token, type, id, credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/documents/${type}/${id}/sign`,
@@ -81,7 +84,7 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		getSignedFile: (token, type, id, side) =>
+		getSignedFile: (token, type, id, side, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/documents/${type}/${id}/${side}/signedfile`,
@@ -91,7 +94,7 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		getTimestamp: credentials =>
+		getTimestamp: (credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/dsvs/gettimestamp`,
@@ -101,17 +104,17 @@ export let requests = {
 				JSON.stringify(credentials)
 			),
 		getMeasures: () => instance.fetch("GET", `${url}/measures/all`),
-		create: (token, type, credentials) =>
+		create: (token, type, credentials, testUrl, url = prodUrl) =>
 			instance.fetch(
 				"POST",
-				`${url}/documents/${type}`,
+				`${testUrl}/documents/${type}`,
 				{
 					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json"
 				},
 				JSON.stringify(credentials)
 			),
-		edit: (token, type, id, credentials) =>
+		edit: (token, type, id, credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/documents/${type}/${id}/edit`,
@@ -121,7 +124,7 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		delete: (token, type, id, credentials) =>
+		delete: (token, type, id, credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/documents/${type}/${id}/delete`,
@@ -133,7 +136,7 @@ export let requests = {
 			)
 	},
 	pdf: {
-		loadFile: (token, docId, type) =>
+		loadFile: (token, docId, type, url = prodUrl) =>
 			instance.fetch(
 				"get",
 				`${url}/documents/${type}/${docId}/true/file`,
@@ -143,12 +146,12 @@ export let requests = {
 			)
 	},
 	product: {
-		getProducts: (token, filters) =>
+		getProducts: (token, filters, url = prodUrl) =>
 			instance.fetch("get", `${url}/items/market${filters}`, {
 				Authorization: `Bearer ${token}`
 			}),
 		getTypes: () => instance.fetch("GET", `${url}/groups/all`),
-		addToCart: (token, data) =>
+		addToCart: (token, data, url = prodUrl) =>
 			instance.fetch(
 				"POST",
 				`${url}/carts`,
@@ -158,15 +161,15 @@ export let requests = {
 				},
 				JSON.stringify(data)
 			),
-		cardOrder: token =>
+		cardOrder: (token, url = prodUrl) =>
 			instance.fetch("GET", `${url}/carts/order`, {
 				Authorization: `Bearer ${token}`
 			}),
-		clearCart: token =>
+		clearCart: (token, url = prodUrl) =>
 			instance.fetch("GET", `${url}/carts/clear`, {
 				Authorization: `Bearer ${token}`
 			}),
-		getCart: token =>
+		getCart: (token, url = prodUrl) =>
 			instance.fetch("GET", `${url}/carts?limit=1000`, {
 				Authorization: `Bearer ${token}`
 			})

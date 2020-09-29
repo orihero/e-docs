@@ -16,6 +16,7 @@ import {
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
 import _ from "lodash";
 import lodash from "../../utils/lodash";
+import { prodUrl } from "../../api/configs";
 
 const List = ({
 	navigation,
@@ -26,7 +27,8 @@ const List = ({
 	hideModal,
 	documents: docs,
 	documentsLoaded,
-	loading
+	loading,
+	settings
 }) => {
 	// let { data, boxType, status, page, limit, filter, type } = docs;
 	let { boxType } = docs;
@@ -86,7 +88,8 @@ const List = ({
 				boxType,
 				innerStatus,
 				type ? type : "",
-				filter
+				filter,
+				settings.url.value ? url : prodUrl
 			);
 			let newRes = res.json();
 			setDocuments(newRes.docs);
@@ -135,7 +138,8 @@ const List = ({
 				boxType,
 				status === "all" ? "" : status,
 				type,
-				filter
+				filter,
+				settings.url.value ? url : prodUrl
 			);
 		} catch (error) {
 			console.warn(error);
@@ -215,7 +219,8 @@ const styles = StyleSheet.create({
 let mapStateToProps = ({ user, appState, documents }) => ({
 	token: user.token,
 	documents,
-	loading: appState.modalVisible
+	loading: appState.modalVisible,
+	settings: appState.settings
 });
 let mapDispatchToProps = {
 	showMessage,

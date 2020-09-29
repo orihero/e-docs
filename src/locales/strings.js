@@ -2,6 +2,7 @@ import LocalizedStrings from "react-native-localization";
 
 let strings = new LocalizedStrings({
 	ru: {
+		production: "Использовать тестовый сервер",
 		identifier: "Идентификатор",
 		toLLC: "На юридическое лицо",
 		toPhysical: "На физическое лицо",
