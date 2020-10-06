@@ -33,7 +33,6 @@ const Loader = ({
 		showModal(strings.refreshToken);
 		let newCredentials = {};
 		try {
-			Bugsnag.notify(new Error("Test error"));
 			let credentials = await AsyncStorage.getItem("@credentials");
 			let settings = await AsyncStorage.getItem("@settings");
 			console.log({ settings });

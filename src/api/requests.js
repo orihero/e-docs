@@ -8,9 +8,9 @@ export const instance = RNFetchBlob.config({
 
 export let requests = {
 	auth: {
-		login: credentials =>
+		login: (credentials, url = prodUrl) =>
 			instance.fetch("post", `${url}/loginpassword`, credentials),
-		validateToken: token =>
+		validateToken: (token, url = prodUrl) =>
 			instance.fetch("get", `${url}/token`, {
 				Authorization: `Bearer ${token}`
 			})

@@ -239,6 +239,9 @@ const Profile = ({
 					<Text style={styles.title}>{strings.documentSettings}</Text>
 					{!!settings &&
 						Object.entries(settings).map((e, index) => {
+							if (index >= Object.entries(settings).length - 1) {
+								return null;
+							}
 							return (
 								<View style={styles.switchWrapper} key={e[0]}>
 									<Text style={styles.switchText}>

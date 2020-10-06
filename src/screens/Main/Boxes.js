@@ -5,11 +5,10 @@ import {
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
-	TouchableWithoutFeedback,
 	View
 } from "react-native";
 import { connect } from "react-redux";
-import { prodUrl } from "../../api/configs";
+import { prodUrl, url } from "../../api/configs";
 import requests from "../../api/requests";
 import images from "../../assets/images";
 import Text from "../../components/common/Text";

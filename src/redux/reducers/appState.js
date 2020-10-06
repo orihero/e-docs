@@ -73,6 +73,7 @@ export default (state = initialState, { type, payload }) => {
 			// 	settings: newSettings
 			// };
 			let settings = { ...state.settings, [payload.key]: payload.value };
+			console.log({ settings, payload });
 			return {
 				...state,
 				settings

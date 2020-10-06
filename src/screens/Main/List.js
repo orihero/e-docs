@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
+import { prodUrl, url } from "../../api/configs";
 import requests from "../../api/requests";
 import MessageCard from "../../components/cards/MessageCard";
 import InnerHeader from "../../components/navigation/InnerHeader";
@@ -14,9 +15,6 @@ import {
 	showModal
 } from "../../redux/actions";
 import { boxTypes, docStatus } from "../../redux/reducers/documents";
-import _ from "lodash";
-import lodash from "../../utils/lodash";
-import { prodUrl } from "../../api/configs";
 
 const List = ({
 	navigation,

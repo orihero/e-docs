@@ -1,20 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+import React, { useEffect, useState } from "react";
+import {
+	Dimensions,
+	Image,
+	Linking,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	View
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import colors from "../../constants/colors";
-import NotificationCard from "../cards/NotificationCard";
-import Text from "../common/Text";
-import { connect } from "react-redux";
-import { hideNotification } from "../../redux/actions";
-import requests from "../../api/requests";
-import strings from "../../locales/strings";
-import { SafeAreaView } from "react-navigation";
-import images from "../../assets/images";
 import Modal from "react-native-modal";
-import { TouchableWithoutFeedback } from "react-native";
-import { Dimensions } from "react-native";
-import { Linking } from "react-native";
 import FA from "react-native-vector-icons/FontAwesome";
+import { SafeAreaView } from "react-navigation";
+import { connect } from "react-redux";
+import images from "../../assets/images";
+import colors from "../../constants/colors";
+import strings from "../../locales/strings";
+import {
+	hideNotification,
+	setSettingsValue,
+	showMessage
+} from "../../redux/actions";
+import NotificationCard from "../cards/NotificationCard";
+import CustomSwitch from "../common/CustomSwitch";
+import Text from "../common/Text";
 
 let socials = [
 	{
@@ -79,15 +88,31 @@ let socials = [
 	}
 ];
 
-const Header = ({ appState, user }) => {
-	let [notification, setNotification] = useState("");
-	let [title, setTitle] = useState("");
-	let [inn, setInn] = useState("");
-	let [avatar, setAvatar] = useState("");
-
+const Header = ({ appState, user, setSettingsValue, showMessage }) => {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	let toggleModal = () => setModalVisible(!modalVisible);
+
+	useEffect(() => {
+		console.log("CHANGE SETTINGS", appState.settings.url);
+	}, [appState]);
+
+	const save = value => {
+		try {
+			let item = JSON.stringify({
+				...appState.settings,
+				url: { ...appState.settings.url, value }
+			});
+			console.log("SETTING", appState.settings.url);
+			AsyncStorage.setItem("@settings", item);
+			showMessage({
+				type: colors.green,
+				message: strings.savedSuccessfully
+			});
+		} catch (error) {
+			console.warn(error);
+		}
+	};
 
 	return (
 		<LinearGradient
@@ -163,6 +188,25 @@ const Header = ({ appState, user }) => {
 									</View>
 								</TouchableWithoutFeedback>
 							))}
+						</View>
+						<View style={styles.switchWrapper}>
+							<Text style={styles.switchText}>
+								{appState.settings.url.text}
+							</Text>
+							<CustomSwitch
+								value={!!appState.settings.url.value}
+								onValueChange={() => {
+									let value = {
+										text: appState.settings.url.text,
+										value: !appState.settings.url.value
+									};
+									setSettingsValue({
+										key: "url",
+										value
+									});
+									save(value.value);
+								}}
+							/>
 						</View>
 					</View>
 				</Modal>
@@ -247,6 +291,12 @@ const styles = StyleSheet.create({
 	},
 	secondary: {
 		paddingTop: 10
+	},
+	switchWrapper: {
+		flexDirection: "row",
+		alignItems: "center",
+		paddingVertical: 20,
+		justifyContent: "center"
 	}
 });
 
@@ -257,7 +307,9 @@ let mapStateToProps = state => {
 	};
 };
 let mapDispatchToProps = {
-	hideNotification
+	hideNotification,
+	setSettingsValue,
+	showMessage
 };
 
 export default connect(
