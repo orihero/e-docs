@@ -84,16 +84,14 @@ export let requests = {
 				},
 				JSON.stringify(credentials)
 			),
-		getSignedFile: (token, type, id, side, url = prodUrl) =>
-			instance.fetch(
-				"POST",
-				`${url}/documents/${type}/${id}/${side}/signedfile`,
-				{
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json"
-				},
-				JSON.stringify(credentials)
-			),
+		getSignedFile: (token, type, id, side, url = prodUrl) => {
+			let newUrl = `${url}/documents/${type}/${id}/${side}/signedfile`;
+			console.log({ newUrl });
+			return instance.fetch("GET", newUrl, {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json"
+			});
+		},
 		getTimestamp: (credentials, url = prodUrl) =>
 			instance.fetch(
 				"POST",

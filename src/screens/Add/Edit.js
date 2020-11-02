@@ -63,6 +63,7 @@ import {
 	showMessage,
 	hideMessage
 } from "../../redux/actions";
+import { url } from "../../api/configs";
 
 const mapStateToProps = ({ user, appState: { settings } }) => ({
 	user,

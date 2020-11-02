@@ -159,7 +159,6 @@ const List = ({
 		setFilters({ ...filters, type: t, page: 1 });
 		// getDocuments();
 	};
-	console.log("Changed");
 
 	return (
 		<View style={styles.container}>

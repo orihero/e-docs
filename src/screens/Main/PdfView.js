@@ -16,7 +16,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import { connect } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
-import { prodUrl } from "../../api/configs";
+import { prodUrl, url } from "../../api/configs";
 import requests from "../../api/requests";
 import colors from "../../constants/colors";
 import strings from "../../locales/strings";
@@ -161,7 +161,7 @@ const PdfView = ({
 	/**
 	 ** Sign the document
 	 */
-	const onSubscribePress = async () => {
+	const onSignPress = async () => {
 		if (Platform.OS === "ios") {
 			return;
 		}
@@ -194,13 +194,15 @@ const PdfView = ({
 				);
 				console.log("tin agent", user.tin, agent);
 				let sign = await requests.doc.getSignedFile(
+					token,
 					"empowerment",
 					docId,
-					user.tin == agent.tin ? "agent" : "seller",
+					user.tin !== agent.tin ? "agent" : "seller",
 					settings.url.value ? url : prodUrl
 				);
 				if (!sign) return;
-				signResult = await append(sign);
+				console.log({ sign });
+				signResult = await append(sign.json().sign);
 			} else if (
 				boxType == boxTypes.IN &&
 				documentContent.status == docStatus.SENT
@@ -497,7 +499,7 @@ const PdfView = ({
 							)}
 						{renderAccept && (
 							<View style={styles.iconWrapper}>
-								<TouchableOpacity onPress={onSubscribePress}>
+								<TouchableOpacity onPress={onSignPress}>
 									<View
 										style={{
 											backgroundColor: colors.white,

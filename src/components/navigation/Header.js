@@ -93,9 +93,7 @@ const Header = ({ appState, user, setSettingsValue, showMessage }) => {
 
 	let toggleModal = () => setModalVisible(!modalVisible);
 
-	useEffect(() => {
-		console.log("CHANGE SETTINGS", appState.settings.url);
-	}, [appState]);
+	useEffect(() => {}, [appState]);
 
 	const save = value => {
 		try {
