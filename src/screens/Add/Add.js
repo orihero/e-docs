@@ -313,11 +313,6 @@ const Add = connect(
 						...parsedProduct
 					};
 				}
-				console.log(
-					`\n\n\n*********************\n*************`,
-					{ settings },
-					`******************\n***********\n\n`
-				);
 				let productCredentials = Object.keys(
 					currentDocType.doc.productlist
 				).reduce((prev, current) => {
@@ -332,11 +327,6 @@ const Add = connect(
 						products: parsedProducts
 					}
 				};
-				console.log(
-					`\n\n\n*********************\n*************`,
-					{ temp },
-					`******************\n***********\n\n`
-				);
 				//* Make sure that submit data is similar to document model
 				submitData = Object.keys(doc).reduce((prev, key) => {
 					console.log({ docKey: doc[key] });
@@ -354,7 +344,6 @@ const Add = connect(
 						singlesidedtype: direction
 					};
 				}
-				console.log("DSA", submitData);
 			} catch (error) {
 				//* Error in formulating submit data!
 				hideModal();
@@ -388,9 +377,6 @@ const Add = connect(
 					submitData.sellertin = tTin;
 					submitData.sellername = tObj;
 				}
-				console.log("SENDING FILE:", { file: data.file });
-
-				console.log("SENDING REQUEST TO CREATE", { submitData });
 				let res = await requests.doc.create(
 					user.token,
 					currentDocType.docType,
@@ -427,7 +413,6 @@ const Add = connect(
 				console.warn(error);
 				showMessage({ type: colors.killerRed, message: error.message });
 			}
-			console.log("SEND COMPLETE");
 			//TODO stop loading
 			//TODO show success message
 			// let sign = await signProvider.sign(JSON.stringify(submitData));

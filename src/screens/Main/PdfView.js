@@ -217,7 +217,7 @@ const PdfView = ({
 				}
 			}
 			if (signResult) {
-				console.log("GOT SIGN");
+				console.log("GOT SIGN! ");
 				//Fetching timestamp from the server
 				let timestampResponse = await requests.doc.getTimestamp(
 					{

@@ -149,7 +149,17 @@ export let facturaProduct = {
 	profitrate: 0,
 	committentname: "",
 	committenttin: "",
-	committentvatregcode: ""
+	committentvatregcode: "",
+	catalogcode: "",
+	catalogname: "",
+	barcode: "",
+	lgotaid: null,
+	marks: {
+		producttype: 0,
+		kiz: [],
+		nomupak: [],
+		identtransupak: []
+	}
 };
 
 export let facturaDoc = {
@@ -189,6 +199,8 @@ export let facturaDoc = {
 		hascommittent: false,
 		hasmedical: false,
 		hasdiscount: false,
+		hidereportcommittent: false,
+		haslgota: false,
 		discountrate: 0,
 		discountsum: 0,
 		discountvatsum: 0,
